@@ -5,6 +5,7 @@ import About from './components/About';
 import ProjectList from './components/ProjectList';
 import Contact from './components/Contact';
 import BackendHealthIndicator from './components/BackendHealthIndicator';
+import BackendStatus from './components/BackendStatus';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <div className="App">
         <Header />
         <BackendHealthIndicator />
+        <BackendStatus />
         <Routes>
           <Route path="/" element={<About />} />
           <Route path="/about" element={<About />} />

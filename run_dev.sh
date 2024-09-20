@@ -3,7 +3,7 @@
 # Function to start the server
 start_server() {
     echo "Starting Django server..."
-    (cd backend && source ../venv/bin/activate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8080)
+    (cd backend && source ../venv/bin/activate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000)
 }
 
 # Function to stop the server

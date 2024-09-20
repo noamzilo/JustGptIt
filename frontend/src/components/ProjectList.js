@@ -1,46 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import apiService from '../services/apiService';
+import axios from 'axios';
 
-const ProjectList = () => {
+function ProjectList() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const fetchedProjects = await apiService.get('/projects/');
-        setProjects(fetchedProjects);
+    setLoading(true);
+    axios.get('http://localhost:8000/api/projects/')
+      .then(response => {
+        setProjects(response.data);
         setLoading(false);
-      } catch (err) {
-        setError('Error fetching projects. Please try again later.');
+      })
+      .catch(error => {
+        console.error('Error fetching projects:', error);
+        setError('Failed to fetch projects');
         setLoading(false);
-      }
-    };
-
-    fetchProjects();
+      });
   }, []);
 
-  if (loading) return <div>Loading projects...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) return <p>Loading projects...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
-    <div className="project-list">
+    <div>
       <h2>My Projects</h2>
-      {projects.length === 0 ? (
-        <p>No projects found. The backend is healthy but there's no data yet.</p>
-      ) : (
-        projects.map(project => (
-          <div key={project.id} className="project-item">
-            <h3>{project.title}</h3>
-            <p>{project.description}</p>
-            <p>Technologies: {project.technologies}</p>
-            {project.project_url && <a href={project.project_url} target="_blank" rel="noopener noreferrer">View Project</a>}
-          </div>
-        ))
-      )}
+      {projects.map(project => (
+        <div key={project.id}>
+          <h3>{project.title}</h3>
+          <p>{project.description}</p>
+          <p>Technologies: {project.technologies}</p>
+        </div>
+      ))}
     </div>
   );
-};
+}
 
 export default ProjectList;
