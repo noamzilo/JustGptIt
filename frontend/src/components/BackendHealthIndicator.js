@@ -17,8 +17,8 @@ const BackendHealthIndicator = () => {
   }, []);
 
   const indicatorStyle = {
-    width: '10px',
-    height: '10px',
+    width: '50px',
+    height: '50px',
     borderRadius: '50%',
     backgroundColor: isHealthy ? 'green' : 'red',
     display: 'inline-block',
