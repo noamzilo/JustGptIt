@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import BackendLivenessService from '../services/backendLivenessService';
+import BackendLivenessService from '../services/backendLivenessService.js';
 
 const BackendHealthIndicator = () => {
   const [isHealthy, setIsHealthy] = useState(true);
