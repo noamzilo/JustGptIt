@@ -7,21 +7,15 @@ import Contact from './components/Contact';
 
 function App() {
   return (
-    // <Router>
-    //   <div className="App">
-    //     <Header />
-    //     <Routes>
-    //       <Route path="/" element={<About />} />
-    //       <Route path="/about" element={<About />} />
-    //       <Route path="/projects" element={<ProjectList />} />
-    //       <Route path="/contact" element={<Contact />} />
-    //     </Routes>
-    //   </div>
-    // </Router>
-
     <Router>
       <div className="App">
-        <h1>Hello World</h1>
+        <Header />
+        <Routes>
+          <Route path="/" element={<About />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/projects" element={<ProjectList />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
       </div>
     </Router>
   );
