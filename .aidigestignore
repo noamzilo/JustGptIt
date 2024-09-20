@@ -1,0 +1,9 @@
+.db
+modules/
+sk.json
+venv/
+*.sqlite*
+frontend/node_modules/
+*__pycache__*
+*.svg
+backend/api/migrations/
