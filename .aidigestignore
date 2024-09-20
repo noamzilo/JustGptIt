@@ -6,4 +6,9 @@ venv/
 frontend/node_modules/
 *__pycache__*
 *.svg
+*.exe
 backend/api/migrations/
+*.sqlite3
+*/staticfiles/*
+/frontend/build/
+/frontend/node_modules/
