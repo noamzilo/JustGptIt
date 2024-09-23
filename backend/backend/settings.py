@@ -108,7 +108,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS configuration
 CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only allow all origins in debug mode
 if not DEBUG:
-    CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
+    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in os.getenv('CORS_ALLOWED_ORIGINS', '').split(',') if origin.strip()]
+else:
+    CORS_ALLOWED_ORIGINS = ['http://localhost:3000']  # Allow frontend in development
 
 # REST Framework configuration
 REST_FRAMEWORK = {
