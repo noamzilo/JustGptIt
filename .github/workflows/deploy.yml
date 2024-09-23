@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, staging ]
 
 jobs:
   build-and-deploy:
@@ -30,6 +30,20 @@ jobs:
         cd frontend
         npm ci
 
+    - name: Create .env file
+      run: |
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          echo "REACT_APP_API_URL=${{ secrets.PROD_API_URL }}" >> .env
+          echo "DJANGO_SECRET_KEY=${{ secrets.PROD_DJANGO_SECRET_KEY }}" >> .env
+          echo "DJANGO_DEBUG=False" >> .env
+          echo "DJANGO_ALLOWED_HOSTS=${{ secrets.PROD_DJANGO_ALLOWED_HOSTS }}" >> .env
+        else
+          echo "REACT_APP_API_URL=${{ secrets.STAGING_API_URL }}" >> .env
+          echo "DJANGO_SECRET_KEY=${{ secrets.STAGING_DJANGO_SECRET_KEY }}" >> .env
+          echo "DJANGO_DEBUG=True" >> .env
+          echo "DJANGO_ALLOWED_HOSTS=${{ secrets.STAGING_DJANGO_ALLOWED_HOSTS }}" >> .env
+        fi
+
     - name: Build
       run: |
         cd frontend
@@ -37,8 +51,10 @@ jobs:
         cd ../backend
         python manage.py collectstatic --noinput
 
-    - name: Deploy to GitHub Pages
+    - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./frontend/build
+        destination_dir: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+        force_orphan: false
