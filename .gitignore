@@ -49,4 +49,11 @@ EOF
 codebase.md
 
 # env
+# Existing content...
+
+# Environment files
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

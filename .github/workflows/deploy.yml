@@ -32,16 +32,13 @@ jobs:
 
     - name: Create .env file
       run: |
+        cd frontend
         if [ "${{ github.ref }}" = "refs/heads/main" ]; then
           echo "REACT_APP_API_URL=${{ secrets.PROD_API_URL }}" >> .env
-          echo "DJANGO_SECRET_KEY=${{ secrets.PROD_DJANGO_SECRET_KEY }}" >> .env
-          echo "DJANGO_DEBUG=False" >> .env
-          echo "DJANGO_ALLOWED_HOSTS=${{ secrets.PROD_DJANGO_ALLOWED_HOSTS }}" >> .env
+          echo "REACT_APP_ENVIRONMENT=production" >> .env
         else
           echo "REACT_APP_API_URL=${{ secrets.STAGING_API_URL }}" >> .env
-          echo "DJANGO_SECRET_KEY=${{ secrets.STAGING_DJANGO_SECRET_KEY }}" >> .env
-          echo "DJANGO_DEBUG=True" >> .env
-          echo "DJANGO_ALLOWED_HOSTS=${{ secrets.STAGING_DJANGO_ALLOWED_HOSTS }}" >> .env
+          echo "REACT_APP_ENVIRONMENT=staging" >> .env
         fi
 
     - name: Build

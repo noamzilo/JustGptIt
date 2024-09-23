@@ -8,19 +8,12 @@ import BackendHealthIndicator from './components/BackendHealthIndicator';
 import BackendStatus from './components/BackendStatus';
 
 function App() {
-  let environment;
-  if (process.env.NODE_ENV === 'production') {
-    environment = 'production';
-  } else if (process.env.NODE_ENV === 'development') {
-    environment = 'development';
-  } else {
-    environment = 'staging';
-  }
-
+  const environment = process.env.REACT_APP_ENVIRONMENT || 'development';
   const baseName = `/personal_website/${environment}`;
 
   console.log('Current environment:', environment);
   console.log('Current basename:', baseName);
+  console.log('API URL:', process.env.REACT_APP_API_URL);
 
   return (
     <Router basename={baseName}>
