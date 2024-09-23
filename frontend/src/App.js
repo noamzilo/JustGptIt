@@ -9,7 +9,7 @@ import BackendStatus from './components/BackendStatus';
 
 function App() {
   const environment = process.env.REACT_APP_ENVIRONMENT || 'development';
-  const baseName = `/personal_website/${environment}`;
+  const baseName = `/personal_website/${environment != 'development' ? environment : ''}`;
 
   console.log('Current environment:', environment);
   console.log('Current basename:', baseName);
