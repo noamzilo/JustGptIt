@@ -9,7 +9,7 @@ import BackendStatus from './components/BackendStatus';
 
 function App() {
   const environment = process.env.REACT_APP_ENVIRONMENT || 'development';
-  const baseName = `/personal_website/${environment != 'development' ? environment : ''}`;
+  const baseName = environment === 'development' ? '' : '/personal_website';
 
   console.log('Current environment:', environment);
   console.log('Current basename:', baseName);
@@ -18,6 +18,7 @@ function App() {
   return (
     <Router basename={baseName}>
       <div className="App">
+        <h1>Welcome to My Personal Website</h1>
         <Header />
         <BackendHealthIndicator />
         <BackendStatus />
