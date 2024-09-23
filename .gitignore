@@ -47,3 +47,6 @@ EOF
 
 # ai
 codebase.md
+
+# env
+.env
