@@ -7,20 +7,25 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '20'
 
-    - name: Clear npm cache and install dependencies
+    - name: Install dependencies
       run: |
         cd frontend
-        npm cache clean --force
-        rm -rf node_modules package-lock.json
-        npm install
+        npm ci
 
     - name: Set environment variables
       run: |
@@ -40,10 +45,14 @@ jobs:
         REACT_APP_API_URL: ${{ env.REACT_APP_API_URL }}
         REACT_APP_ENVIRONMENT: ${{ env.REACT_APP_ENVIRONMENT }}
 
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./frontend/build
-        destination_dir: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
-        force_orphan: false
+        path: './frontend/build'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
