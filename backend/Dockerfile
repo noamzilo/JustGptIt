@@ -2,8 +2,9 @@
 FROM python:3.11.3-slim
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
 
 # Set work directory
 WORKDIR /app
@@ -22,4 +23,4 @@ ENV PYTHONPATH=/app:$PYTHONPATH
 RUN python manage.py collectstatic --noinput
 
 # Run gunicorn
-CMD gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT:-8000}
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:${PORT:-8000}"]
