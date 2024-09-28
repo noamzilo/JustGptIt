@@ -15,17 +15,20 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . /app/
 
+# List contents of /app directory
+RUN ls -R /app
+
 # List contents and Python path for debugging
-RUN ls -R /app && echo $PYTHONPATH && python -c "import sys; print(sys.path)"
+RUN echo $PYTHONPATH && python -c "import sys; print(sys.path)"
 
 # Try to import Django and print its version
 RUN python -c "import django; print(django.__version__)"
 
-# Try to import the backend module
-RUN python -c "import backend; print(backend.__file__)"
+# Try to import the backend module (this will fail, but we'll keep it for reference)
+RUN python -c "import backend; print(config.__file__)" || echo "Failed to import backend"
 
 # Collect static files (commented out for now)
-# RUN DJANGO_SETTINGS_MODULE=backend.settings python manage.py collectstatic --noinput
+# RUN DJANGO_SETTINGS_MODULE=config.settings python manage.py collectstatic --noinput
 
 # Run gunicorn
-CMD ["gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]

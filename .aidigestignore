@@ -9,6 +9,7 @@ frontend/node_modules/
 *.exe
 backend/api/migrations/
 *.sqlite3
-*/staticfiles/*
+*staticfiles*
 /frontend/build/
 /frontend/node_modules/
+*.svg
