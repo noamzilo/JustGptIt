@@ -15,8 +15,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . /app/
 
+# Add the project directory to Python path
+ENV PYTHONPATH=/app:$PYTHONPATH
+
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
 # Run gunicorn
-CMD gunicorn personal_website.wsgi:application --bind 0.0.0.0:$PORT
+CMD gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT:-8000}
