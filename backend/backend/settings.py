@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+# from backend.constants import APP_NAME # TODO make imports work from project
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'your_app_name',  # Replace with your actual app name
+    'api',  # Replace with your actual app name
 ]
 
 MIDDLEWARE = [
