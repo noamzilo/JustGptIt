@@ -8,27 +8,26 @@ ENV PYTHONUNBUFFERED=1
 # Set work directory
 WORKDIR /app
 
-# Install dependencies
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy project
 COPY . /app/
 
-# List contents of /app directory
-RUN ls -R /app
+# Copy GCP credentials file
+COPY /home/noams/src/gcp/academic-veld-436919-g0-b0585aa23f8b.json /app/gcp-credentials.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
 
-# List contents and Python path for debugging
-RUN echo $PYTHONPATH && python -c "import sys; print(sys.path)"
-
-# Try to import Django and print its version
-RUN python -c "import django; print(django.__version__)"
-
-# Try to import the backend module (this will fail, but we'll keep it for reference)
-RUN python -c "import backend; print(config.__file__)" || echo "Failed to import backend"
-
-# Collect static files (commented out for now)
-# RUN DJANGO_SETTINGS_MODULE=config.settings python manage.py collectstatic --noinput
+# Collect static files
+ENV DJANGO_SETTINGS_MODULE=config.settings
+RUN python manage.py collectstatic --noinput
 
 # Run gunicorn
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]

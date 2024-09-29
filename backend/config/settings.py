@@ -94,10 +94,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # GCP Settings
 GCP_PROJECT_ID = 'academic-veld-436919-g0'
-GCP_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
-)
+GCP_CREDENTIALS_FILE = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
 
+if GCP_CREDENTIALS_FILE and os.path.exists(GCP_CREDENTIALS_FILE):
+    GCP_CREDENTIALS = service_account.Credentials.from_service_account_file(GCP_CREDENTIALS_FILE)
+else:
+    print("Warning: GCP credentials file not found. Some features may not work.")
+    exit(1)
 # Use GCP credentials in your Django app as needed
 # For example, if using Google Cloud Storage:
 # from google.cloud import storage
