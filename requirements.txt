@@ -5,3 +5,5 @@ djangorestframework==3.15.2
 python-dotenv==1.0.1
 sqlparse==0.5.1
 whitenoise==6.7.0
+google-auth
+google-cloud-storage

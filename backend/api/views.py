@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from .models import Project
 from .serializers import ProjectSerializer
+from google.cloud import storage
 
 @api_view(['GET'])
 def hello_world(request):
@@ -16,3 +17,16 @@ def health_check(request):
 class ProjectList(generics.ListAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+
+
+def test_gcp(request):
+    try:
+        # Create a storage client using the credentials from settings
+        storage_client = storage.Client(project=settings.GCP_PROJECT_ID, credentials=settings.GCP_CREDENTIALS)
+        
+        # List buckets in the project
+        buckets = list(storage_client.list_buckets())
+        
+        return HttpResponse(f"Successfully connected to GCP. Found {len(buckets)} buckets.")
+    except Exception as e:
+        return HttpResponse(f"Error connecting to GCP: {str(e)}")
