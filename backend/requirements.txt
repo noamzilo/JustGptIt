@@ -1,7 +1,12 @@
-Django==4.2.1
-     django-cors-headers==4.0.0
-     djangorestframework==3.14.0
-     gunicorn==20.1.0
-     dj-database-url==2.0.0
-     psycopg2-binary==2.9.6
-     whitenoise==6.4.0
+Django
+django-cors-headers
+djangorestframework
+gunicorn
+dj-database-url
+psycopg2-binary
+whitenoise
+google-auth
+google-cloud-storage
+python-dotenv
+sqlparse
+asgiref
