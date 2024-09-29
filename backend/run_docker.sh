@@ -39,33 +39,54 @@ need_to_build() {
     fi
 }
 
-# Build the Docker image if necessary
-if need_to_build; then
-    echo "Changes detected. Building Docker image..."
-    docker build -t ${IMAGE_NAME}:latest -t ${IMAGE_NAME}:${IMAGE_TAG} .
-else
-    echo "No changes detected. Using existing Docker image."
-    # Tag the latest image with the new timestamp
-    docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${IMAGE_TAG}
-fi
+# Function to build the Docker image
+build_image() {
+    if need_to_build; then
+        echo "Changes detected. Building Docker image..."
+        docker build -t ${IMAGE_NAME}:latest -t ${IMAGE_NAME}:${IMAGE_TAG} .
+    else
+        echo "No changes detected. Using existing Docker image."
+        # Tag the latest image with the new timestamp
+        docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${IMAGE_TAG}
+    fi
+}
 
-# Remove existing container if it exists
-docker rm -f $CONTAINER_NAME
+# Function to run the Docker container
+run_container() {
+    # Kill the existing container if it's running
+    docker kill $CONTAINER_NAME 2>/dev/null || true
+    docker rm $CONTAINER_NAME 2>/dev/null || true
 
-# Run the new container
-docker run -d \
-  --name $CONTAINER_NAME \
-  -p $HOST_PORT:$CONTAINER_PORT \
-  -v $GCP_CREDENTIALS_PATH:$CONTAINER_CREDENTIALS_PATH \
-  -e GOOGLE_APPLICATION_CREDENTIALS=$CONTAINER_CREDENTIALS_PATH \
-  ${IMAGE_NAME}:${IMAGE_TAG}
+    # Run the new container
+    docker run -d \
+      --name $CONTAINER_NAME \
+      -p $HOST_PORT:$CONTAINER_PORT \
+      -v $GCP_CREDENTIALS_PATH:$CONTAINER_CREDENTIALS_PATH \
+      -e GOOGLE_APPLICATION_CREDENTIALS=$CONTAINER_CREDENTIALS_PATH \
+      ${IMAGE_NAME}:${IMAGE_TAG}
 
-# Wait for the container to start
-sleep 5
+    # Wait for the container to start
+    sleep 5
 
-# Run collectstatic in the container
-docker exec $CONTAINER_NAME python manage.py collectstatic --noinput
+    # Run collectstatic in the container
+    docker exec $CONTAINER_NAME python manage.py collectstatic --noinput
 
-# Print the container logs
-echo "Container started. Printing logs:"
-docker logs $CONTAINER_NAME
+    # Print the container logs
+    echo "Container started. Printing logs:"
+    docker logs $CONTAINER_NAME
+}
+
+# Main script logic
+case "$1" in
+    build)
+        build_image
+        ;;
+    run)
+        build_image
+        run_container
+        ;;
+    *)
+        echo "Usage: $0 {build|run}"
+        exit 1
+        ;;
+esac
