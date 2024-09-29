@@ -21,10 +21,6 @@ RUN pip install --upgrade pip && \
 # Copy project
 COPY . /app/
 
-# Copy GCP credentials file
-COPY /home/noams/src/gcp/academic-veld-436919-g0-b0585aa23f8b.json /app/gcp-credentials.json
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
-
 # Collect static files
 ENV DJANGO_SETTINGS_MODULE=config.settings
 RUN python manage.py collectstatic --noinput
