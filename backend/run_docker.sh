@@ -60,6 +60,12 @@ docker run -d \
   -e GOOGLE_APPLICATION_CREDENTIALS=$CONTAINER_CREDENTIALS_PATH \
   ${IMAGE_NAME}:${IMAGE_TAG}
 
+# Wait for the container to start
+sleep 5
+
+# Run collectstatic in the container
+docker exec $CONTAINER_NAME python manage.py collectstatic --noinput
+
 # Print the container logs
 echo "Container started. Printing logs:"
 docker logs $CONTAINER_NAME

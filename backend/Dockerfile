@@ -21,9 +21,5 @@ RUN pip install --upgrade pip && \
 # Copy project
 COPY . /app/
 
-# Collect static files
-ENV DJANGO_SETTINGS_MODULE=config.settings
-RUN python manage.py collectstatic --noinput
-
 # Run gunicorn
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
