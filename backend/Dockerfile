@@ -22,4 +22,4 @@ RUN pip install --upgrade pip && \
 COPY . /app/
 
 # Run gunicorn
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD exec gunicorn --bind :$PORT config.wsgi:application
