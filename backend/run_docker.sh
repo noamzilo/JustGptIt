@@ -59,11 +59,11 @@ run_container() {
 
     # Run the new container
     docker run -d \
-        --name $CONTAINER_NAME \
-        -p $HOST_PORT:$CONTAINER_PORT \
-        -v $GCP_CREDENTIALS_PATH:$CONTAINER_CREDENTIALS_PATH \
-        -e GOOGLE_APPLICATION_CREDENTIALS=$CONTAINER_CREDENTIALS_PATH \
-        ${IMAGE_NAME}:${IMAGE_TAG}
+      --name $CONTAINER_NAME \
+      -p ${HOST_PORT}:${CONTAINER_PORT} \
+      -v ${GCP_CREDENTIALS_PATH}:${CONTAINER_CREDENTIALS_PATH} \
+      -e GOOGLE_APPLICATION_CREDENTIALS=${CONTAINER_CREDENTIALS_PATH} \
+      ${IMAGE_NAME}:${IMAGE_TAG}
 
     # Wait for the container to start
     sleep 5
