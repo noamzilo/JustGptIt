@@ -53,17 +53,17 @@ build_image() {
 
 # Function to run the Docker container
 run_container() {
-    # Kill the existing container if it's running
-    docker kill $CONTAINER_NAME 2>/dev/null || true
+    # Stop and remove the existing container if it's running
+    docker stop $CONTAINER_NAME 2>/dev/null || true
     docker rm $CONTAINER_NAME 2>/dev/null || true
 
     # Run the new container
     docker run -d \
-      --name $CONTAINER_NAME \
-      -p $HOST_PORT:$CONTAINER_PORT \
-      -v $GCP_CREDENTIALS_PATH:$CONTAINER_CREDENTIALS_PATH \
-      -e GOOGLE_APPLICATION_CREDENTIALS=$CONTAINER_CREDENTIALS_PATH \
-      ${IMAGE_NAME}:${IMAGE_TAG}
+        --name $CONTAINER_NAME \
+        -p $HOST_PORT:$CONTAINER_PORT \
+        -v $GCP_CREDENTIALS_PATH:$CONTAINER_CREDENTIALS_PATH \
+        -e GOOGLE_APPLICATION_CREDENTIALS=$CONTAINER_CREDENTIALS_PATH \
+        ${IMAGE_NAME}:${IMAGE_TAG}
 
     # Wait for the container to start
     sleep 5
