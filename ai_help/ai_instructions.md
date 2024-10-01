@@ -26,3 +26,6 @@ General information that you need to inject where needed:
 6. Locally, the website is on ~/src/personal_website
 8. Following is a valid bucket: "gs://test-bucket-19044/"
 9. You can use .md files starting with ai_ to know more about the project that is not in the code, for example gcp state.
+
+
+Reply in an interactive manner, only one step at a time, to allow me to post outputs every time or tell you about errors. If I say everything is ok only then move to the next step.

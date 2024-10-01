@@ -88,6 +88,29 @@ run_container() {
     docker logs $CONTAINER_NAME
 }
 
+
+build_dev() {
+    build_image
+    docker build -t ${IMAGE_NAME}:dev -f Dockerfile.dev .
+}
+
+run_dev_container() {
+    docker stop $CONTAINER_NAME 2>/dev/null || true
+    docker rm $CONTAINER_NAME 2>/dev/null || true
+
+    echo "Running development container"
+    docker run -d \
+      --name $CONTAINER_NAME \
+      -p ${HOST_PORT}:${CONTAINER_PORT} \
+      -v ${GCP_CREDENTIALS_PATH}:/app/gcp-credentials.json \
+      -e GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json \
+      -e DEBUG=1 \
+      ${IMAGE_NAME}:dev
+    
+    echo "Container started. Printing logs:"
+    docker logs $CONTAINER_NAME
+}
+
 # Main script logic
 case "$1" in
     build)
@@ -101,8 +124,15 @@ case "$1" in
         build_image
         run_container prod
         ;;
+    build-dev)
+        build_dev
+        ;;
+    run-dev)
+        build_dev
+        run_dev_container
+        ;;
     *)
-        echo "Usage: $0 {build|run|run-prod}"
+        echo "Usage: $0 {build|run|run-prod|build-dev|run-dev}"
         exit 1
         ;;
 esac

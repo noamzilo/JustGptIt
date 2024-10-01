@@ -1,0 +1,10 @@
+# Dockerfile.dev
+FROM personal-website-backend:latest
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add any other development tools or configurations here
+
+# We're not changing the CMD here to preserve the original setup
