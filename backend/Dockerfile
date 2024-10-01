@@ -23,7 +23,7 @@ RUN pip install --upgrade pip && \
 COPY . /app/
 
 # Copy GCP credentials file temporarily
-COPY /home/noams/src/gcp/academic-veld-436919-g0-b0585aa23f8b.json /app/gcp-credentials.json
+COPY ./creds/academic-veld-436919-g0-b0585aa23f8b.json /app/gcp-credentials.json
 
 # Set environment variable for GCP credentials
 ENV GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
