@@ -5,6 +5,15 @@ from rest_framework import generics
 from .models import Project
 from .serializers import ProjectSerializer
 from google.cloud import storage
+from django.http import HttpResponse
+import logging
+
+logger = logging.getLogger(__name__)
+
+def test_view(request):
+    logger.debug("Test view called")
+    return HttpResponse("Test view works")
+
 
 @api_view(['GET'])
 def hello_world(request):

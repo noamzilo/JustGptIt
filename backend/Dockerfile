@@ -41,4 +41,4 @@ RUN rm -f /app/gcp-credentials.json
 EXPOSE 8080
 
 # Start command
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "config.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--log-level", "debug", "--capture-output", "--enable-stdio-inheritance", "config.wsgi:application"]
