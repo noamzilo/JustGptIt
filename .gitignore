@@ -60,3 +60,6 @@ codebase.md
 
 # secrets
 backend/creds/
+
+# logs
+*logs_dump*

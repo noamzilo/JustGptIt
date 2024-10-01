@@ -9,6 +9,15 @@ import logging
 import sys
 print("Settings module loaded", file=sys.stderr)
 
+GCP_CREDENTIALS_FILE = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+
+if GCP_CREDENTIALS_FILE and os.path.exists(GCP_CREDENTIALS_FILE):
+    GCP_CREDENTIALS = service_account.Credentials.from_service_account_file(GCP_CREDENTIALS_FILE)
+else:
+    print("GCP credentials file not found. Continuing without GCP features.")
+    GCP_CREDENTIALS = None
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
