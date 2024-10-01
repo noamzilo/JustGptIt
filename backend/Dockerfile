@@ -22,7 +22,7 @@ RUN pip install --upgrade pip && \
 # Copy project
 COPY . /app/
 
-# Copy GCP credentials file temporarily
+# Copy GCP credentials
 COPY ./creds/academic-veld-436919-g0-b0585aa23f8b.json /app/gcp-credentials.json
 
 # Set environment variable for GCP credentials
@@ -33,27 +33,23 @@ RUN mkdir -p /app/staticfiles && chmod 755 /app/staticfiles
 
 # Collect static files with verbose output
 RUN python manage.py collectstatic --noinput -v 2
+RUN rm -f /app/gcp-credentials
 
-# Remove GCP credentials file after collectstatic
-RUN rm -f /app/gcp-credentials.json
+# Create log directory and file
+RUN mkdir -p /var/log && \
+    touch /var/log/app.log && \
+    chmod 666 /var/log/app.log
 
-# Expose port
-EXPOSE 8080
-
-# Start command
-#CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--log-level", "debug", "--capture-output", "--enable-stdio-inheritance", "config.wsgi:application"]
-
-
-RUN mkdir -p /var/log
-RUN touch /var/log/app.log
-RUN chmod 666 /var/log/app.log
-
-# Add these lines to print some debug info during build
+# Add these lines to print some debug info
 RUN echo "Python version:" && python --version
 RUN echo "Pip packages:" && pip list
 RUN echo "Contents of /app:" && ls -la /app
 
 RUN python -c "import django; print(f'Django version: {django.__version__}')"
 RUN python -c "import sys; print(f'Python path: {sys.path}')"
-RUN ls -R /app
+
+# Expose port
+EXPOSE 8080
+
+# Start command
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--log-level", "debug", "--capture-output", "--enable-stdio-inheritance", "config.wsgi:application"]

@@ -13,3 +13,4 @@ backend/api/migrations/
 /frontend/build/
 /frontend/node_modules/
 *.svg
+backend/logs_dump/

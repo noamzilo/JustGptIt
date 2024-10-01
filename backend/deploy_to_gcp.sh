@@ -8,9 +8,10 @@ REGION="us-central1"
 LOCAL_IMAGE_NAME="personal-website-backend"
 GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/${LOCAL_IMAGE_NAME}"
 SERVICE_NAME="personal-website-backend"
+SERVICE_ACCOUNT="personal-website-deployer@academic-veld-436919-g0.iam.gserviceaccount.com"
 
 # GCP Credentials
-GCP_CREDENTIALS_PATH="creds/academic-veld-436919-g0-b0585aa23f8b.json"
+GCP_CREDENTIALS_PATH="./creds/academic-veld-436919-g0-b0585aa23f8b.json"
 if [ ! -f "$GCP_CREDENTIALS_PATH" ]; then
     echo "Error: GCP credentials file not found at $GCP_CREDENTIALS_PATH"
     echo "Please ensure the file exists and the path is correct."
@@ -25,7 +26,10 @@ gcloud auth activate-service-account --key-file=$GCP_CREDENTIALS_PATH
 # Configure Docker to use gcloud as a credential helper
 gcloud auth configure-docker --quiet
 
-# Tag the Docker image for GCR
+# Build the Docker image locally
+docker build -t ${LOCAL_IMAGE_NAME}:latest .
+
+# Tag the local Docker image for GCR
 docker tag ${LOCAL_IMAGE_NAME}:latest ${GCR_IMAGE_NAME}:latest
 
 # Push the Docker image to GCR
@@ -38,10 +42,9 @@ gcloud run deploy $SERVICE_NAME \
   --region $REGION \
   --platform managed \
   --allow-unauthenticated \
-  --set-env-vars="GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json" \
-  --set-cloudsql-instances="${PROJECT_ID}:${REGION}:your-sql-instance-name"
-
-# Note: Replace "your-sql-instance-name" with your actual Cloud SQL instance name if you're using one.
+  --set-env-vars="DEBUG=1" \
+  --port=8080 \
+  --service-account=$SERVICE_ACCOUNT
 
 # Print the service URL
 gcloud run services describe $SERVICE_NAME \
