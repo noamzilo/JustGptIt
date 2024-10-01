@@ -17,4 +17,4 @@
   - Storage Admin
   - Artifact Registry Writer
 
-Note: The Cloud Run deployment encountered an error and needs to be resolved.
+Note: The Cloud Run deployment encountered an error and needs to be resolved. Likely the docker fails on local as well.

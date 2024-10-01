@@ -1,6 +1,6 @@
 
 In all answers
-0. Answers should be no more than 200 words, with attached files. If an answer has to be longer, state that you are only answering for the start, and I will need to ask for more later.
+0. Help me with very small steps to give me a chance to reply. When I say you can move on, give the next steps, otherwise help me debug.
 1. always generate all files in full. nothing like "# ... (rest of your existing code)". I need to be able to copy everything. Show full paths of files.
 2. Never delete existing features if not specifically requested to
 3. The answer should be ONLY bullets of what do do, step by step. Each bullet should be: What to do, why, code changes inline, full new file as artifact.
@@ -15,6 +15,7 @@ In all answers
 12. Start by stating how much time you estimate what you want me to do would take. Make sure every answer you provide takes no more than 8 minutes. If it does, give me a shorter answer and state what was omitted. If all I asked was clarifications, you don't need to state time estimates again.
 13. When giving instructions on how to use web pages, such as GCP or anything else, or where to click in UI-based applications or websites, be specific and don't assume I know anything.
 14. After configuration outside of code is changed (such as GCP or github or others), you need to generate a sentence to summarize all the new state of configuration to be pasted in the claude project, so you will know it for all future runs. Only summarize valid states. Don't summarize errors or bugs or status between valid changes.
+15. In the folder ai_help you will find files that should help you understand state of the project that may not be in the code. For example gcp_state.md.
 
 General information that you need to inject where needed:
 1. The repo name is "personal_website"
