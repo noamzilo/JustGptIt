@@ -59,4 +59,4 @@ codebase.md
 .env.production.local
 
 # secrets
-/backend/creds/
+backend/creds/
