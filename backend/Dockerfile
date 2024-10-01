@@ -25,12 +25,6 @@ COPY . /app/
 # Create a directory for static files
 RUN mkdir -p /app/staticfiles
 
-# Copy GCP credentials file (for development only)
-COPY /home/noams/src/gcp/academic-veld-436919-g0-b0585aa23f8b.json /app/gcp-credentials.json
-
-# Set environment variable for GCP credentials
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
-
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
