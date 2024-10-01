@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e  # Exit immediately if a command exits with a non-zero status
+
 # Docker image and container names
 IMAGE_NAME="personal-website-backend"
 CONTAINER_NAME="personal-website-backend-test"
@@ -43,7 +45,10 @@ need_to_build() {
 build_image() {
     if need_to_build; then
         echo "Changes detected. Building Docker image..."
-        docker build -t ${IMAGE_NAME}:latest -t ${IMAGE_NAME}:${IMAGE_TAG} .
+        if ! docker build -t ${IMAGE_NAME}:latest -t ${IMAGE_NAME}:${IMAGE_TAG} .; then
+            echo "Error: Docker build failed. Exiting."
+            exit 1
+        fi
     else
         echo "No changes detected. Using existing Docker image."
         # Tag the latest image with the new timestamp
@@ -56,6 +61,14 @@ run_container() {
     # Stop and remove the existing container if it's running
     docker stop $CONTAINER_NAME 2>/dev/null || true
     docker rm $CONTAINER_NAME 2>/dev/null || true
+
+    echo "Docker run command:"
+    echo "docker run -d \
+      --name $CONTAINER_NAME \
+      -p ${HOST_PORT}:${CONTAINER_PORT} \
+      -v ${GCP_CREDENTIALS_PATH}:${CONTAINER_CREDENTIALS_PATH} \
+      -e GOOGLE_APPLICATION_CREDENTIALS=${CONTAINER_CREDENTIALS_PATH} \
+      ${IMAGE_NAME}:${IMAGE_TAG}"
 
     # Run the new container
     docker run -d \

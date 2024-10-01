@@ -4,6 +4,8 @@ FROM python:3.11.3-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=config.settings
+ENV DEBUG=0
 
 # Set work directory
 WORKDIR /app
@@ -21,6 +23,14 @@ RUN pip install --upgrade pip && \
 # Copy project
 COPY . /app/
 
-# Run gunicorn
-CMD exec gunicorn --bind :$PORT config.wsgi:application
+# Create a directory for static files
+RUN mkdir -p /app/staticfiles
 
+# Collect static files
+RUN python manage.py collectstatic --noinput
+
+# Expose port
+EXPOSE 8000
+
+# Start command
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
