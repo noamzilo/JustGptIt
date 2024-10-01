@@ -12,7 +12,6 @@ CONTAINER_PORT=8000
 
 # GCP Credentials
 GCP_CREDENTIALS_PATH="/home/noams/src/gcp/academic-veld-436919-g0-b0585aa23f8b.json"
-CONTAINER_CREDENTIALS_PATH="/app/gcp-credentials.json"
 
 # Generate a timestamp for the tag
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -63,26 +62,26 @@ run_container() {
     docker rm $CONTAINER_NAME 2>/dev/null || true
 
     echo "Docker run command:"
-    echo "docker run -d \
-      --name $CONTAINER_NAME \
-      -p ${HOST_PORT}:${CONTAINER_PORT} \
-      -v ${GCP_CREDENTIALS_PATH}:${CONTAINER_CREDENTIALS_PATH} \
-      -e GOOGLE_APPLICATION_CREDENTIALS=${CONTAINER_CREDENTIALS_PATH} \
-      ${IMAGE_NAME}:${IMAGE_TAG}"
-
-    # Run the new container
-    docker run -d \
-      --name $CONTAINER_NAME \
-      -p ${HOST_PORT}:${CONTAINER_PORT} \
-      -v ${GCP_CREDENTIALS_PATH}:${CONTAINER_CREDENTIALS_PATH} \
-      -e GOOGLE_APPLICATION_CREDENTIALS=${CONTAINER_CREDENTIALS_PATH} \
-      ${IMAGE_NAME}:${IMAGE_TAG}
+    if [ "$1" = "prod" ]; then
+        echo "Running in production mode"
+        docker run -d \
+          --name $CONTAINER_NAME \
+          -p ${HOST_PORT}:${CONTAINER_PORT} \
+          -e DEBUG=0 \
+          ${IMAGE_NAME}:${IMAGE_TAG}
+    else
+        echo "Running in development mode"
+        docker run -d \
+          --name $CONTAINER_NAME \
+          -p ${HOST_PORT}:${CONTAINER_PORT} \
+          -v ${GCP_CREDENTIALS_PATH}:/app/gcp-credentials.json \
+          -e GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json \
+          -e DEBUG=1 \
+          ${IMAGE_NAME}:${IMAGE_TAG}
+    fi
 
     # Wait for the container to start
     sleep 5
-
-    # Run collectstatic in the container
-    docker exec $CONTAINER_NAME python manage.py collectstatic --noinput
 
     # Print the container logs
     echo "Container started. Printing logs:"
@@ -96,10 +95,14 @@ case "$1" in
         ;;
     run)
         build_image
-        run_container
+        run_container dev
+        ;;
+    run-prod)
+        build_image
+        run_container prod
         ;;
     *)
-        echo "Usage: $0 {build|run}"
+        echo "Usage: $0 {build|run|run-prod}"
         exit 1
         ;;
 esac

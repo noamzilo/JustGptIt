@@ -5,7 +5,6 @@ FROM python:3.11.3-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=config.settings
-ENV DEBUG=0
 
 # Set work directory
 WORKDIR /app
@@ -25,6 +24,12 @@ COPY . /app/
 
 # Create a directory for static files
 RUN mkdir -p /app/staticfiles
+
+# Copy GCP credentials file (for development only)
+COPY /home/noams/src/gcp/academic-veld-436919-g0-b0585aa23f8b.json /app/gcp-credentials.json
+
+# Set environment variable for GCP credentials
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
 
 # Collect static files
 RUN python manage.py collectstatic --noinput

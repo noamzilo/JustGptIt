@@ -24,6 +24,5 @@ General information that you need to inject where needed:
 4. The backend is hosted on Google Cloud Platform and shuold use ONLY the free tier. The  (auto generated) project id there is "academic-veld-436919-g0". The Id I gave it was "personal-website-backend"
 5. For the DB, until the app is larger, we will use SQLite on the GCP instance.
 6. Locally, the website is on ~/src/personal_website
-7. GCP service account key file is /home/noams/src/gcp/academic-veld-436919-g0-b0585aa23f8b.json
 8. Following is a valid bucket: "gs://test-bucket-19044/"
 9. You can use .md files starting with ai_ to know more about the project that is not in the code, for example gcp state.
