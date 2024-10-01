@@ -17,6 +17,7 @@ ALLOWED_HOSTS = ['personal-website-backend-839353010571.us-central1.run.app', 'p
 
 # Application definition
 INSTALLED_APPS = [
+    'api',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,7 +55,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'personal_website.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 DATABASES = {
