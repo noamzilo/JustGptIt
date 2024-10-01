@@ -3,6 +3,11 @@
 import os
 from pathlib import Path
 from google.oauth2 import service_account
+import logging
+
+
+import sys
+print("Settings module loaded", file=sys.stderr)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,8 +48,6 @@ LOGGING = {
         },
     },
 }
-
-logging.debug("Django settings loaded")
 
 # Application definition
 INSTALLED_APPS = [

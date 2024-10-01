@@ -41,4 +41,16 @@ RUN rm -f /app/gcp-credentials.json
 EXPOSE 8080
 
 # Start command
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--log-level", "debug", "--capture-output", "--enable-stdio-inheritance", "config.wsgi:application"]
+#CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--log-level", "debug", "--capture-output", "--enable-stdio-inheritance", "config.wsgi:application"]
+
+
+RUN mkdir -p /var/log
+RUN touch /var/log/app.log
+RUN chmod 666 /var/log/app.log
+
+# Add these lines to print some debug info during build
+RUN echo "Python version:" && python --version
+RUN echo "Pip packages:" && pip list
+RUN echo "Contents of /app:" && ls -la /app
+
+CMD gunicorn --bind 0.0.0.0:8080 --log-level debug --capture-output --enable-stdio-inheritance config.wsgi:application 2>&1 | tee /var/log/app.log

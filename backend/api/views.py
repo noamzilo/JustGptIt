@@ -8,6 +8,9 @@ from google.cloud import storage
 from django.http import HttpResponse
 import logging
 
+import sys
+print("Views module loaded", file=sys.stderr)
+
 logger = logging.getLogger(__name__)
 
 def test_view(request):
