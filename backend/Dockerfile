@@ -38,7 +38,7 @@ RUN python manage.py collectstatic --noinput -v 2
 RUN rm -f /app/gcp-credentials.json
 
 # Expose port
-EXPOSE 8000
+EXPOSE 8080
 
 # Start command
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "config.wsgi:application"]
