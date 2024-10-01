@@ -10,7 +10,14 @@ GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/${LOCAL_IMAGE_NAME}"
 SERVICE_NAME="personal-website-backend"
 
 # GCP Credentials
-GCP_CREDENTIALS_PATH="/home/noams/src/gcp/academic-veld-436919-g0-b0585aa23f8b.json"
+GCP_CREDENTIALS_PATH="creds/academic-veld-436919-g0-b0585aa23f8b.json"
+if [ ! -f "$GCP_CREDENTIALS_PATH" ]; then
+    echo "Error: GCP credentials file not found at $GCP_CREDENTIALS_PATH"
+    echo "Please ensure the file exists and the path is correct."
+    exit 1
+fi
+
+echo "GCP credentials file found at $GCP_CREDENTIALS_PATH"
 
 # Authenticate with GCP using the service account key
 gcloud auth activate-service-account --key-file=$GCP_CREDENTIALS_PATH
