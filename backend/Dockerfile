@@ -23,3 +23,4 @@ COPY . /app/
 
 # Run gunicorn
 CMD exec gunicorn --bind :$PORT config.wsgi:application
+
