@@ -22,11 +22,20 @@ RUN pip install --upgrade pip && \
 # Copy project
 COPY . /app/
 
-# Create a directory for static files
-RUN mkdir -p /app/staticfiles
+# Copy GCP credentials file temporarily
+COPY /home/noams/src/gcp/academic-veld-436919-g0-b0585aa23f8b.json /app/gcp-credentials.json
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
+# Set environment variable for GCP credentials
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
+
+# Create a directory for static files
+RUN mkdir -p /app/staticfiles && chmod 755 /app/staticfiles
+
+# Collect static files with verbose output
+RUN python manage.py collectstatic --noinput -v 2
+
+# Remove GCP credentials file after collectstatic
+RUN rm -f /app/gcp-credentials.json
 
 # Expose port
 EXPOSE 8000
