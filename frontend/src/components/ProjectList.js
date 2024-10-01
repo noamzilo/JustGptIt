@@ -8,7 +8,7 @@ function ProjectList() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get('http://localhost:8000/api/projects/')
+    axios.get('http://localhost:8080/api/projects/')
       .then(response => {
         setProjects(response.data);
         setLoading(false);

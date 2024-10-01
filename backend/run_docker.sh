@@ -7,8 +7,8 @@ IMAGE_NAME="personal-website-backend"
 CONTAINER_NAME="personal-website-backend-test"
 
 # Port mapping
-HOST_PORT=8000
-CONTAINER_PORT=8000
+HOST_PORT=8080
+CONTAINER_PORT=8080
 
 # GCP Credentials
 GCP_CREDENTIALS_PATH="/home/noams/src/gcp/academic-veld-436919-g0-b0585aa23f8b.json"

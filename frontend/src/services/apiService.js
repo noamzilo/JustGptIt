@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
 
 const apiService = {
