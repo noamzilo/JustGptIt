@@ -3,36 +3,70 @@
 ## Repository Information
 - Name: personal_website
 - Username: noamzilo
+- URL: https://github.com/noamzilo/personal_website
 
 ## Branch Structure
 - main: Latest stable deployed versions for both backend and frontend
-- staging: (Misnamed.) Used for new frontend release versions not yet in main
+- staging: (Misnamed) Used for new frontend release versions not yet in main
 - backend: Used for backend development and testing
 
 ## Code Structure
 - Main folder: personal_site
-  - Subfolders: backend, frontend
+  - Subfolders: 
+    - backend
+    - frontend
 
-## Existing GitHub Actions
-1. pages-build-deployment (purpose unknown, possibly deletable)
-2. Build and Deploy (for frontend deployment)
+## GitHub Actions
+1. "Build and Deploy" workflow
+   - Defined in: .github/workflows/deploy.yml
+   - Triggers on: Push to the staging branch
+   - Purpose: Frontend deployment only
 
-## GitHub Secrets
-- PROD_API_URL
-- STAGING_API_URL
+2. pages-build-deployment 
+   - Likely automated by GitHub Pages
 
-## Workflows
+## Existing Workflow Files
 - Location: .github/workflows/
 - Files:
-  - deploy.yml (for backend deployment to GCP)
+  - deploy.yml (for frontend deployment only)
 
-## Current Backend Deployment Workflow (deploy.yml)
-- Triggers on push to main branch, only for changes in the backend folder
-- Uses Google Cloud SDK for authentication
-- Builds and pushes Docker image to Google Container Registry
-- Deploys to Google Cloud Run
+## Frontend Deployment
+- Deployed to: GitHub Pages
+- Live URL: https://noamzilo.github.io/personal_website/
+- Deploys from: main branch, root directory
+- Process: Automated via "Build and Deploy" workflow
+
+## Backend Deployment
+- Current process: Manual deployment using deploy_to_gcp.sh script
+- Script location: backend folder
+- Script functions:
+  - Authenticates with GCP
+  - Builds Docker image
+  - Pushes to Google Container Registry
+  - Deploys to Google Cloud Run
+- No automated GitHub Action for backend deployment yet
+
+## GitHub Secrets
+- Existing:
+  - PROD_API_URL
+  - STAGING_API_URL
+- To be added:
+  - GCP_PROJECT_ID
+  - GCP_SA_KEY
+
+## GCP Configuration
+- Project ID: academic-veld-436919-g0
+- Region: us-central1
+- Service Account: personal-website-deployer@academic-veld-436919-g0.iam.gserviceaccount.com
+
+## Action Items
+1. Create a new GitHub Actions workflow (backend-deploy.yml) for automated backend deployment
+2. Integrate the deploy_to_gcp.sh script into the new GitHub Actions workflow
+3. Set up the workflow to trigger on pushes to the main and backend branches
+4. Add necessary GCP-related secrets to the GitHub repository
+5. Modify deploy_to_gcp.sh script to use GitHub Actions-provided credentials
 
 ## Notes
-- The existing backend deployment workflow needs to be updated to include the staging branch and use the run_docker script for building.
-- The frontend deployment process is already set up but not fully understood.
-- The repository structure and branch naming could be improved for clarity.
+- The repository structure and branch naming could be improved for clarity
+- The frontend deployment process is set up and working
+- The backend deployment process needs to be automated
