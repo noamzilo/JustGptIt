@@ -46,6 +46,7 @@ jobs:
       run: |
         cd backend
         chmod +x ./deploy_to_gcp.sh
+        chmod +x ./run_docker.sh
         ./deploy_to_gcp.sh
 
     - name: Clean up
