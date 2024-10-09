@@ -49,6 +49,8 @@ RUN echo "Contents of /app:" && ls -la /app
 RUN python -c "import django; print(f'Django version: {django.__version__}')"
 RUN python -c "import sys; print(f'Python path: {sys.path}')"
 
+RUN date +"%Y-%m-%d %H:%M:%S" > /app/build_time.txt
+
 # Expose port
 EXPOSE 8080
 

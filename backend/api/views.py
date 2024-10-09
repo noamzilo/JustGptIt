@@ -7,8 +7,9 @@ from .serializers import ProjectSerializer
 from google.cloud import storage
 from django.http import HttpResponse
 import logging
-
+import os
 import sys
+
 print("Views module loaded", file=sys.stderr)
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,12 @@ def test_view(request):
 
 @api_view(['GET'])
 def hello_world(request):
-    return Response({"message": "Hello, World!"})
+    try:
+        with open("/app/build_time.txt", "r") as f: # created during docker build
+            build_time = f.read().strip()
+    except FileNotFoundError:
+        build_time = 'Build time not available'
+    return Response({"message": f"Hello, World! Last build time: {build_time}"})
 
 @api_view(['GET'])
 def health_check(request):
