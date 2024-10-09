@@ -11,14 +11,14 @@ SERVICE_NAME="personal-website-backend"
 SERVICE_ACCOUNT="personal-website-deployer@academic-veld-436919-g0.iam.gserviceaccount.com"
 
 # GCP Credentials
-GCP_CREDENTIALS_PATH="./creds/academic-veld-436919-g0-b0585aa23f8b.json"
+GCP_CREDENTIALS_PATH="./creds/gcp-sa-key.json"
+
 if [ ! -f "$GCP_CREDENTIALS_PATH" ]; then
     echo "Error: GCP credentials file not found at $GCP_CREDENTIALS_PATH"
-    echo "Please ensure the file exists and the path is correct."
     exit 1
 fi
 
-echo "GCP credentials file found at $GCP_CREDENTIALS_PATH"
+echo "Using GCP credentials file: $GCP_CREDENTIALS_PATH"
 
 # Authenticate with GCP using the service account key
 gcloud auth activate-service-account --key-file=$GCP_CREDENTIALS_PATH
@@ -26,10 +26,10 @@ gcloud auth activate-service-account --key-file=$GCP_CREDENTIALS_PATH
 # Configure Docker to use gcloud as a credential helper
 gcloud auth configure-docker --quiet
 
-# Build the Docker image locally
-docker build -t ${LOCAL_IMAGE_NAME}:latest .
+# Build the Docker image
+./run_docker.sh build
 
-# Tag the local Docker image for GCR
+# Tag the Docker image for GCR
 docker tag ${LOCAL_IMAGE_NAME}:latest ${GCR_IMAGE_NAME}:latest
 
 # Push the Docker image to GCR
