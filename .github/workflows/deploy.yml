@@ -23,14 +23,14 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    # 2. Install Google Cloud SDK
-    - name: Install Google Cloud SDK
+    # 2. Install Google Cloud SDK and kubectl
+    - name: Install Google Cloud SDK and kubectl
       run: |
         # Update package list and install prerequisites
-        apt-get update && apt-get install -y apt-transport-https ca-certificates gnupg
+        apt-get update && apt-get install -y apt-transport-https ca-certificates gnupg curl
 
         # Add the Google Cloud SDK distribution URI as a package source
-        echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+        echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
 
         # Import the Google Cloud public key
         curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
@@ -38,8 +38,13 @@ jobs:
         # Update and install the Cloud SDK
         apt-get update && apt-get install -y google-cloud-sdk
 
-        # (Optional) Install additional components like kubectl
-        gcloud components install kubectl -q
+        # Install kubectl using apt
+        apt-get install -y kubectl
+
+        # Verify installations
+        gcloud --version
+        kubectl version --client
+      shell: bash
 
     # 3. Cache Docker layers to speed up builds
     - name: Cache Docker layers
