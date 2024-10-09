@@ -27,7 +27,7 @@ COPY . /app/
 RUN mkdir -p /app/staticfiles && chmod 755 /app/staticfiles
 
 # Collect static files with verbose output
-RUN python manage.py collectstatic --noinput -v 2
+# RUN python manage.py collectstatic --noinput -v 2 # this is done in dockercompose
 
 # Create log directory and file
 RUN mkdir -p /var/log && \

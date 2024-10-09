@@ -15,6 +15,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Set Up Environment Variables
+      run: |
+        # Check if running in GitHub Actions
+        if [ -z "$GITHUB_ACTIONS" ]; then
+          echo "Loading environment variables from .env file"
+          export $(grep -v '^#' .env | xargs)
+        fi
+
     - name: Debug GCP Credentials
       run: |
         echo "Length of GCP_SA_KEY: ${#GCP_SA_KEY}"
@@ -40,13 +48,21 @@ jobs:
         service_account_key: ${{ github.workspace }}/backend/creds/gcp-sa-key.json
         export_default_credentials: true
 
+    - name: Build Docker Image
+      run: |
+        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/personal-website-backend:latest ./backend
+
+    - name: Push Docker Image to GCP Container Registry
+      run: |
+        gcloud auth configure-docker
+        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/personal-website-backend:latest
+
     - name: Deploy to GCP
       env:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       run: |
         cd backend
         chmod +x ./deploy_to_gcp.sh
-        chmod +x ./run_docker.sh
         ./deploy_to_gcp.sh
 
     - name: Clean up

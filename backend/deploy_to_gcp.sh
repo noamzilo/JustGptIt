@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Build the Docker image
+echo "Building Docker image..."
+docker compose build
+
 # GCP project and region
 PROJECT_ID="academic-veld-436919-g0"
 REGION="us-central1"
@@ -37,10 +41,6 @@ gcloud auth activate-service-account --key-file=$GCP_CREDENTIALS_PATH
 
 # Configure Docker to use gcloud as a credential helper
 gcloud auth configure-docker --quiet
-
-# Build the Docker image
-echo "Building Docker image..."
-./run_docker.sh build
 
 # Tag the Docker image for GCR
 docker tag ${LOCAL_IMAGE_NAME}:latest ${GCR_IMAGE_NAME}:latest
