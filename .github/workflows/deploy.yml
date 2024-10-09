@@ -29,6 +29,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-buildx-
 
+    - name: Install Node.js
+      run: |
+        curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+        apt-get install -y nodejs
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
@@ -66,7 +71,7 @@ jobs:
         SERVICE_NAME="personal-website-backend"
         GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
         SERVICE_ACCOUNT="personal-website-deployer@${PROJECT_ID}.iam.gserviceaccount.com"
-        
+
         gcloud run deploy $SERVICE_NAME \
           --image ${GCR_IMAGE_NAME}:latest \
           --project $PROJECT_ID \
@@ -82,7 +87,7 @@ jobs:
         SERVICE_NAME="personal-website-backend"
         PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
         REGION="us-central1"
-        
+
         echo -e "\033[0;31mFetching Cloud Run service URL...\033[0m"
         gcloud run services describe $SERVICE_NAME \
           --project $PROJECT_ID \
