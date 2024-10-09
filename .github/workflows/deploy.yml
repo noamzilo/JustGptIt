@@ -12,6 +12,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    container:
+      image: google/cloud-sdk:latest
     defaults:
       run:
         working-directory: ./backend
@@ -19,26 +21,22 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
     - name: Set up GCP Credentials
       env:
         GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
       run: |
-        echo "$GCP_SA_KEY" > .secrets
-
-    - name: Set up Cloud SDK
-      run: |
-        if ! command -v gcloud &> /dev/null
-        then
-          echo "gcloud could not be found, installing now"
-          # Install gcloud
-          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-          sudo apt-get update && sudo apt-get install google-cloud-sdk
-        else
-          echo "gcloud is already installed"
-        fi
-        # Activate service account
-        echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > /tmp/gcp-key.json
+        echo "$GCP_SA_KEY" | base64 -d > /tmp/gcp-key.json
         gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
         gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
 
@@ -46,17 +44,20 @@ jobs:
       run: |
         gcloud auth configure-docker gcr.io --quiet
 
-    - name: Build Docker Image
-      run: docker compose build
+    - name: Build and push Docker Image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./backend
+        push: true
+        tags: gcr.io/${{ secrets.GCP_PROJECT_ID }}/personal-website-backend:latest
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-    - name: Tag and Push Docker Image to GCR
+    # This step is necessary if you want to make the cache available for subsequent runs
+    - name: Move cache
       run: |
-        PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
-        LOCAL_IMAGE_NAME="personal-website-backend"
-        GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/${LOCAL_IMAGE_NAME}"
-        
-        docker tag ${LOCAL_IMAGE_NAME}:latest ${GCR_IMAGE_NAME}:latest
-        docker push ${GCR_IMAGE_NAME}:latest
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Deploy to Cloud Run
       run: |
@@ -90,6 +91,4 @@ jobs:
 
     - name: Clean up
       if: always()
-      run: |
-        rm -f .secrets
-        rm -f /tmp/gcp-key.json
+      run: rm -f /tmp/gcp-key.json
