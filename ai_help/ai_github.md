@@ -7,7 +7,7 @@
 
 ## Branch Structure
 - main: Latest stable deployed versions for both backend and frontend
-- staging: (Misnamed) Used for new frontend release versions not yet in main
+- staging: (Misnamed, should be frontend) Used for new frontend release versions not yet in main
 - backend: Used for backend development and testing
 
 ## Code Structure
@@ -19,8 +19,8 @@
 ## GitHub Actions
 1. "Build and Deploy" workflow
    - Defined in: .github/workflows/deploy.yml
-   - Triggers on: Push to the staging branch
-   - Purpose: Frontend deployment only
+   - Triggers on: Push to the backend branch
+   - Purpose: backend deployment only
 
 2. pages-build-deployment 
    - Likely automated by GitHub Pages
@@ -28,7 +28,7 @@
 ## Existing Workflow Files
 - Location: .github/workflows/
 - Files:
-  - deploy.yml (for frontend deployment only)
+  - deploy.yml (for backend deployment only)
 
 ## Frontend Deployment
 - Deployed to: GitHub Pages
@@ -44,15 +44,17 @@
   - Builds Docker image
   - Pushes to Google Container Registry
   - Deploys to Google Cloud Run
-- No automated GitHub Action for backend deployment yet
+- Backend deploys using deploy_to_gcp.sh which in turn uses "run_docker.sh build" scripts.
+- Currently, problems exist in the build and/or deploy process.
 
 ## GitHub Secrets
 - Existing:
+  (frontend)
   - PROD_API_URL
   - STAGING_API_URL
-- To be added:
+  (backend)
   - GCP_PROJECT_ID
-  - GCP_SA_KEY
+  - GCP_SA_KEY (base64 encoded contents of the local backend/creds/gcp-sa-key.json)
 
 ## GCP Configuration
 - Project ID: academic-veld-436919-g0
@@ -69,4 +71,4 @@
 ## Notes
 - The repository structure and branch naming could be improved for clarity
 - The frontend deployment process is set up and working
-- The backend deployment process needs to be automated
+- The backend deployment process needs to be automated. Currently, problems exist.
