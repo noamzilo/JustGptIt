@@ -7,12 +7,20 @@ on:
       - backend
     paths:
       - 'backend/**'
+  workflow_dispatch:  # This allows manual triggering
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
+    - name: Debug GCP Credentials
+      run: |
+        echo "Length of GCP_SA_KEY: ${#GCP_SA_KEY}"
+        echo "First 10 characters of GCP_SA_KEY: ${GCP_SA_KEY:0:10}..."
+      env:
+        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
 
     - name: Set up GCP Credentials
       run: |
