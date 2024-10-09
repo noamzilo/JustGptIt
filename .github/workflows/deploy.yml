@@ -16,6 +16,7 @@ jobs:
 
     - name: Set up GCP Credentials
       run: |
+        mkdir -p backend/creds
         echo '${{ secrets.GCP_SA_KEY }}' | base64 -d > backend/creds/gcp-sa-key.json
         chmod 600 backend/creds/gcp-sa-key.json
 

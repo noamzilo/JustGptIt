@@ -20,13 +20,14 @@ def test_view(request):
 
 
 @api_view(['GET'])
-def hello_world(request):
+def version(request):
+    version = "0.0.0"
     try:
         with open("/app/build_time.txt", "r") as f: # created during docker build
             build_time = f.read().strip()
     except FileNotFoundError:
         build_time = 'Build time not available'
-    return Response({"message": f"Hello, World! Last build time: {build_time}"})
+    return Response({"message": f"Backend version {version}. Last build time: {build_time}"})
 
 @api_view(['GET'])
 def health_check(request):
