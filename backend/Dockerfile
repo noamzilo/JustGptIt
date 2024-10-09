@@ -34,7 +34,7 @@ RUN mkdir -p /app/staticfiles && chmod 755 /app/staticfiles
 
 # Collect static files with verbose output
 RUN python manage.py collectstatic --noinput -v 2
-RUN rm -f /app/gcp-credentials
+RUN rm -f /app/gcp-credentials.json
 
 # Create log directory and file
 RUN mkdir -p /var/log && \
