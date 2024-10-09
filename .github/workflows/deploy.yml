@@ -16,7 +16,7 @@ jobs:
 
     - name: Set up GCP Credentials
       run: |
-        echo '${{ secrets.GCP_SA_KEY }}' > backend/creds/gcp-sa-key.json
+        echo '${{ secrets.GCP_SA_KEY }}' | base64 -d > backend/creds/gcp-sa-key.json
         chmod 600 backend/creds/gcp-sa-key.json
 
     - name: Set up Cloud SDK
