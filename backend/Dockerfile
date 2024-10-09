@@ -23,18 +23,11 @@ RUN pip install --upgrade pip && \
 # Copy project
 COPY . /app/
 
-# Copy GCP credentials
-COPY ./creds/academic-veld-436919-g0-b0585aa23f8b.json /app/gcp-credentials.json
-
-# Set environment variable for GCP credentials
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
-
 # Create a directory for static files
 RUN mkdir -p /app/staticfiles && chmod 755 /app/staticfiles
 
 # Collect static files with verbose output
 RUN python manage.py collectstatic --noinput -v 2
-RUN rm -f /app/gcp-credentials.json
 
 # Create log directory and file
 RUN mkdir -p /var/log && \
@@ -49,10 +42,11 @@ RUN echo "Contents of /app:" && ls -la /app
 RUN python -c "import django; print(f'Django version: {django.__version__}')"
 RUN python -c "import sys; print(f'Python path: {sys.path}')"
 
-RUN date +"%Y-%m-%d %H:%M:%S" > /app/build_time.txt
-
 # Expose port
 EXPOSE 8080
+
+# This is important for the version endpoint
+RUN date +"%Y-%m-%d %H:%M:%S" > /app/build_time.txt
 
 # Start command
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--log-level", "debug", "--capture-output", "--enable-stdio-inheritance", "config.wsgi:application"]

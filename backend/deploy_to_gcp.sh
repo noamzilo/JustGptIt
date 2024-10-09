@@ -10,11 +10,23 @@ GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/${LOCAL_IMAGE_NAME}"
 SERVICE_NAME="personal-website-backend"
 SERVICE_ACCOUNT="personal-website-deployer@academic-veld-436919-g0.iam.gserviceaccount.com"
 
+# Set GOOGLE_APPLICATION_CREDENTIALS
+export GOOGLE_APPLICATION_CREDENTIALS="/app/gcp-credentials.json"
+
 # GCP Credentials
+if [ -n "$GITHUB_ACTIONS" ]; then
+    # In GitHub Actions, use the environment variable
+    echo $GCP_SA_KEY | base64 -d > ./creds/gcp-sa-key.json
+else
+    # Locally, read from the base64 encoded file
+    GCP_CREDENTIALS_PATH="/home/noams/src/personal_website/backend/creds/gcp-sa-key.json.base64"
+    base64 -d $GCP_CREDENTIALS_PATH > ./creds/gcp-sa-key.json
+fi
 GCP_CREDENTIALS_PATH="./creds/gcp-sa-key.json"
 
 if [ ! -f "$GCP_CREDENTIALS_PATH" ]; then
     echo "Error: GCP credentials file not found at $GCP_CREDENTIALS_PATH"
+    echo "Please ensure the file exists and the path is correct."
     exit 1
 fi
 
@@ -27,6 +39,7 @@ gcloud auth activate-service-account --key-file=$GCP_CREDENTIALS_PATH
 gcloud auth configure-docker --quiet
 
 # Build the Docker image
+echo "Building Docker image..."
 ./run_docker.sh build
 
 # Tag the Docker image for GCR
@@ -42,7 +55,7 @@ gcloud run deploy $SERVICE_NAME \
   --region $REGION \
   --platform managed \
   --allow-unauthenticated \
-  --set-env-vars="DEBUG=1" \
+  --set-env-vars="DEBUG=1,GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS" \
   --port=8080 \
   --service-account=$SERVICE_ACCOUNT
 
@@ -51,3 +64,6 @@ gcloud run services describe $SERVICE_NAME \
   --project $PROJECT_ID \
   --region $REGION \
   --format="value(status.url)"
+
+# Clean up
+rm -f ./creds/gcp-sa-key.json
