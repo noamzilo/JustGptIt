@@ -9,8 +9,7 @@ services:
       PORT: 8080
       DEBUG: 1
       GOOGLE_APPLICATION_CREDENTIALS: /app/gcp-credentials.json
-      GCP_SA_KEY: ${GCP_SA_KEY}  # Use the env variable
     volumes:
-      - ./creds/gcp-sa-key.json.base64:/app/gcp-sa-key.json.base64:ro  # Local file for local dev
+      - ./.secrets:/app/.secrets:ro  # Mount the .secrets file from the current directory
       - ./docker_entrypoint.sh:/app/docker_entrypoint.sh:ro  # Mount the entrypoint script
     entrypoint: ["/app/docker_entrypoint.sh"]  # Set the entrypoint to the script

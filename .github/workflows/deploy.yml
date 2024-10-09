@@ -12,35 +12,22 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend  # Set the default working directory to backend
+
     steps:
     - uses: actions/checkout@v2
-
-    - name: Debug Environment Variables
-      run: |
-        echo -e "\033[0;31m--- Debugging Environment ---\033[0m"
-        echo -e "\033[0;31mCurrent directory: $(pwd)\033[0m"
-        echo -e "\033[0;31mDirectory contents:\033[0m"
-        ls -la
-        echo -e "\033[0;31mGCP_SA_KEY is set: ${{ secrets.GCP_SA_KEY != '' }}\033[0m"
-        echo -e "\033[0;31mGCP_PROJECT_ID is set: ${{ secrets.GCP_PROJECT_ID != '' }}\033[0m"
 
     - name: Set up GCP Credentials
       env:
         GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
       run: |
-        echo -e "\033[0;31m--- Setting up GCP Credentials ---\033[0m"
-        echo -e "\033[0;31mGCP_SA_KEY length: ${#GCP_SA_KEY}\033[0m"
-        if [ -z "$GCP_SA_KEY" ]; then
-          echo -e "\033[0;31mERROR: GCP_SA_KEY is empty\033[0m"
-          exit 1
-        else
-          echo -e "\033[0;31mCreating credentials file\033[0m"
-          mkdir -p backend/creds
-          echo "$GCP_SA_KEY" | base64 -d > backend/creds/gcp-sa-key.json
-          chmod 600 backend/creds/gcp-sa-key.json
-          echo -e "\033[0;31mCredentials file created. Contents of backend/creds:\033[0m"
-          ls -la backend/creds
-        fi
+        echo "$GCP_SA_KEY" > .secrets
+
+    - name: Configure Docker to use GCloud credentials
+      run: |
+        gcloud auth configure-docker gcr.io --quiet
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0.2.0
@@ -49,31 +36,8 @@ jobs:
         service_account_key: ${{ secrets.GCP_SA_KEY }}
         export_default_credentials: true
 
-    - name: Verify GCloud CLI
-      run: |
-        echo -e "\033[0;31m--- Verifying GCloud CLI ---\033[0m"
-        gcloud --version
-        gcloud auth list
-        gcloud config list
-
     - name: Build Docker Image
-      run: |
-        echo -e "\033[0;31mBuilding Docker image...\033[0m"
-        if [ -f "docker-compose.yml" ]; then
-          echo -e "\033[0;31mUsing docker-compose.yml in root directory\033[0m"
-          docker compose build
-        elif [ -f "backend/docker-compose.yml" ]; then
-          echo -e "\033[0;31mUsing docker-compose.yml in backend directory\033[0m"
-          docker compose -f backend/docker-compose.yml build
-        else
-          echo -e "\033[0;31mERROR: docker-compose.yml not found\033[0m"
-          exit 1
-        fi
-
-    - name: Configure Docker to use GCloud credentials
-      run: |
-        echo -e "\033[0;31mConfiguring Docker to use GCloud credentials\033[0m"
-        gcloud auth configure-docker gcr.io --quiet
+      run: docker compose build
 
     - name: Tag and Push Docker Image to GCR
       run: |
@@ -81,10 +45,7 @@ jobs:
         LOCAL_IMAGE_NAME="personal-website-backend"
         GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/${LOCAL_IMAGE_NAME}"
         
-        echo -e "\033[0;31mTagging Docker image for GCR...\033[0m"
         docker tag ${LOCAL_IMAGE_NAME}:latest ${GCR_IMAGE_NAME}:latest
-        
-        echo -e "\033[0;31mPushing Docker image to GCR...\033[0m"
         docker push ${GCR_IMAGE_NAME}:latest
 
     - name: Deploy to Cloud Run
@@ -95,7 +56,6 @@ jobs:
         GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
         SERVICE_ACCOUNT="personal-website-deployer@${PROJECT_ID}.iam.gserviceaccount.com"
         
-        echo -e "\033[0;31mDeploying to Cloud Run...\033[0m"
         gcloud run deploy $SERVICE_NAME \
           --image ${GCR_IMAGE_NAME}:latest \
           --project $PROJECT_ID \
@@ -120,6 +80,4 @@ jobs:
 
     - name: Clean up
       if: always()
-      run: |
-        echo -e "\033[0;31mCleaning up...\033[0m"
-        rm -f backend/creds/gcp-sa-key.json
+      run: rm -f .secrets
