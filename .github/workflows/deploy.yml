@@ -24,8 +24,6 @@ jobs:
         echo -e "\033[0;31mGCP_SA_KEY is set: ${{ secrets.GCP_SA_KEY != '' }}\033[0m"
         echo -e "\033[0;31mGCP_PROJECT_ID is set: ${{ secrets.GCP_PROJECT_ID != '' }}\033[0m"
 
-
-    # Setup GCP Credentials
     - name: Set up GCP Credentials
       env:
         GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
@@ -34,6 +32,7 @@ jobs:
         echo -e "\033[0;31mGCP_SA_KEY length: ${#GCP_SA_KEY}\033[0m"
         if [ -z "$GCP_SA_KEY" ]; then
           echo -e "\033[0;31mERROR: GCP_SA_KEY is empty\033[0m"
+          exit 1
         else
           echo -e "\033[0;31mCreating credentials file\033[0m"
           mkdir -p backend/creds
@@ -41,47 +40,62 @@ jobs:
           chmod 600 backend/creds/gcp-sa-key.json
           echo -e "\033[0;31mCredentials file created. Contents of backend/creds:\033[0m"
           ls -la backend/creds
-          echo -e "\033[0;31mFirst few lines of the credentials file:\033[0m"
-          head -n 3 backend/creds/gcp-sa-key.json
         fi
 
-    # Set up Cloud SDK with GCP Credentials
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0.2.0
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
-        service_account_key: backend/creds/gcp-sa-key.json
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
         export_default_credentials: true
 
-    # Build the Docker image
+    - name: Verify GCloud CLI
+      run: |
+        echo -e "\033[0;31m--- Verifying GCloud CLI ---\033[0m"
+        gcloud --version
+        gcloud auth list
+        gcloud config list
+
     - name: Build Docker Image
       run: |
-        echo "Building Docker image..."
-        docker compose build
+        echo -e "\033[0;31mBuilding Docker image...\033[0m"
+        echo -e "\033[0;31mCurrent directory: $(pwd)\033[0m"
+        echo -e "\033[0;31mContents of current directory:\033[0m"
+        ls -la
+        echo -e "\033[0;31mContents of backend directory:\033[0m"
+        ls -la backend
+        if [ -f "docker-compose.yml" ]; then
+          echo -e "\033[0;31mUsing docker-compose.yml in root directory\033[0m"
+          docker compose build
+        elif [ -f "backend/docker-compose.yml" ]; then
+          echo -e "\033[0;31mUsing docker-compose.yml in backend directory\033[0m"
+          docker compose -f backend/docker-compose.yml build
+        else
+          echo -e "\033[0;31mERROR: docker-compose.yml not found\033[0m"
+          exit 1
+        fi
 
-    # Tag and Push Docker Image to GCR
     - name: Tag and Push Docker Image to GCR
       run: |
-        PROJECT_ID="academic-veld-436919-g0"
+        PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
         LOCAL_IMAGE_NAME="personal-website-backend"
         GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/${LOCAL_IMAGE_NAME}"
         
-        echo "Tagging Docker image for GCR..."
+        echo -e "\033[0;31mTagging Docker image for GCR...\033[0m"
         docker tag ${LOCAL_IMAGE_NAME}:latest ${GCR_IMAGE_NAME}:latest
         
-        echo "Pushing Docker image to GCR..."
+        echo -e "\033[0;31mPushing Docker image to GCR...\033[0m"
         docker push ${GCR_IMAGE_NAME}:latest
 
-    # Deploy to Cloud Run
     - name: Deploy to Cloud Run
       run: |
-        PROJECT_ID="academic-veld-436919-g0"
+        PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
         REGION="us-central1"
         SERVICE_NAME="personal-website-backend"
         GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
-        SERVICE_ACCOUNT="personal-website-deployer@academic-veld-436919-g0.iam.gserviceaccount.com"
+        SERVICE_ACCOUNT="personal-website-deployer@${PROJECT_ID}.iam.gserviceaccount.com"
         
-        echo "Deploying to Cloud Run..."
+        echo -e "\033[0;31mDeploying to Cloud Run...\033[0m"
         gcloud run deploy $SERVICE_NAME \
           --image ${GCR_IMAGE_NAME}:latest \
           --project $PROJECT_ID \
@@ -92,20 +106,20 @@ jobs:
           --port=8080 \
           --service-account=$SERVICE_ACCOUNT
 
-    # Print the service URL after deployment
     - name: Print Service URL
       run: |
         SERVICE_NAME="personal-website-backend"
-        PROJECT_ID="academic-veld-436919-g0"
+        PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
         REGION="us-central1"
         
-        echo "Fetching Cloud Run service URL..."
+        echo -e "\033[0;31mFetching Cloud Run service URL...\033[0m"
         gcloud run services describe $SERVICE_NAME \
           --project $PROJECT_ID \
           --region $REGION \
           --format="value(status.url)"
 
-    # Clean up GCP credentials
     - name: Clean up
       if: always()
-      run: rm -f backend/creds/gcp-sa-key.json
+      run: |
+        echo -e "\033[0;31mCleaning up...\033[0m"
+        rm -f backend/creds/gcp-sa-key.json
