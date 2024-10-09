@@ -20,3 +20,4 @@ General information that you need to inject where needed
 1. For the DB, until the app is larger, we will use SQLite on the GCP instance.
 2. Locally, the website is on ~/src/personal_website
 3. Following is a valid bucket: "gs://test-bucket-19044/"
+4. Path to the project is /home/noams/src/personal_website/
