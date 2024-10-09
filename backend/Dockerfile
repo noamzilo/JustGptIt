@@ -46,7 +46,7 @@ RUN python -c "import sys; print(f'Python path: {sys.path}')"
 EXPOSE 8080
 
 # This is important for the version endpoint
-RUN date +"%Y-%m-%d %H:%M:%S" > /app/build_time.txt
+RUN TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S" > /app/build_time.txt
 
 # Start command
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--log-level", "debug", "--capture-output", "--enable-stdio-inheritance", "config.wsgi:application"]
