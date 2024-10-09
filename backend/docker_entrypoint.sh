@@ -18,5 +18,6 @@ else
     exit 1
 fi
 
-# Run the original command (this would typically be your application start command)
-exec "$@"
+# Start the main application
+echo "Starting the application..."
+exec gunicorn --bind 0.0.0.0:8080 --log-level debug config.wsgi:application
