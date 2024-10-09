@@ -59,11 +59,6 @@ jobs:
     - name: Build Docker Image
       run: |
         echo -e "\033[0;31mBuilding Docker image...\033[0m"
-        echo -e "\033[0;31mCurrent directory: $(pwd)\033[0m"
-        echo -e "\033[0;31mContents of current directory:\033[0m"
-        ls -la
-        echo -e "\033[0;31mContents of backend directory:\033[0m"
-        ls -la backend
         if [ -f "docker-compose.yml" ]; then
           echo -e "\033[0;31mUsing docker-compose.yml in root directory\033[0m"
           docker compose build
@@ -74,6 +69,11 @@ jobs:
           echo -e "\033[0;31mERROR: docker-compose.yml not found\033[0m"
           exit 1
         fi
+
+    - name: Configure Docker to use GCloud credentials
+      run: |
+        echo -e "\033[0;31mConfiguring Docker to use GCloud credentials\033[0m"
+        gcloud auth configure-docker gcr.io --quiet
 
     - name: Tag and Push Docker Image to GCR
       run: |
