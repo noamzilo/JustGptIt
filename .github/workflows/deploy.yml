@@ -19,6 +19,9 @@ jobs:
       run: |
         echo "Length of GCP_SA_KEY: ${#GCP_SA_KEY}"
         echo "First 10 characters of GCP_SA_KEY: ${GCP_SA_KEY:0:10}..."
+        echo "Last 10 characters of GCP_SA_KEY: ${GCP_SA_KEY: -10}"
+        echo "Is GCP_SA_KEY valid base64?"
+        echo "$GCP_SA_KEY" | base64 -d > /dev/null 2>&1 && echo "Yes" || echo "No"
       env:
         GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
 
@@ -27,6 +30,8 @@ jobs:
         mkdir -p backend/creds
         echo '${{ secrets.GCP_SA_KEY }}' | base64 -d > backend/creds/gcp-sa-key.json
         chmod 600 backend/creds/gcp-sa-key.json
+        echo "First 10 characters of decoded JSON:"
+        head -c 10 backend/creds/gcp-sa-key.json
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0.2.0
