@@ -15,14 +15,35 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Debug Environment Variables
+      run: |
+        echo -e "\033[0;31m--- Debugging Environment ---\033[0m"
+        echo -e "\033[0;31mCurrent directory: $(pwd)\033[0m"
+        echo -e "\033[0;31mDirectory contents:\033[0m"
+        ls -la
+        echo -e "\033[0;31mGCP_SA_KEY is set: ${{ secrets.GCP_SA_KEY != '' }}\033[0m"
+        echo -e "\033[0;31mGCP_PROJECT_ID is set: ${{ secrets.GCP_PROJECT_ID != '' }}\033[0m"
+
+
     # Setup GCP Credentials
     - name: Set up GCP Credentials
       env:
-        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}  # Will be provided from .env locally or from GitHub secrets
+        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
       run: |
-        mkdir -p backend/creds
-        echo "$GCP_SA_KEY" | base64 -d > backend/creds/gcp-sa-key.json
-        chmod 600 backend/creds/gcp-sa-key.json
+        echo -e "\033[0;31m--- Setting up GCP Credentials ---\033[0m"
+        echo -e "\033[0;31mGCP_SA_KEY length: ${#GCP_SA_KEY}\033[0m"
+        if [ -z "$GCP_SA_KEY" ]; then
+          echo -e "\033[0;31mERROR: GCP_SA_KEY is empty\033[0m"
+        else
+          echo -e "\033[0;31mCreating credentials file\033[0m"
+          mkdir -p backend/creds
+          echo "$GCP_SA_KEY" | base64 -d > backend/creds/gcp-sa-key.json
+          chmod 600 backend/creds/gcp-sa-key.json
+          echo -e "\033[0;31mCredentials file created. Contents of backend/creds:\033[0m"
+          ls -la backend/creds
+          echo -e "\033[0;31mFirst few lines of the credentials file:\033[0m"
+          head -n 3 backend/creds/gcp-sa-key.json
+        fi
 
     # Set up Cloud SDK with GCP Credentials
     - name: Set up Cloud SDK

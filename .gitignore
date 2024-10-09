@@ -66,3 +66,5 @@ backend/creds/
 
 # misc
 /backend/sandbox
+/.secrets
+/test_key.json
