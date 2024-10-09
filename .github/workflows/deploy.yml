@@ -15,56 +15,76 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set Up Environment Variables
-      run: |
-        # Check if running in GitHub Actions
-        if [ -z "$GITHUB_ACTIONS" ]; then
-          echo "Loading environment variables from .env file"
-          export $(grep -v '^#' .env | xargs)
-        fi
-
-    - name: Debug GCP Credentials
-      run: |
-        echo "Length of GCP_SA_KEY: ${#GCP_SA_KEY}"
-        echo "First 10 characters of GCP_SA_KEY: ${GCP_SA_KEY:0:10}..."
-        echo "Last 10 characters of GCP_SA_KEY: ${GCP_SA_KEY: -10}"
-        echo "Is GCP_SA_KEY valid base64?"
-        echo "$GCP_SA_KEY" | base64 -d > /dev/null 2>&1 && echo "Yes" || echo "No"
-      env:
-        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-
+    # Setup GCP Credentials
     - name: Set up GCP Credentials
+      env:
+        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}  # Will be provided from .env locally or from GitHub secrets
       run: |
         mkdir -p backend/creds
-        echo '${{ secrets.GCP_SA_KEY }}' | base64 -d > backend/creds/gcp-sa-key.json
+        echo "$GCP_SA_KEY" | base64 -d > backend/creds/gcp-sa-key.json
         chmod 600 backend/creds/gcp-sa-key.json
-        echo "First 10 characters of decoded JSON:"
-        head -c 10 backend/creds/gcp-sa-key.json
 
+    # Set up Cloud SDK with GCP Credentials
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0.2.0
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
-        service_account_key: ${{ github.workspace }}/backend/creds/gcp-sa-key.json
+        service_account_key: backend/creds/gcp-sa-key.json
         export_default_credentials: true
 
+    # Build the Docker image
     - name: Build Docker Image
       run: |
-        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/personal-website-backend:latest ./backend
+        echo "Building Docker image..."
+        docker compose build
 
-    - name: Push Docker Image to GCP Container Registry
+    # Tag and Push Docker Image to GCR
+    - name: Tag and Push Docker Image to GCR
       run: |
-        gcloud auth configure-docker
-        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/personal-website-backend:latest
+        PROJECT_ID="academic-veld-436919-g0"
+        LOCAL_IMAGE_NAME="personal-website-backend"
+        GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/${LOCAL_IMAGE_NAME}"
+        
+        echo "Tagging Docker image for GCR..."
+        docker tag ${LOCAL_IMAGE_NAME}:latest ${GCR_IMAGE_NAME}:latest
+        
+        echo "Pushing Docker image to GCR..."
+        docker push ${GCR_IMAGE_NAME}:latest
 
-    - name: Deploy to GCP
-      env:
-        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+    # Deploy to Cloud Run
+    - name: Deploy to Cloud Run
       run: |
-        cd backend
-        chmod +x ./deploy_to_gcp.sh
-        ./deploy_to_gcp.sh
+        PROJECT_ID="academic-veld-436919-g0"
+        REGION="us-central1"
+        SERVICE_NAME="personal-website-backend"
+        GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
+        SERVICE_ACCOUNT="personal-website-deployer@academic-veld-436919-g0.iam.gserviceaccount.com"
+        
+        echo "Deploying to Cloud Run..."
+        gcloud run deploy $SERVICE_NAME \
+          --image ${GCR_IMAGE_NAME}:latest \
+          --project $PROJECT_ID \
+          --region $REGION \
+          --platform managed \
+          --allow-unauthenticated \
+          --set-env-vars="DEBUG=1,GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json" \
+          --port=8080 \
+          --service-account=$SERVICE_ACCOUNT
 
+    # Print the service URL after deployment
+    - name: Print Service URL
+      run: |
+        SERVICE_NAME="personal-website-backend"
+        PROJECT_ID="academic-veld-436919-g0"
+        REGION="us-central1"
+        
+        echo "Fetching Cloud Run service URL..."
+        gcloud run services describe $SERVICE_NAME \
+          --project $PROJECT_ID \
+          --region $REGION \
+          --format="value(status.url)"
+
+    # Clean up GCP credentials
     - name: Clean up
       if: always()
       run: rm -f backend/creds/gcp-sa-key.json
