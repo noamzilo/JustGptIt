@@ -37,15 +37,12 @@
 - Process: Automated via "Build and Deploy" workflow
 
 ## Backend Deployment
-- Current process: Manual deployment using deploy_to_gcp.sh script
-- Script location: backend folder
-- Script functions:
+- Current process: Manual deployment using act with the deploy.yml file, or automatic using github actions (on push)
+- Deployment functions:
   - Authenticates with GCP
   - Builds Docker image
   - Pushes to Google Container Registry
   - Deploys to Google Cloud Run
-- Backend deploys using deploy_to_gcp.sh which in turn uses "run_docker.sh build" scripts.
-- Currently, problems exist in the build and/or deploy process.
 
 ## GitHub Secrets
 - Existing:
@@ -60,13 +57,6 @@
 - Project ID: academic-veld-436919-g0
 - Region: us-central1
 - Service Account: personal-website-deployer@academic-veld-436919-g0.iam.gserviceaccount.com
-
-## Action Items
-1. Create a new GitHub Actions workflow (backend-deploy.yml) for automated backend deployment
-2. Integrate the deploy_to_gcp.sh script into the new GitHub Actions workflow
-3. Set up the workflow to trigger on pushes to the main and backend branches
-4. Add necessary GCP-related secrets to the GitHub repository
-5. Modify deploy_to_gcp.sh script to use GitHub Actions-provided credentials
 
 ## Notes
 - The repository structure and branch naming could be improved for clarity
