@@ -44,10 +44,37 @@ jobs:
         newgrp docker
 
         # Verify installations
-        node -v
-        npm -v
-        docker --version
-        docker info
+        echo "Verifying versions..."
+        
+        # Check Node.js version
+        if ! node -v; then
+          echo -e "\033[0;31mERROR: Node.js is not installed or not available.\033[0m"
+          exit 1
+        else
+          echo -e "\033[0;32mNode.js version: $(node -v)\033[0m"
+        fi
+        
+        # Check npm version
+        if ! npm -v; then
+          echo -e "\033[0;31mERROR: npm is not installed or not available.\033[0m"
+          exit 1
+        else
+          echo -e "\033[0;32mNPM version: $(npm -v)\033[0m"
+        fi
+
+        # Check Docker version
+        if ! docker --version; then
+          echo -e "\033[0;31mERROR: Docker is not installed or not available.\033[0m"
+          exit 1
+        else
+          echo -e "\033[0;32mDocker version: $(docker --version)\033[0m"
+        fi
+
+        # Check Docker info
+        if ! docker info; then
+          echo -e "\033[0;31mERROR: Docker info check failed.\033[0m"
+          exit 1
+        fi
       shell: bash
 
     # 3. Install Google Cloud SDK and kubectl
@@ -65,8 +92,23 @@ jobs:
         apt-get update && apt-get install -y google-cloud-sdk kubectl
 
         # Verify installations
-        gcloud --version
-        kubectl version --client
+        echo "Verifying Google Cloud SDK and kubectl versions..."
+
+        # Check Google Cloud SDK version
+        if ! gcloud --version; then
+          echo -e "\033[0;31mERROR: Google Cloud SDK is not installed or not available.\033[0m"
+          exit 1
+        else
+          echo -e "\033[0;32mGoogle Cloud SDK version: $(gcloud --version)\033[0m"
+        fi
+
+        # Check kubectl version
+        if ! kubectl version --client; then
+          echo -e "\033[0;31mERROR: kubectl is not installed or not available.\033[0m"
+          exit 1
+        else
+          echo -e "\033[0;32mKubectl version: $(kubectl version --client)\033[0m"
+        fi
       shell: bash
 
     # 4. Cache Docker layers to speed up builds
