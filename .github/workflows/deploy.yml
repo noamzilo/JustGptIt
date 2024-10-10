@@ -95,7 +95,7 @@ jobs:
           exit 1
         fi
       shell: bash
-      timeout-minutes: 10  # Add a 10-minute timeout for the step
+      timeout-minutes: 60  # Add a 10-minute timeout for the step
 
     # 3. Install Google Cloud SDK and kubectl with liveness prints
     - name: Install Google Cloud SDK and kubectl
