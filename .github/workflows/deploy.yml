@@ -11,7 +11,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # Changed to ubuntu-latest base image
+    runs-on: ubuntu-latest
 
     defaults:
       run:
@@ -25,10 +25,21 @@ jobs:
     # 2. Install Node.js, Docker, and prerequisites
     - name: Install Node.js and Docker
       run: |
-        echo "Updating package list and installing Node.js, Docker, and necessary tools..."
+        set -x  # Enable verbose logging
+        echo "Checking if other package managers are holding the lock..."
 
-        # Update package list and install prerequisites
-        sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg
+        # Check if other package managers are running
+        while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
+          echo "Waiting for other package managers to finish..."
+          sleep 5
+        done
+
+        # Update package list and install apt-utils to avoid debconf warning
+        sudo apt-get update
+        sudo apt-get install -y apt-utils
+
+        # Install prerequisites
+        sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg
 
         # Install Node.js (LTS version)
         curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
@@ -45,7 +56,7 @@ jobs:
 
         # Verify installations
         echo "Verifying versions..."
-        
+
         # Check Node.js version
         if ! node -v; then
           echo -e "\033[0;31mERROR: Node.js is not installed or not available.\033[0m"
@@ -53,7 +64,7 @@ jobs:
         else
           echo -e "\033[0;32mNode.js version: $(node -v)\033[0m"
         fi
-        
+
         # Check npm version
         if ! npm -v; then
           echo -e "\033[0;31mERROR: npm is not installed or not available.\033[0m"
@@ -76,10 +87,12 @@ jobs:
           exit 1
         fi
       shell: bash
+      timeout-minutes: 10  # Add a 10-minute timeout for the step
 
     # 3. Install Google Cloud SDK and kubectl
     - name: Install Google Cloud SDK and kubectl
       run: |
+        set -x  # Enable verbose logging
         echo "Installing Google Cloud SDK and kubectl..."
 
         # Add the Google Cloud SDK distribution URI as a package source
