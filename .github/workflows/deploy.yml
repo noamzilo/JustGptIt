@@ -63,21 +63,13 @@ jobs:
     - name: Set up GCP Credentials
       env:
         GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       run: |
-        echo "Current directory: $(pwd)"
-        echo "Contents of current directory:"
-        ls -la
-        if [ -f "backend/.secrets" ]; then
-          echo "Sourcing backend/.secrets file"
-          set -a
-          source backend/.secrets
-          set +a
-          echo "GCP_SA_KEY length after sourcing: ${#GCP_SA_KEY}"
-          echo "GCP_PROJECT_ID after sourcing: $GCP_PROJECT_ID"
-        else
-          echo "ERROR: backend/.secrets file not found"
-          exit 1
-        fi
+        echo "Setting up GCP credentials"
+        echo "$GCP_SA_KEY" | base64 --decode > /tmp/gcp-key-temp.json
+        gcloud auth activate-service-account --key-file=/tmp/gcp-key-temp.json
+        gcloud config set project $GCP_PROJECT_ID
+
 
     # 6. Configure Docker to use GCloud credentials for pushing images
     - name: Configure Docker to use GCloud credentials
