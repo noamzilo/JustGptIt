@@ -64,8 +64,8 @@ jobs:
       env:
         GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
       run: |
-        echo "$GCP_SA_KEY" | base64 -d > /tmp/gcp-key.json
-        gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
+        echo "$GCP_SA_KEY" | base64 -d > /gcp-key-temp.json
+        gcloud auth activate-service-account --key-file=/gcp-key-temp.json
         gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
 
     # 6. Configure Docker to use GCloud credentials for pushing images
@@ -126,4 +126,4 @@ jobs:
     # 11. Clean up sensitive files
     - name: Clean up
       if: always()
-      run: rm -f /tmp/gcp-key.json
+      run: rm -f /gcp-key-temp
