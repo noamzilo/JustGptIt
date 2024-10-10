@@ -74,6 +74,7 @@ jobs:
     # 6. Configure Docker to use GCloud credentials for pushing images
     - name: Configure Docker to use GCloud credentials
       run: |
+        echo -e "\033[0;31mConfigure Docker to use GCloud credentials for pushing images...\033[0m"
         gcloud auth configure-docker gcr.io --quiet
 
     # 7. Build and push the Docker image to Google Container Registry (GCR)
@@ -89,12 +90,14 @@ jobs:
     # 8. Update the Docker cache for future builds
     - name: Move cache
       run: |
+        echo -e "\033[0;31mMove Cache...\033[0m"
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     # 9. Deploy the Docker image to Google Cloud Run
     - name: Deploy to Cloud Run
       run: |
+        echo -e "\033[0;31mDeploy to Cloud Run...\033[0m"
         PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
         REGION="us-central1"
         SERVICE_NAME="personal-website-backend"
