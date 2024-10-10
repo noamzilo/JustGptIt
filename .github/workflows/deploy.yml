@@ -2,7 +2,7 @@ name: Deploy Backend to GCP
 
 on:
   push:
-    branches: 
+    branches:
       - main
       - backend
     paths:
@@ -23,7 +23,17 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    # 2. Install Google Cloud SDK and kubectl
+    # 2. Check Docker installation and exit if Docker is missing
+    - name: Check Docker installation
+      run: |
+        if ! command -v docker &> /dev/null; then
+          echo -e "\033[0;31mERROR: Docker is not installed or not in PATH.\033[0m"
+          exit 1
+        fi
+        echo -e "\033[0;32mDocker is installed and available.\033[0m"
+      shell: bash
+
+    # 3. Install Google Cloud SDK and kubectl
     - name: Install Google Cloud SDK and kubectl
       run: |
         # Update package list and install prerequisites
@@ -46,7 +56,7 @@ jobs:
         kubectl version --client
       shell: bash
 
-    # 3. Cache Docker layers to speed up builds
+    # 4. Cache Docker layers to speed up builds
     - name: Cache Docker layers
       uses: actions/cache@v2
       with:
@@ -55,15 +65,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-buildx-
 
-    - name: Install Docker
-      run: |
-        apt-get update && apt-get install -y docker.io
-
-    # 4. Set up Docker Buildx
+    # 5. Set up Docker Buildx
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
-    # 5. Authenticate with Google Cloud using service account credentials
+    # 6. Authenticate with Google Cloud using service account credentials
     - name: Set up GCP Credentials
       env:
         GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
@@ -74,14 +80,13 @@ jobs:
         gcloud auth activate-service-account --key-file=/tmp/gcp-key-temp.json
         gcloud config set project $GCP_PROJECT_ID
 
-
-    # 6. Configure Docker to use GCloud credentials for pushing images
+    # 7. Configure Docker to use GCloud credentials for pushing images
     - name: Configure Docker to use GCloud credentials
       run: |
         echo -e "\033[0;31mConfigure Docker to use GCloud credentials for pushing images...\033[0m"
         gcloud auth configure-docker gcr.io --quiet
 
-    # 7. Build and push the Docker image to Google Container Registry (GCR)
+    # 8. Build and push the Docker image to Google Container Registry (GCR)
     - name: Build and push Docker Image
       uses: docker/build-push-action@v2
       with:
@@ -91,14 +96,14 @@ jobs:
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-    # 8. Update the Docker cache for future builds
+    # 9. Update the Docker cache for future builds
     - name: Move cache
       run: |
         echo -e "\033[0;31mMove Cache...\033[0m"
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-    # 9. Deploy the Docker image to Google Cloud Run
+    # 10. Deploy the Docker image to Google Cloud Run
     - name: Deploy to Cloud Run
       run: |
         echo -e "\033[0;31mDeploy to Cloud Run...\033[0m"
@@ -118,7 +123,7 @@ jobs:
           --port=8080 \
           --service-account=$SERVICE_ACCOUNT
 
-    # 10. Print the deployed service URL
+    # 11. Print the deployed service URL
     - name: Print Service URL
       run: |
         SERVICE_NAME="personal-website-backend"
@@ -133,7 +138,7 @@ jobs:
 
         echo "Service URL: $SERVICE_URL"
 
-    # 11. Clean up sensitive files
+    # 12. Clean up sensitive files
     - name: Clean up
       if: always()
       run: rm -f /tmp/gcp-key-temp.json
