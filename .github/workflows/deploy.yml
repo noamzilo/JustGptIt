@@ -11,9 +11,8 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    container:
-      image: node:16
+    runs-on: ubuntu-latest  # Changed to ubuntu-latest base image
+
     defaults:
       run:
         working-directory: ./backend
@@ -23,21 +22,38 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    # 2. Check Docker installation and exit if Docker is missing
-    - name: Check Docker installation
+    # 2. Install Node.js, Docker, and prerequisites
+    - name: Install Node.js and Docker
       run: |
-        if ! command -v docker &> /dev/null; then
-          echo -e "\033[0;31mERROR: Docker is not installed or not in PATH.\033[0m"
-          exit 1
-        fi
-        echo -e "\033[0;32mDocker is installed and available.\033[0m"
+        echo "Updating package list and installing Node.js, Docker, and necessary tools..."
+
+        # Update package list and install prerequisites
+        sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg
+
+        # Install Node.js (LTS version)
+        curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+
+        # Install Docker
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+        sudo apt-get update && sudo apt-get install -y docker-ce
+
+        # Add current user to Docker group to avoid needing sudo
+        sudo usermod -aG docker $USER
+        newgrp docker
+
+        # Verify installations
+        node -v
+        npm -v
+        docker --version
+        docker info
       shell: bash
 
     # 3. Install Google Cloud SDK and kubectl
     - name: Install Google Cloud SDK and kubectl
       run: |
-        # Update package list and install prerequisites
-        apt-get update && apt-get install -y apt-transport-https ca-certificates gnupg curl
+        echo "Installing Google Cloud SDK and kubectl..."
 
         # Add the Google Cloud SDK distribution URI as a package source
         echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
@@ -45,11 +61,8 @@ jobs:
         # Import the Google Cloud public key
         curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 
-        # Update and install the Cloud SDK
-        apt-get update && apt-get install -y google-cloud-sdk
-
-        # Install kubectl using apt
-        apt-get install -y kubectl
+        # Update and install the Cloud SDK and kubectl
+        apt-get update && apt-get install -y google-cloud-sdk kubectl
 
         # Verify installations
         gcloud --version
@@ -75,7 +88,7 @@ jobs:
         GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       run: |
-        echo "Setting up GCP credentials"
+        echo "Setting up GCP credentials..."
         echo "$GCP_SA_KEY" | base64 --decode > /tmp/gcp-key-temp.json
         gcloud auth activate-service-account --key-file=/tmp/gcp-key-temp.json
         gcloud config set project $GCP_PROJECT_ID
@@ -83,7 +96,7 @@ jobs:
     # 7. Configure Docker to use GCloud credentials for pushing images
     - name: Configure Docker to use GCloud credentials
       run: |
-        echo -e "\033[0;31mConfigure Docker to use GCloud credentials for pushing images...\033[0m"
+        echo "Configuring Docker to use GCloud credentials for pushing images..."
         gcloud auth configure-docker gcr.io --quiet
 
     # 8. Build and push the Docker image to Google Container Registry (GCR)
@@ -99,14 +112,14 @@ jobs:
     # 9. Update the Docker cache for future builds
     - name: Move cache
       run: |
-        echo -e "\033[0;31mMove Cache...\033[0m"
+        echo "Moving Docker cache..."
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     # 10. Deploy the Docker image to Google Cloud Run
     - name: Deploy to Cloud Run
       run: |
-        echo -e "\033[0;31mDeploy to Cloud Run...\033[0m"
+        echo "Deploying to Cloud Run..."
         PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
         REGION="us-central1"
         SERVICE_NAME="personal-website-backend"
@@ -130,7 +143,7 @@ jobs:
         PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
         REGION="us-central1"
 
-        echo -e "\033[0;31mFetching Cloud Run service URL...\033[0m"
+        echo "Fetching Cloud Run service URL..."
         SERVICE_URL=$(gcloud run services describe $SERVICE_NAME \
           --project $PROJECT_ID \
           --region $REGION \
