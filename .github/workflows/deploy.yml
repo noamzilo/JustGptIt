@@ -64,9 +64,31 @@ jobs:
       env:
         GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
       run: |
-        echo "$GCP_SA_KEY" | base64 -d > /gcp-key-temp.json
-        gcloud auth activate-service-account --key-file=/gcp-key-temp.json
-        gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+        echo "Current directory: $(pwd)"
+        echo "Contents of current directory:"
+        ls -la
+        echo "Contents of ./backend directory:"
+        ls -la ./backend
+        if [ -f "./backend/.secrets" ]; then
+          echo "Sourcing .secrets file"
+          set -a
+          source ./backend/.secrets
+          set +a
+          echo "GCP_SA_KEY length after sourcing: ${#GCP_SA_KEY}"
+          echo "GCP_PROJECT_ID after sourcing: $GCP_PROJECT_ID"
+        else
+          echo "ERROR: .secrets file not found"
+          exit 1
+        fi
+        if [ -z "$GCP_SA_KEY" ]; then
+          echo "ERROR: GCP_SA_KEY is empty"
+          exit 1
+        fi
+        echo "$GCP_SA_KEY" | base64 -d > /tmp/gcp-key.json
+        echo "Content of /tmp/gcp-key.json (first 5 lines):"
+        head -n 5 /tmp/gcp-key.json
+        gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
+        gcloud config set project $GCP_PROJECT_ID
 
     # 6. Configure Docker to use GCloud credentials for pushing images
     - name: Configure Docker to use GCloud credentials
@@ -126,4 +148,4 @@ jobs:
     # 11. Clean up sensitive files
     - name: Clean up
       if: always()
-      run: rm -f /gcp-key-temp
+      run: rm -f /tmp/gcp-key-temp.json
