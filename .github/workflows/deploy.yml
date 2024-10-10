@@ -22,7 +22,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    # 2. Install Node.js, Docker, and prerequisites
+    # 2. Install Node.js, Docker, and prerequisites with liveness prints
     - name: Install Node.js and Docker
       run: |
         set -x  # Enable verbose logging
@@ -34,30 +34,38 @@ jobs:
           sleep 5
         done
 
+        echo "Package manager lock is free. Proceeding with installation..."
+
         # Update package list and install apt-utils to avoid debconf warning
+        echo "Updating package list and installing apt-utils..."
         sudo apt-get update
         sudo apt-get install -y apt-utils
 
-        # Install prerequisites
+        echo "Installing necessary prerequisites (apt-transport-https, ca-certificates, curl)..."
         sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg
 
         # Install Node.js (LTS version)
+        echo "Installing Node.js..."
         curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
         sudo apt-get install -y nodejs
+        echo "Node.js installed."
 
         # Install Docker
+        echo "Installing Docker..."
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
         sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
         sudo apt-get update && sudo apt-get install -y docker-ce
+        echo "Docker installed."
 
         # Add current user to Docker group to avoid needing sudo
+        echo "Adding current user to Docker group..."
         sudo usermod -aG docker $USER
         newgrp docker
 
-        # Verify installations
+        # Verify installations with periodic feedback
         echo "Verifying versions..."
 
-        # Check Node.js version
+        echo "Checking Node.js version..."
         if ! node -v; then
           echo -e "\033[0;31mERROR: Node.js is not installed or not available.\033[0m"
           exit 1
@@ -65,7 +73,7 @@ jobs:
           echo -e "\033[0;32mNode.js version: $(node -v)\033[0m"
         fi
 
-        # Check npm version
+        echo "Checking npm version..."
         if ! npm -v; then
           echo -e "\033[0;31mERROR: npm is not installed or not available.\033[0m"
           exit 1
@@ -73,7 +81,7 @@ jobs:
           echo -e "\033[0;32mNPM version: $(npm -v)\033[0m"
         fi
 
-        # Check Docker version
+        echo "Checking Docker version..."
         if ! docker --version; then
           echo -e "\033[0;31mERROR: Docker is not installed or not available.\033[0m"
           exit 1
@@ -81,7 +89,7 @@ jobs:
           echo -e "\033[0;32mDocker version: $(docker --version)\033[0m"
         fi
 
-        # Check Docker info
+        echo "Checking Docker info..."
         if ! docker info; then
           echo -e "\033[0;31mERROR: Docker info check failed.\033[0m"
           exit 1
@@ -89,25 +97,29 @@ jobs:
       shell: bash
       timeout-minutes: 10  # Add a 10-minute timeout for the step
 
-    # 3. Install Google Cloud SDK and kubectl
+    # 3. Install Google Cloud SDK and kubectl with liveness prints
     - name: Install Google Cloud SDK and kubectl
       run: |
         set -x  # Enable verbose logging
         echo "Installing Google Cloud SDK and kubectl..."
 
         # Add the Google Cloud SDK distribution URI as a package source
+        echo "Adding Google Cloud SDK repository..."
         echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
 
         # Import the Google Cloud public key
+        echo "Importing Google Cloud public key..."
         curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 
         # Update and install the Cloud SDK and kubectl
+        echo "Updating package list and installing Google Cloud SDK and kubectl..."
         apt-get update && apt-get install -y google-cloud-sdk kubectl
+        echo "Google Cloud SDK and kubectl installed."
 
         # Verify installations
         echo "Verifying Google Cloud SDK and kubectl versions..."
 
-        # Check Google Cloud SDK version
+        echo "Checking Google Cloud SDK version..."
         if ! gcloud --version; then
           echo -e "\033[0;31mERROR: Google Cloud SDK is not installed or not available.\033[0m"
           exit 1
@@ -115,7 +127,7 @@ jobs:
           echo -e "\033[0;32mGoogle Cloud SDK version: $(gcloud --version)\033[0m"
         fi
 
-        # Check kubectl version
+        echo "Checking kubectl version..."
         if ! kubectl version --client; then
           echo -e "\033[0;31mERROR: kubectl is not installed or not available.\033[0m"
           exit 1
@@ -194,19 +206,4 @@ jobs:
     # 11. Print the deployed service URL
     - name: Print Service URL
       run: |
-        SERVICE_NAME="personal-website-backend"
-        PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
-        REGION="us-central1"
-
-        echo "Fetching Cloud Run service URL..."
-        SERVICE_URL=$(gcloud run services describe $SERVICE_NAME \
-          --project $PROJECT_ID \
-          --region $REGION \
-          --format="value(status.url)")
-
-        echo "Service URL: $SERVICE_URL"
-
-    # 12. Clean up sensitive files
-    - name: Clean up
-      if: always()
-      run: rm -f /tmp/gcp-key-temp.json
+        SERVICE_NAME="personal-website-back
