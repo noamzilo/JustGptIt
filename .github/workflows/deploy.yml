@@ -22,8 +22,8 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    # 2. Install Node.js, Docker, and prerequisites with liveness prints
-    - name: Install Node.js and Docker
+    # 2. Install Node.js (no need for Docker install as we'll use the setup action)
+    - name: Install Node.js
       run: |
         set -x  # Enable verbose logging
         echo "Checking if other package managers are holding the lock..."
@@ -50,18 +50,6 @@ jobs:
         sudo apt-get install -y nodejs
         echo "Node.js installed."
 
-        # Install Docker
-        echo "Installing Docker..."
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-        sudo apt-get update && sudo apt-get install -y docker-ce
-        echo "Docker installed."
-
-        # Add current user to Docker group to avoid needing sudo
-        echo "Adding current user to Docker group..."
-        sudo usermod -aG docker $USER
-        newgrp docker
-
         # Verify installations with periodic feedback
         echo "Verifying versions..."
 
@@ -80,22 +68,8 @@ jobs:
         else
           echo -e "\033[0;32mNPM version: $(npm -v)\033[0m"
         fi
-
-        echo "Checking Docker version..."
-        if ! docker --version; then
-          echo -e "\033[0;31mERROR: Docker is not installed or not available.\033[0m"
-          exit 1
-        else
-          echo -e "\033[0;32mDocker version: $(docker --version)\033[0m"
-        fi
-
-        echo "Checking Docker info..."
-        if ! docker info; then
-          echo -e "\033[0;31mERROR: Docker info check failed.\033[0m"
-          exit 1
-        fi
       shell: bash
-      timeout-minutes: 60  # Add a 10-minute timeout for the step
+      timeout-minutes: 10  # Reduced to 10 minutes
 
     # 3. Install Google Cloud SDK and kubectl with liveness prints
     - name: Install Google Cloud SDK and kubectl
@@ -135,6 +109,7 @@ jobs:
           echo -e "\033[0;32mKubectl version: $(kubectl version --client)\033[0m"
         fi
       shell: bash
+      timeout-minutes: 10  # Reduced to 10 minutes
 
     # 4. Cache Docker layers to speed up builds
     - name: Cache Docker layers
@@ -145,9 +120,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-buildx-
 
-    # 5. Set up Docker Buildx
+    # 5. Set up Docker Buildx (replaces manual Docker installation)
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
 
     # 6. Authenticate with Google Cloud using service account credentials
     - name: Set up GCP Credentials
@@ -206,4 +181,6 @@ jobs:
     # 11. Print the deployed service URL
     - name: Print Service URL
       run: |
-        SERVICE_NAME="personal-website-back
+        SERVICE_NAME="personal-website-backend"
+        echo "Service URL:"
+        gcloud run services describe $SERVICE_NAME --region us-central1 --format='value(status.url)'
