@@ -76,15 +76,14 @@ jobs:
 
         # Add the Cloud SDK distribution URI as a package source
         echo "deb [signed-by=/usr/share/keyrings/google-cloud-sdk.gpg] \
-          https://packages.cloud.google.com/apt cloud-sdk main" | \
-          sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+        https://packages.cloud.google.com/apt cloud-sdk main" | \
+        sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
 
-        # Update and install the Cloud SDK
+        # Update package listings
         sudo apt-get update -qq
-        sudo apt-get install -y google-cloud-sdk
 
-        # Install kubectl using gcloud
-        sudo gcloud components install kubectl
+        # Install Google Cloud SDK and kubectl
+        sudo apt-get install -y google-cloud-sdk kubectl
 
         echo -e "\033[0;32mStep succeeded: Google Cloud SDK and kubectl installed.\033[0m"
 
@@ -106,6 +105,7 @@ jobs:
         fi
       shell: bash
       timeout-minutes: 10
+
 
     # 4. Cache Docker layers to speed up builds
     - name: Cache Docker layers
