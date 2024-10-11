@@ -65,22 +65,26 @@ jobs:
 
         echo "Installing Google Cloud SDK and kubectl..."
 
-        # Add the Cloud SDK distribution URI as a package source
-        CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
-        echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+        # Install required packages
+        sudo apt-get update
+        sudo apt-get install -y apt-transport-https ca-certificates gnupg curl
 
         # Import the Google Cloud public key
         sudo mkdir -p /usr/share/keyrings
-        curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+        curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | \
+          sudo gpg --dearmor -o /usr/share/keyrings/google-cloud-sdk.gpg
 
-        # Add the Kubernetes apt repository
-        sudo apt-get install -y apt-transport-https ca-certificates
-        curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
-        echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+        # Add the Cloud SDK distribution URI as a package source
+        echo "deb [signed-by=/usr/share/keyrings/google-cloud-sdk.gpg] \
+          https://packages.cloud.google.com/apt cloud-sdk main" | \
+          sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
 
-        # Update the package list and install the Cloud SDK and kubectl
+        # Update and install the Cloud SDK
         sudo apt-get update -qq
-        sudo apt-get install -y google-cloud-sdk kubectl
+        sudo apt-get install -y google-cloud-sdk
+
+        # Install kubectl using gcloud
+        sudo gcloud components install kubectl
 
         echo -e "\033[0;32mStep succeeded: Google Cloud SDK and kubectl installed.\033[0m"
 
@@ -102,7 +106,6 @@ jobs:
         fi
       shell: bash
       timeout-minutes: 10
-
 
     # 4. Cache Docker layers to speed up builds
     - name: Cache Docker layers
