@@ -7,7 +7,7 @@ on:
       - backend
     paths:
       - 'backend/**'
-  workflow_dispatch:
+  workflow_dispatch:  # Allows manual trigger
 
 jobs:
   deploy:
@@ -21,38 +21,22 @@ jobs:
     # 1. Checkout the repository
     - name: Checkout Repository
       uses: actions/checkout@v2
+      run: |
+        echo -e "\033[0;32mStep succeeded: Checkout Repository\033[0m"
 
     # 2. Install Node.js (no need for Docker install as we'll use the setup action)
     - name: Install Node.js
       run: |
+        set -e  # Exit on any error
         set -x  # Enable verbose logging
-        echo "Checking if other package managers are holding the lock..."
-
-        # Check if other package managers are running
-        while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
-          echo "Waiting for other package managers to finish..."
-          sleep 5
-        done
-
-        echo "Package manager lock is free. Proceeding with installation..."
-
-        # Update package list and install apt-utils to avoid debconf warning
-        echo "Updating package list and installing apt-utils..."
-        sudo apt-get update
-        sudo apt-get install -y apt-utils
-
-        echo "Installing necessary prerequisites (apt-transport-https, ca-certificates, curl)..."
-        sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg
 
         # Install Node.js (LTS version)
         echo "Installing Node.js..."
         curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
         sudo apt-get install -y nodejs
-        echo "Node.js installed."
+        echo -e "\033[0;32mStep succeeded: Node.js installed.\033[0m"
 
-        # Verify installations with periodic feedback
-        echo "Verifying versions..."
-
+        # Verify installations
         echo "Checking Node.js version..."
         if ! node -v; then
           echo -e "\033[0;31mERROR: Node.js is not installed or not available.\033[0m"
@@ -74,25 +58,15 @@ jobs:
     # 3. Install Google Cloud SDK and kubectl with liveness prints
     - name: Install Google Cloud SDK and kubectl
       run: |
+        set -e  # Exit on any error
         set -x  # Enable verbose logging
+
         echo "Installing Google Cloud SDK and kubectl..."
-
-        # Add the Google Cloud SDK distribution URI as a package source
-        echo "Adding Google Cloud SDK repository..."
-        echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-
-        # Import the Google Cloud public key
-        echo "Importing Google Cloud public key..."
         curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-
-        # Update and install the Cloud SDK and kubectl
-        echo "Updating package list and installing Google Cloud SDK and kubectl..."
         apt-get update && apt-get install -y google-cloud-sdk kubectl
-        echo "Google Cloud SDK and kubectl installed."
+        echo -e "\033[0;32mStep succeeded: Google Cloud SDK and kubectl installed.\033[0m"
 
         # Verify installations
-        echo "Verifying Google Cloud SDK and kubectl versions..."
-
         echo "Checking Google Cloud SDK version..."
         if ! gcloud --version; then
           echo -e "\033[0;31mERROR: Google Cloud SDK is not installed or not available.\033[0m"
@@ -109,7 +83,7 @@ jobs:
           echo -e "\033[0;32mKubectl version: $(kubectl version --client)\033[0m"
         fi
       shell: bash
-      timeout-minutes: 10  # Reduced to 10 minutes
+      timeout-minutes: 10
 
     # 4. Cache Docker layers to speed up builds
     - name: Cache Docker layers
@@ -119,10 +93,14 @@ jobs:
         key: ${{ runner.os }}-buildx-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-buildx-
+      run: |
+        echo -e "\033[0;32mStep succeeded: Docker layers cached.\033[0m"
 
     # 5. Set up Docker Buildx (replaces manual Docker installation)
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
+      run: |
+        echo -e "\033[0;32mStep succeeded: Docker Buildx setup.\033[0m"
 
     # 6. Authenticate with Google Cloud using service account credentials
     - name: Set up GCP Credentials
@@ -134,12 +112,13 @@ jobs:
         echo "$GCP_SA_KEY" | base64 --decode > /tmp/gcp-key-temp.json
         gcloud auth activate-service-account --key-file=/tmp/gcp-key-temp.json
         gcloud config set project $GCP_PROJECT_ID
+        echo -e "\033[0;32mStep succeeded: GCP credentials setup.\033[0m"
 
     # 7. Configure Docker to use GCloud credentials for pushing images
     - name: Configure Docker to use GCloud credentials
       run: |
-        echo "Configuring Docker to use GCloud credentials for pushing images..."
         gcloud auth configure-docker gcr.io --quiet
+        echo -e "\033[0;32mStep succeeded: Docker configured with GCloud credentials.\033[0m"
 
     # 8. Build and push the Docker image to Google Container Registry (GCR)
     - name: Build and push Docker Image
@@ -150,18 +129,19 @@ jobs:
         tags: gcr.io/${{ secrets.GCP_PROJECT_ID }}/personal-website-backend:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new
+      run: |
+        echo -e "\033[0;32mStep succeeded: Docker image built and pushed.\033[0m"
 
     # 9. Update the Docker cache for future builds
     - name: Move cache
       run: |
-        echo "Moving Docker cache..."
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+        echo -e "\033[0;32mStep succeeded: Docker cache updated.\033[0m"
 
     # 10. Deploy the Docker image to Google Cloud Run
     - name: Deploy to Cloud Run
       run: |
-        echo "Deploying to Cloud Run..."
         PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
         REGION="us-central1"
         SERVICE_NAME="personal-website-backend"
@@ -177,6 +157,7 @@ jobs:
           --set-env-vars="DEBUG=1,GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json" \
           --port=8080 \
           --service-account=$SERVICE_ACCOUNT
+        echo -e "\033[0;32mStep succeeded: Deployed to Cloud Run.\033[0m"
 
     # 11. Print the deployed service URL
     - name: Print Service URL
@@ -184,12 +165,15 @@ jobs:
         SERVICE_NAME="personal-website-backend"
         echo "Service URL:"
         gcloud run services describe $SERVICE_NAME --region us-central1 --format='value(status.url)'
+        echo -e "\033[0;32mStep succeeded: Printed service URL.\033[0m"
 
-    # 12. Clean step: Print success or failure message
+    # 12. Clean step: Print success or failure message, and show which step failed if any
     - name: Job Success or Failure
       if: always()  # This ensures the step runs regardless of previous job status
       run: |
         if [ "${{ job.status }}" == "success" ]; then
           echo -e "\033[0;32mDeployment succeeded! All steps completed successfully.\033[0m"
         else
-          echo -e "\033[0;31mDeployment failed! Check the logs for details.\033[0m"
+          echo -e "\033[0;31mDeployment failed! Check which step caused the failure:\033[0m"
+          echo "Failed step: ${{ failure() }}"
+          exit 1
