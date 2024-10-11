@@ -167,13 +167,12 @@ jobs:
         gcloud run services describe $SERVICE_NAME --region us-central1 --format='value(status.url)'
         echo -e "\033[0;32mStep succeeded: Printed service URL.\033[0m"
 
-    # 12. Clean step: Print success or failure message, and show which step failed if any
+    # 12. Clean step: Print success or failure message
     - name: Job Success or Failure
       if: always()  # This ensures the step runs regardless of previous job status
       run: |
         if [ "${{ job.status }}" == "success" ]; then
           echo -e "\033[0;32mDeployment succeeded! All steps completed successfully.\033[0m"
         else
-          echo -e "\033[0;31mDeployment failed! Check which step caused the failure:\033[0m"
-          echo "Failed step: ${{ failure() }}"
-          exit 1
+          echo -e "\033[0;31mDeployment failed! Check the logs for the step that caused the failure.\033[0m"
+        fi
