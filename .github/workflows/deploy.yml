@@ -21,10 +21,12 @@ jobs:
     # 1. Checkout the repository
     - name: Checkout Repository
       uses: actions/checkout@v2
+
+    - name: Echo Checkout Success
       run: |
         echo -e "\033[0;32mStep succeeded: Checkout Repository\033[0m"
 
-    # 2. Install Node.js (no need for Docker install as we'll use the setup action)
+    # 2. Install Node.js (no changes needed here)
     - name: Install Node.js
       run: |
         set -e  # Exit on any error
@@ -93,12 +95,16 @@ jobs:
         key: ${{ runner.os }}-buildx-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-buildx-
+
+    - name: Echo Docker Cache Success
       run: |
         echo -e "\033[0;32mStep succeeded: Docker layers cached.\033[0m"
 
     # 5. Set up Docker Buildx (replaces manual Docker installation)
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
+
+    - name: Echo Docker Buildx Setup Success
       run: |
         echo -e "\033[0;32mStep succeeded: Docker Buildx setup.\033[0m"
 
@@ -129,6 +135,8 @@ jobs:
         tags: gcr.io/${{ secrets.GCP_PROJECT_ID }}/personal-website-backend:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+    - name: Echo Docker Build and Push Success
       run: |
         echo -e "\033[0;32mStep succeeded: Docker image built and pushed.\033[0m"
 
