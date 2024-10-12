@@ -18,6 +18,8 @@ SECRET_KEY = 'django-insecure-your-secret-key-here'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
+LOG_LEVEL = 'DEBUG' if DEBUG else 'INFO'
+
 ALLOWED_HOSTS = ['*']  # For testing
 # ALLOWED_HOSTS = ['personal-website-backend-839353010571.us-central1.run.app', 'personal-website-backend-bbwuvruncq-uc.a.run.app', 'localhost']
 
@@ -31,17 +33,17 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'DEBUG' if DEBUG else 'INFO',
+        'level': LOG_LEVEL,
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': LOG_LEVEL,
             'propagate': True,
         },
         'gunicorn': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': LOG_LEVEL,
             'propagate': True,
         },
     },
