@@ -168,12 +168,14 @@ jobs:
 
     # 10. Deploy the Docker image to Google Cloud Run
     - name: Deploy to Cloud Run
+      env: 
+        PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+        CLOUD_RUN_SERVICE_ACCOUNT_NAME: ${{ secrets.GCP_CLOUD_RUN_SERVICE_ACCOUNT_NAME }}
       run: |
-        PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
         REGION="us-central1"
         SERVICE_NAME="personal-website-backend"
-        GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
-        SERVICE_ACCOUNT="cloud-run-sa@${PROJECT_ID}.iam.gserviceaccount.com"  # Use runtime service account
+        GCR_IMAGE_NAME="gcr.io/PROJECT_ID/personal-website-backend"
+        SERVICE_ACCOUNT="${CLOUD_RUN_SERVICE_ACCOUNT_NAME}@PROJECT_ID.iam.gserviceaccount.com"  # Use runtime service account
 
         gcloud run deploy $SERVICE_NAME \
           --image ${GCR_IMAGE_NAME}:latest \
