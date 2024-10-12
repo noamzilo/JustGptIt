@@ -10,3 +10,5 @@ google-cloud-storage
 python-dotenv
 sqlparse
 asgiref
+google-cloud-storage
+django-storages

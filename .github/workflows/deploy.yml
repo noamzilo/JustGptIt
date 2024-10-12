@@ -27,9 +27,7 @@ jobs:
         echo -e "\033[0;32mStep succeeded: Checkout Repository\033[0m"
 
     # 2. Install Node.js (if needed)
-    # Remove this step if your backend doesn't require Node.js
     - name: Install Node.js
-    # if: false  # Disable this step if not required
       run: |
         set -e  # Exit on any error
         set -x  # Enable verbose logging
@@ -57,7 +55,7 @@ jobs:
           echo -e "\033[0;32mNPM version: $(npm -v)\033[0m"
         fi
       shell: bash
-      timeout-minutes: 10  # Reduced to 10 minutes
+      timeout-minutes: 10
 
     # 3. Install Google Cloud SDK and kubectl with liveness prints
     - name: Install Google Cloud SDK and kubectl
@@ -132,7 +130,7 @@ jobs:
     # 6. Authenticate with Google Cloud using service account credentials
     - name: Set up GCP Credentials
       env:
-        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}  # Deployment service account key
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       run: |
         echo "Setting up GCP credentials..."
@@ -170,14 +168,12 @@ jobs:
 
     # 10. Deploy the Docker image to Google Cloud Run
     - name: Deploy to Cloud Run
-      env:
-        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
       run: |
         PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
         REGION="us-central1"
         SERVICE_NAME="personal-website-backend"
         GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
-        SERVICE_ACCOUNT="personal-website-deployer@${PROJECT_ID}.iam.gserviceaccount.com"
+        SERVICE_ACCOUNT="cloud-run-sa@${PROJECT_ID}.iam.gserviceaccount.com"  # Use runtime service account
 
         gcloud run deploy $SERVICE_NAME \
           --image ${GCR_IMAGE_NAME}:latest \
@@ -186,7 +182,7 @@ jobs:
           --platform managed \
           --allow-unauthenticated \
           --service-account=$SERVICE_ACCOUNT \
-          --set-env-vars "DEBUG=1,GCP_SA_KEY=${GCP_SA_KEY}"
+          --set-env-vars "DEBUG=1"
 
         echo -e "\033[0;32mStep succeeded: Deployed to Cloud Run.\033[0m"
 
