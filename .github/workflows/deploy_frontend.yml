@@ -1,0 +1,60 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main, staging, frontend ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm ci
+
+    - name: Set environment variables
+      run: |
+       if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+         echo "REACT_APP_API_URL=${{ secrets.PROD_API_URL }}" >> $GITHUB_ENV
+         echo "REACT_APP_ENVIRONMENT=production" >> $GITHUB_ENV
+         echo "PUBLIC_URL=https://noamzilo.github.io/personal_website" >> $GITHUB_ENV
+       else
+         echo "REACT_APP_API_URL=${{ secrets.STAGING_API_URL }}" >> $GITHUB_ENV
+         echo "REACT_APP_ENVIRONMENT=staging" >> $GITHUB_ENV
+         echo "PUBLIC_URL=https://noamzilo.github.io/personal_website" >> $GITHUB_ENV
+       fi
+
+    - name: Build
+      run: |
+        cd frontend
+        npm run build
+      env:
+        REACT_APP_API_URL: ${{ env.REACT_APP_API_URL }}
+        REACT_APP_ENVIRONMENT: ${{ env.REACT_APP_ENVIRONMENT }}
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './frontend/build'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
