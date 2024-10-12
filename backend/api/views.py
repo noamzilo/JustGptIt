@@ -9,6 +9,7 @@ from django.http import HttpResponse
 import logging
 import os
 import sys
+from constants import backend_version_name
 
 print("Views module loaded", file=sys.stderr)
 
@@ -21,7 +22,7 @@ def test_view(request):
 
 @api_view(['GET'])
 def version(request):
-    version = "0.0.0"
+    version = backend_version_name
     try:
         with open("/app/build_time.txt", "r") as f: # created during docker build
             build_time = f.read().strip()
