@@ -7,6 +7,7 @@ on:
       - backend
     paths:
       - 'backend/**'
+      - '.github/workflows/deploy_backend.yml'
   workflow_dispatch:  # Allows manual trigger
 
 jobs:
