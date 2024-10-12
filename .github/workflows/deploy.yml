@@ -26,8 +26,10 @@ jobs:
       run: |
         echo -e "\033[0;32mStep succeeded: Checkout Repository\033[0m"
 
-    # 2. Install Node.js (no changes needed here)
+    # 2. Install Node.js (if needed)
+    # Remove this step if your backend doesn't require Node.js
     - name: Install Node.js
+    # if: false  # Disable this step if not required
       run: |
         set -e  # Exit on any error
         set -x  # Enable verbose logging
@@ -106,7 +108,6 @@ jobs:
       shell: bash
       timeout-minutes: 10
 
-
     # 4. Cache Docker layers to speed up builds
     - name: Cache Docker layers
       uses: actions/cache@v2
@@ -169,6 +170,8 @@ jobs:
 
     # 10. Deploy the Docker image to Google Cloud Run
     - name: Deploy to Cloud Run
+      env:
+        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
       run: |
         PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
         REGION="us-central1"
@@ -182,9 +185,9 @@ jobs:
           --region $REGION \
           --platform managed \
           --allow-unauthenticated \
-          --set-env-vars="DEBUG=1,GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json" \
-          --port=8080 \
-          --service-account=$SERVICE_ACCOUNT
+          --service-account=$SERVICE_ACCOUNT \
+          --set-env-vars "DEBUG=1,GCP_SA_KEY=${GCP_SA_KEY}"
+
         echo -e "\033[0;32mStep succeeded: Deployed to Cloud Run.\033[0m"
 
     # 11. Print the deployed service URL

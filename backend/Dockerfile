@@ -27,7 +27,8 @@ COPY . /app/
 RUN mkdir -p /app/staticfiles && chmod 755 /app/staticfiles
 
 # Collect static files with verbose output
-# RUN python manage.py collectstatic --noinput -v 2 # this is done in dockercompose
+# Note: Commented out since we will run collectstatic in the entrypoint script
+# RUN python manage.py collectstatic --noinput -v 2
 
 # Create log directory and file
 RUN mkdir -p /var/log && \
@@ -48,5 +49,12 @@ EXPOSE 8080
 # This is important for the version endpoint
 RUN TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S" > /app/build_time.txt
 
-# Start command
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--log-level", "debug", "--capture-output", "--enable-stdio-inheritance", "config.wsgi:application"]
+# Copy the docker_entrypoint.sh script and make it executable
+COPY docker_entrypoint.sh /app/docker_entrypoint.sh
+RUN chmod +x /app/docker_entrypoint.sh
+
+# Set the entrypoint
+ENTRYPOINT ["/app/docker_entrypoint.sh"]
+
+# Default command (if any)
+# Note: Since the entrypoint script starts gunicorn, we don't need CMD here
