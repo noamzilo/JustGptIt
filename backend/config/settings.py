@@ -5,7 +5,7 @@ from pathlib import Path
 import logging
 import sys
 from constants import LOG_LEVEL, GCP_PROJECT_ID, USE_GCS, DJANGO_SECRET_KEY
-
+SECRET_KEY = DJANGO_SECRET_KEY
 print("Settings module loaded", file=sys.stderr)
 print(f"SECRET_KEY from settings: {DJANGO_SECRET_KEY}", file=sys.stderr)
 

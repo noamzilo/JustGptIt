@@ -15,6 +15,6 @@ fi
 echo "Collecting static files..."
 python manage.py collectstatic --noinput -v 2
 
-# Start the application
+# Start the application with verbose logging
 echo "Starting the application..."
-exec gunicorn --bind 0.0.0.0:8080 --log-level debug --capture-output --enable-stdio-inheritance config.wsgi:application
+exec gunicorn --bind 0.0.0.0:8080 --log-level debug --capture-output --enable-stdio-inheritance --error-logfile /var/log/gunicorn-error.log --access-logfile /var/log/gunicorn-access.log config.wsgi:application

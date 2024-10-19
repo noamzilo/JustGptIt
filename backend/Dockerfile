@@ -9,10 +9,11 @@ ENV DJANGO_SETTINGS_MODULE=config.settings
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies and debugging tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
@@ -25,10 +26,6 @@ COPY . /app/
 
 # Create a directory for static files
 RUN mkdir -p /app/staticfiles && chmod 755 /app/staticfiles
-
-# Collect static files with verbose output
-# Note: Commented out since we will run collectstatic in the entrypoint script
-# RUN python manage.py collectstatic --noinput -v 2
 
 # Create log directory and file
 RUN mkdir -p /var/log && \
@@ -55,6 +52,3 @@ RUN chmod +x /app/docker_entrypoint.sh
 
 # Set the entrypoint
 ENTRYPOINT ["/app/docker_entrypoint.sh"]
-
-# Default command (if any)
-# Note: Since the entrypoint script starts gunicorn, we don't need CMD here
