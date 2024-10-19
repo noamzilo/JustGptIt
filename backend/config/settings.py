@@ -4,15 +4,7 @@ import os
 from pathlib import Path
 import logging
 import sys
-from .constants import (
-    PORT,
-    SECRET_KEY,
-    DEBUG,
-    LOG_LEVEL,
-    GCP_PROJECT_ID,
-    USE_GCS,
-    GS_BUCKET_NAME
-)
+from constants import LOG_LEVEL, GCP_PROJECT_ID, USE_GCS
 
 print("Settings module loaded", file=sys.stderr)
 
