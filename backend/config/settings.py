@@ -6,6 +6,9 @@ import logging
 import sys
 from constants import LOG_LEVEL, GCP_PROJECT_ID, USE_GCS, DJANGO_SECRET_KEY
 SECRET_KEY = DJANGO_SECRET_KEY
+if not SECRET_KEY:
+    raise ValueError("No SECRET_KEY set for Django application")
+
 print("Settings module loaded", file=sys.stderr)
 print(f"SECRET_KEY from settings: {DJANGO_SECRET_KEY}", file=sys.stderr)
 
@@ -14,6 +17,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 ALLOWED_HOSTS = ['*']  # For testing
 # ALLOWED_HOSTS = ['personal-website-backend-839353010571.us-central1.run.app', 'personal-website-backend-bbwuvruncq-uc.a.run.app', 'localhost']
+
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = True  # For development only. In production, specify exact origins.
+# CORS_ALLOWED_ORIGINS = [
+#     "https://noamzilo.github.io",
+#     "http://localhost:3000",
+# ]
+
 
 LOGGING = {
     'version': 1,
@@ -43,6 +54,7 @@ LOGGING = {
 
 # Application definition
 INSTALLED_APPS = [
+    'corsheaders',
     'api',
     'rest_framework',
     'storages',  # Ensure 'storages' is included
@@ -56,6 +68,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Moved up for WhiteNoise
     'django.contrib.sessions.middleware.SessionMiddleware',
