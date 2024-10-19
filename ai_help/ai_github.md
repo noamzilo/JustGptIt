@@ -16,6 +16,9 @@
     - backend
       - .secrets (for backend local development. They are replcated in github secrets.)
     - frontend
+    - .github/workflows
+  - Dockerfile
+  - 
 
 ## Frontend Deployment
 - Deployed to: GitHub Pages
