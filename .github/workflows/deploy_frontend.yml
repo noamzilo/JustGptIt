@@ -34,13 +34,7 @@ jobs:
 
     - name: Set environment variables
       run: |
-        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          echo "REACT_APP_API_URL=${{ secrets.PROD_API_URL }}" >> $GITHUB_ENV
-          echo "REACT_APP_ENVIRONMENT=production" >> $GITHUB_ENV
-        else
-          echo "REACT_APP_API_URL=${{ secrets.STAGING_API_URL }}" >> $GITHUB_ENV
-          echo "REACT_APP_ENVIRONMENT=staging" >> $GITHUB_ENV
-        fi
+        echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> $GITHUB_ENV
         echo "PUBLIC_URL=https://noamzilo.github.io/personal_website" >> $GITHUB_ENV
 
     - name: Build
@@ -49,7 +43,7 @@ jobs:
         npm run build
       env:
         REACT_APP_API_URL: ${{ env.REACT_APP_API_URL }}
-        REACT_APP_ENVIRONMENT: ${{ env.REACT_APP_ENVIRONMENT }}
+        ENVIRONMENT: ${{ env.ENVIRONMENT }}
         PUBLIC_URL: ${{ env.PUBLIC_URL }}
 
     - name: Setup Pages

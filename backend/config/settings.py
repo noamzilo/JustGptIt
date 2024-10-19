@@ -4,21 +4,20 @@ import os
 from pathlib import Path
 import logging
 import sys
+from .constants import (
+    PORT,
+    SECRET_KEY,
+    DEBUG,
+    LOG_LEVEL,
+    GCP_PROJECT_ID,
+    USE_GCS,
+    GS_BUCKET_NAME
+)
 
 print("Settings module loaded", file=sys.stderr)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-PORT = int(os.environ.get("PORT", 8080))
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-your-secret-key-here'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
-
-LOG_LEVEL = 'DEBUG' if DEBUG else 'INFO'
 
 ALLOWED_HOSTS = ['*']  # For testing
 # ALLOWED_HOSTS = ['personal-website-backend-839353010571.us-central1.run.app', 'personal-website-backend-bbwuvruncq-uc.a.run.app', 'localhost']
@@ -130,17 +129,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# GCP Settings
-GCP_PROJECT_ID = 'your-gcp-project-id'  # Replace with your GCP project ID
-
-# Using ADC (Application Default Credentials)
-# No need to specify credentials; ADC will handle it
-# Ensure that the service account attached to your Cloud Run service has the necessary permissions
-
 # Google Cloud Storage Configuration
-if os.getenv('USE_GCS', 'True') == 'True':
+if USE_GCS:
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-    GS_BUCKET_NAME = 'your-gcs-bucket-name'  # Replace with your GCS bucket name
     GS_PROJECT_ID = GCP_PROJECT_ID
     # Do not set GS_CREDENTIALS; let ADC handle it
 else:

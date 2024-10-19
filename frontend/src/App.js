@@ -8,8 +8,8 @@ import BackendHealthIndicator from './components/BackendHealthIndicator';
 import BackendStatus from './components/BackendStatus';
 
 function App() {
-  const environment = process.env.REACT_APP_ENVIRONMENT || 'development';
-  const baseName = environment === 'development' ? '' : '/personal_website';
+  const environment = process.env.ENVIRONMENT;
+  const baseName = '/personal_website';
 
   console.log('Current environment:', environment);
   console.log('Current basename:', baseName);
