@@ -20,11 +20,12 @@ ALLOWED_HOSTS = ['*']  # For testing
 
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = True  # For development only. In production, specify exact origins.
-# CORS_ALLOWED_ORIGINS = [
-#     "https://noamzilo.github.io",
-#     "http://localhost:3000",
-# ]
-
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "https://noamzilo.github.io",
+    "http://localhost:3000",
+]
+CORS_ALLOW_CREDENTIALS = True
 
 LOGGING = {
     'version': 1,
@@ -69,8 +70,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'middleware.cors_debug.CORSDebugMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Moved up for WhiteNoise
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
