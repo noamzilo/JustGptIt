@@ -28,7 +28,7 @@ def version(request):
             build_time = f.read().strip()
     except FileNotFoundError:
         build_time = 'Build time not available'
-    return Response({"message": f"Backend version {version}. Last build time: {build_time}"})
+    return Response({"message": f"Backend version {version} Last build time: {build_time}"})
 
 @api_view(['GET'])
 def health_check(request):
