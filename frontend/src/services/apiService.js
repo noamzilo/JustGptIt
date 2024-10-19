@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
 const apiService = {
-  get: async (endpoint) => {``
+  get: async (endpoint) => {
     try {
       const response = await axios.get(`${API_URL}${endpoint}`);
       return response.data;
