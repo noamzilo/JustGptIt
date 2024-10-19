@@ -36,7 +36,7 @@
 - Process: Automated via deploy_backend.yml workflow
 
 ## GitHub Secrets
-- Existing:
+- Repo secrets:
   (frontend)
   - PROD_API_URL - URL of the backend server in prod
   - STAGING_API_URL - URL of the backend server in staging
@@ -44,6 +44,14 @@
   - GCP_PROJECT_ID
   - GCP_SA_KEY (base64 encoded contents of the local backend/creds/gcp-sa-key.json)
   - GCP_CLOUD_RUN_SERVICE_ACCOUNT_NAME
+- Environment secrets
+  - DJANGO_SECRET_KEY
+  - REACT_APP_API_URL (Where the app will be served)
 
-## Notes
-- The repository structure and branch naming could be improved for clarity
+  ## Github Repository Variables
+  - DEBUG False
+  - PORT 8080
+  - USE_GCS True
+
+  ## Github Environment Variables
+  - ENVIRONMENT (prod or staging from github, or local from local)
