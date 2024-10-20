@@ -23,7 +23,7 @@
     "env-linux": "export $(cat .env | xargs) && env",
     "start-linux": "export $(cat .env | xargs) && npm start",
     "env-windows": "(for /F \"tokens=*\" %i in (.env) do set %i)",
-    "start-windows": "(for /F \"tokens=*\" %i in (.env) do set %i) && npm start",
+    "start-windows": "(for /F \"tokens=*\" %i in (.env) do set %i) && npm start"
   },
   "eslintConfig": {
     "extends": [

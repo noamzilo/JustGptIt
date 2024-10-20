@@ -11,7 +11,6 @@ function App() {
   const environment = process.env.ENVIRONMENT;
 
   console.log('Current environment:', environment);
-  console.log('Current basename:', baseName);
   console.log('API URL:', process.env.REACT_APP_API_URL);
 
   return (
