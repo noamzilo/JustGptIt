@@ -21,10 +21,10 @@ ALLOWED_HOSTS = ['*']  # For testing
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = True  # For development only. In production, specify exact origins.
 # CORS settings
-CORS_ALLOWED_ORIGINS = [
-    "https://noamzilo.github.io",
-    "http://localhost:3000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "https://noamzilo.github.io",
+#     "http://localhost:3000",
+# ]
 CORS_ALLOW_CREDENTIALS = True
 
 LOGGING = {
