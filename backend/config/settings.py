@@ -25,7 +25,7 @@ CORS_ALLOW_ALL_ORIGINS = True  # For development only. In production, specify ex
 #     "https://noamzilo.github.io",
 #     "http://localhost:3000",
 # ]
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_CREDENTIALS = True
 
 LOGGING = {
     'version': 1,
