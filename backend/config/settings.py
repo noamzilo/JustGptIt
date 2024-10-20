@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import logging
 import sys
-from constants import LOG_LEVEL, GCP_PROJECT_ID, USE_GCS, DJANGO_SECRET_KEY
+from constants import LOG_LEVEL, GCP_PROJECT_ID, USE_GCS, DJANGO_SECRET_KEY, CORS_ALLOWED_ORIGINS
 SECRET_KEY = DJANGO_SECRET_KEY
 if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set for Django application")
@@ -19,13 +19,11 @@ ALLOWED_HOSTS = ['*']  # For testing
 # ALLOWED_HOSTS = ['personal-website-backend-839353010571.us-central1.run.app', 'personal-website-backend-bbwuvruncq-uc.a.run.app', 'localhost']
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True  # For development only. In production, specify exact origins.
+CORS_ALLOW_ALL_ORIGINS = False
+# CORS_ALLOW_ALL_ORIGINS = True  # For development only. In production, specify exact origins.
 # CORS settings
-# CORS_ALLOWED_ORIGINS = [
-#     "https://noamzilo.github.io",
-#     "http://localhost:3000",
-# ]
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS
+ALLOW_CREDENTIALS = True
 
 LOGGING = {
     'version': 1,

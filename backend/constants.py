@@ -14,6 +14,12 @@ DJANGO_SECRET_KEY = read_env_variable('DJANGO_SECRET_KEY', 'DJANGO_SECRET_KEY_NO
 DEBUG = read_env_variable('DEBUG', 'False') == 'True'
 LOG_LEVEL = 'DEBUG' if DEBUG else 'INFO'
 USE_GCS = read_env_variable('USE_GCS', 'True') == 'True'
+CORS_ALLOWED_ORIGINS = read_env_variable('CORS_ALLOWED_ORIGINS', '').split(',')
+if not CORS_ALLOWED_ORIGINS:
+    raise ValueError("CORS_ALLOWED_ORIGINS environment variable is not set or empty.")
+CORS_ALLOWED_ORIGINS = [origin for origin in CORS_ALLOWED_ORIGINS if origin]
+if not CORS_ALLOWED_ORIGINS:
+    raise ValueError("CORS_ALLOWED_ORIGINS environment variable contains only empty strings")
 
 print(f"DJANGO_SECRET_KEY is set: {'Yes' if DJANGO_SECRET_KEY else 'No'}", file=sys.stderr)
 print(f"DEBUG: {DEBUG}", file=sys.stderr)

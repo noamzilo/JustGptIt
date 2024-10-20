@@ -172,6 +172,8 @@ jobs:
       env: 
         PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         CLOUD_RUN_SERVICE_ACCOUNT_NAME: ${{ secrets.GCP_CLOUD_RUN_SERVICE_ACCOUNT_NAME }}
+        CORS_ALLOWED_ORIGINS: ${{ env.CORS_ALLOWED_ORIGINS }}
+        DEBUG: ${{ env.DJANGO_DEBUG }}
       run: |
   
         REGION="us-central1"
@@ -186,7 +188,7 @@ jobs:
           --platform managed \
           --allow-unauthenticated \
           --service-account=$SERVICE_ACCOUNT \
-          --set-env-vars "DEBUG=1"
+          --set-env-vars "DEBUG=${DJANGO_DEBUG},CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}"
 
         echo -e "\033[0;32mStep succeeded: Deployed to Cloud Run.\033[0m"
 
