@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiService from '../services/apiService';
 
 function ProjectList() {
   const [projects, setProjects] = useState([]);
@@ -8,7 +8,7 @@ function ProjectList() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get('http://localhost:8080/api/projects/')
+    apiService.get('/api/projects/')
       .then(response => {
         setProjects(response.data);
         setLoading(false);

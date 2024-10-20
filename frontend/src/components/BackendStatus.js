@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiService from '../services/apiService';
 
 function BackendStatus() {
   const [status, setStatus] = useState('Checking...');
@@ -8,7 +8,7 @@ function BackendStatus() {
   useEffect(() => {
     const checkBackend = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/health/');
+        const response = await apiService.get('/api/health/');
         setStatus(response.data.status);
         setError(null);
       } catch (error) {
