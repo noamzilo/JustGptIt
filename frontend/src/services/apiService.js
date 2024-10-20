@@ -1,6 +1,13 @@
 import axios from 'axios';
+import ErrorPage from '../components/ErrorPage';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL || 'FAILED_REACT_APP_API_URL';
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+if (!REACT_APP_API_URL) {
+  ReactDOM.render(<ErrorPage />, document.getElementById('root'));
+  throw new Error('REACT_APP_API_URL is not defined');
+}
 
 const apiService = {
   get: async (endpoint) => {
