@@ -23,7 +23,7 @@ CORS_ALLOW_ALL_ORIGINS = False
 # CORS_ALLOW_ALL_ORIGINS = True  # For development only. In production, specify exact origins.
 # CORS settings
 CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS
-ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 
 LOGGING = {
     'version': 1,
