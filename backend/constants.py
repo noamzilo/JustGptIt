@@ -16,6 +16,7 @@ LOG_LEVEL = 'DEBUG' if DEBUG else 'INFO'
 USE_GCS = read_env_variable('USE_GCS', 'True') == 'True'
 
 CORS_ALLOWED_ORIGINS_ORIG = read_env_variable('CORS_ALLOWED_ORIGINS', 'ERROR: CORS_ALLOWED_ORIGINS is undefined')
+CORS_ALLOWED_ORIGINS_ORIG = CORS_ALLOWED_ORIGINS_ORIG.replace('"', "").replace("'", "")
 CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS_ORIG.split(',')
 if not CORS_ALLOWED_ORIGINS:
     raise ValueError(f"CORS_ALLOWED_ORIGINS environment variable is not set or empty. {CORS_ALLOWED_ORIGINS}")

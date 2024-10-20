@@ -17,4 +17,6 @@ python manage.py collectstatic --noinput -v 2
 
 # Start the application with verbose logging
 echo "Starting the application..."
+echo "env vars:"
+# printenv
 exec gunicorn --bind 0.0.0.0:8080 --log-level debug --capture-output --enable-stdio-inheritance --error-logfile /var/log/gunicorn-error.log --access-logfile /var/log/gunicorn-access.log config.wsgi:application
