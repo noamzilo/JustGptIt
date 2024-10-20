@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom'; // Changed here
 import Header from './components/Header';
 import About from './components/About';
 import ProjectList from './components/ProjectList';
@@ -9,14 +9,13 @@ import BackendStatus from './components/BackendStatus';
 
 function App() {
   const environment = process.env.ENVIRONMENT;
-  const baseName = '/personal_website';
 
   console.log('Current environment:', environment);
   console.log('Current basename:', baseName);
   console.log('API URL:', process.env.REACT_APP_API_URL);
 
   return (
-    <Router basename={baseName}>
+    <Router>
       <div className="App">
         <h1>Welcome to My Personal Website</h1>
         <Header />
