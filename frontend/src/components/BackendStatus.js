@@ -8,7 +8,7 @@ function BackendStatus() {
   useEffect(() => {
     const checkBackend = async () => {
       try {
-        const response = await apiService.get('/api/health/');
+        const response = await apiService.get('/health/');
         setStatus(response.data.status);
         setError(null);
       } catch (error) {
