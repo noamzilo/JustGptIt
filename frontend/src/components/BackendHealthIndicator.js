@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import BackendLivenessService from '../services/backendLivenessService.js';
 
+import ErrorPage from '../components/ErrorPage';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 const BackendHealthIndicator = () => {
   const [isHealthy, setIsHealthy] = useState(true);
 
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+  if (!REACT_APP_API_URL) {
+    ReactDOM.render(<ErrorPage />, document.getElementById('root'));
+    throw new Error('REACT_APP_API_URL is not defined');
+  }
+  
   useEffect(() => {
     const checkHealth = async () => {
       const healthy = await BackendLivenessService.isBackendHealthy();
