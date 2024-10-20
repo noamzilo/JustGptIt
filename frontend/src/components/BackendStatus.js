@@ -9,7 +9,7 @@ function BackendStatus() {
     const checkBackend = async () => {
       try {
         const response = await apiService.get('/health');
-        setStatus(response.data.status);
+        setStatus(response.status);
         setError(null);
       } catch (error) {
         console.error('Error checking backend status:', error);
