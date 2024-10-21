@@ -5,6 +5,12 @@ act -j build-and-deploy \
 --env-file /home/noams/src/personal_website/frontend/.env \
 --verbose
 
+
+Run as deploy:
+npm run build
+npx serve -s build
+
+
 npm run build
  npx serve -s build
 
