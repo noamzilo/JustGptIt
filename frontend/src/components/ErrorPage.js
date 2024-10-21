@@ -15,8 +15,7 @@ const formatArgentinaTime = (date) => {
 
 const ErrorPage = () => {
   const [currentTime, setCurrentTime] = useState('');
-//   const buildTime = formatArgentinaTime(new Date(__BUILD_TIME__));
-  const refreshTime = formatArgentinaTime(new Date());
+  const buildTime = formatArgentinaTime(new Date(process.env.REACT_APP_BUILD_TIME));
 
   useEffect(() => {
     const updateTime = () => {
@@ -34,8 +33,7 @@ const ErrorPage = () => {
       <h1 className="text-3xl font-bold mb-4">Error</h1>
       <p className="mb-6">API URL is not defined. Please contact support.</p>
       <div className="space-y-2 text-left">
-        {/* <p>Build time (Argentina): <span className="font-semibold">{buildTime}</span></p> */}
-        <p>Refresh time (Argentina): <span className="font-semibold">{refreshTime}</span></p>
+        <p>Build time (Argentina): <span className="font-semibold">{buildTime}</span></p>
         <p>Current time (Argentina): <span className="font-semibold">{currentTime}</span></p>
       </div>
     </div>

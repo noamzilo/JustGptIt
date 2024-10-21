@@ -21,13 +21,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Debug REACT_APP_API_URL
-      shell: bash
-      env:
-        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
-      run: |
-        echo -e "\e[31mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
-        exit 1
+
+    # - name: Debug REACT_APP_API_URL
+    #   shell: bash
+    #   env:
+    #     REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+    #   run: |
+    #     echo -e "\e[31mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
+    #     exit 1
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -42,8 +43,6 @@ jobs:
       run: |
         echo -e "\e[31mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
         echo -e "\e[31mREACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT}\e[0m"
-        # Uncomment the following line to print GITHUB_TOKEN (not recommended)
-        # echo -e "\e[31mGITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}\e[0m"
 
     - name: Install dependencies
       shell: bash
@@ -56,6 +55,7 @@ jobs:
       env:
         REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
         REACT_APP_ENVIRONMENT: ${{ secrets.REACT_APP_ENVIRONMENT }}
+        REACT_APP_BUILD_TIME: $(date +'%Y-%m-%dT%H:%M:%S%z' -d 'TZ="America/Argentina/Buenos_Aires"')
       run: |
         cd frontend
         npm run build || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
@@ -76,7 +76,7 @@ jobs:
 
     - name: Build Succeeded
       if: success()
-      run: echo "Build succeeded."
+      run: echo -e "\e[32mBuild succeeded.\e[0m"
 
     - name: Build Failed
       if: failure()
