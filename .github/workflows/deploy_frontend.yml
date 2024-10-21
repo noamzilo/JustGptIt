@@ -30,30 +30,24 @@ jobs:
       shell: bash
       run: |
         set -e
-        trap 'echo -e "\e[31mInstall dependencies step failed.\e[0m"' ERR
         cd frontend
         npm ci
 
     - name: Print Environment Variables and Secrets
       shell: bash
       run: |
-        echo -e "\e[31mREACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}\e[0m"
-        echo -e "\e[31mREACT_APP_ENVIRONMENT=${{ secrets.REACT_APP_ENVIRONMENT }}\e[0m"
-        # Remove PUBLIC_URL if not needed
-        # echo -e "\e[31mPUBLIC_URL=${{ secrets.PUBLIC_URL }}\e[0m"
+        printf "\033[31mREACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}\033[0m\n"
+        printf "\033[31mREACT_APP_ENVIRONMENT=${{ secrets.REACT_APP_ENVIRONMENT }}\033[0m\n"
         # Uncomment the following line to print GITHUB_TOKEN (not recommended)
-        # echo -e "\e[31mGITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}\e[0m"
+        # printf "\033[31mGITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}\033[0m\n"
 
     - name: Build
       shell: bash
       env:
         REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
         REACT_APP_ENVIRONMENT: ${{ secrets.REACT_APP_ENVIRONMENT }}
-        # Remove PUBLIC_URL if not needed
-        # PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
       run: |
         set -e
-        trap 'echo -e "\e[31mBuild step failed.\e[0m"' ERR
         cd frontend
         npm run build
 
@@ -74,8 +68,9 @@ jobs:
     # This step runs when any previous step fails
     - name: Build Failed
       if: failure()
-      run: echo -e "\e[31mBuild failed.\e[0m"
       shell: bash
+      run: |
+        printf "\033[31mBuild failed.\033[0m\n"
 
     # This step runs when all previous steps succeed
     - name: Build Succeeded
