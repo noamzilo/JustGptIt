@@ -48,7 +48,7 @@ jobs:
       shell: bash
       run: |
         cd frontend
-        npm ci || (echo -e "\e[31mInstall dependencies step failed.\e[0m" && exit 1)
+        npm ci 2>&1 | grep -v "^{" || (echo -e "\e[31mInstall dependencies step failed.\e[0m" && exit 1)
 
     - name: Build
       shell: bash
@@ -60,23 +60,23 @@ jobs:
         cd frontend
         echo -e "\e[31mBuilding with environment variables:\e[0m"
         env | grep REACT_APP
-        npm run build || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
+        npm run build > /dev/null || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
         echo "Build completed. Checking build output:"
         grep -r REACT_APP build
 
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Setup Pages
+    #   uses: actions/configure-pages@v4
+    #   with:
+    #     token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: './frontend/build'
+    # - name: Upload artifact
+    #   uses: actions/upload-pages-artifact@v3
+    #   with:
+    #     path: './frontend/build'
 
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+    # - name: Deploy to GitHub Pages
+    #   id: deployment
+    #   uses: actions/deploy-pages@v4
 
     - name: Build Succeeded
       if: success()

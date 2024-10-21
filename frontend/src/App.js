@@ -7,6 +7,10 @@ import Contact from './components/Contact';
 import BackendHealthIndicator from './components/BackendHealthIndicator';
 import BackendStatus from './components/BackendStatus';
 
+
+console.log('Top level Environment variables:', process.env);
+console.log('Top level REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+
 function App() {
   const environment = process.env.ENVIRONMENT;
 
