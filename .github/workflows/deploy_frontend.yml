@@ -1,13 +1,12 @@
 name: Deploy Frontend
 
 on:
-    push:
-        branches: [ main, staging, frontend ]
-        paths:
-            - 'frontend/**'
-            - '.github/workflows/deploy_frontend.yml'
-    workflow_dispatch:
-
+  push:
+    branches: [ main, staging, frontend ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy_frontend.yml'
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -32,17 +31,26 @@ jobs:
         cd frontend
         npm ci
 
+    - name: Print Secret Values
+      run: |
+        echo -e "\e[31mREACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}\e[0m"
+        echo -e "\e[31mREACT_APP_ENVIRONMENT=${{ secrets.ENVIRONMENT }}\e[0m"
+        echo -e "\e[31mPUBLIC_URL=${{ secrets.PUBLIC_URL }}\e[0m"
+        echo -e "\e[31mGITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}\e[0m"
+
     - name: Build
       run: |
         cd frontend
         npm run build
       env:
-        REACT_APP_API_URL: ${{ env.REACT_APP_API_URL }}
-        REACT_APP_ENVIRONMENT: ${{ env.ENVIRONMENT }}
-        PUBLIC_URL: ${{ env.PUBLIC_URL }}
+        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+        REACT_APP_ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
+        PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
