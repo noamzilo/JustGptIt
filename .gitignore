@@ -63,6 +63,7 @@ backend/creds/
 
 # logs
 *logs_dump*
+build_logs/
 
 # misc
 /backend/sandbox
