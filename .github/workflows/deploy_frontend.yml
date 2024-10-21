@@ -48,21 +48,21 @@ jobs:
       shell: bash
       run: |
         cd frontend
-        npm ci 2>&1 | grep -v "^{" || (echo -e "\e[31mInstall dependencies step failed.\e[0m" && exit 1)
+        npm ci 2>&1 || (echo -e "\e[31mInstall dependencies step failed.\e[0m" && exit 1)
 
     - name: Build
       shell: bash
       env:
         REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
         REACT_APP_ENVIRONMENT: ${{ secrets.REACT_APP_ENVIRONMENT }}
-        REACT_APP_BUILD_TIME: $(date +'%Y-%m-%dT%H:%M:%S%z' -d 'TZ="America/Argentina/Buenos_Aires"')
       run: |
         cd frontend
+        export REACT_APP_BUILD_TIME=$(date +'%Y-%m-%dT%H:%M:%S%z' -d 'TZ="America/Argentina/Buenos_Aires"')
         echo -e "\e[31mBuilding with environment variables:\e[0m"
-        env | grep REACT_APP
-        npm run build > /dev/null || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
+        # env | grep REACT_APP
+        npm run build || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
         echo "Build completed. Checking build output:"
-        grep -r REACT_APP build
+        grep -r REACT_APP build || echo "No REACT_APP variables found in build output"
 
     # - name: Setup Pages
     #   uses: actions/configure-pages@v4
@@ -77,6 +77,12 @@ jobs:
     # - name: Deploy to GitHub Pages
     #   id: deployment
     #   uses: actions/deploy-pages@v4
+
+    - name: Check for API URL in built files
+      shell: bash
+      run: |
+        echo "Checking for API URL in built files:"
+        grep -r "REACT_APP_API_URL" frontend/build || echo "REACT_APP_API_URL not found in build output"
 
     - name: Build Succeeded
       if: success()
