@@ -1,0 +1,23 @@
+{
+    "projects": [
+      {
+        "id": 1,
+        "title": "Personal Website",
+        "description": "A responsive personal portfolio website built with React and Django.",
+        "technologies": "React, Django, Python, JavaScript",
+        "image_url": "https://via.placeholder.com/150",
+        "project_url": "https://github.com/yourusername/personal_website"
+      },
+      {
+        "id": 2,
+        "title": "Task Manager App",
+        "description": "A full-stack task management application with user authentication.",
+        "technologies": "Node.js, Express, MongoDB, React",
+        "image_url": "https://via.placeholder.com/150",
+        "project_url": "https://github.com/yourusername/task-manager"
+      }
+    ],
+    "health": {
+      "status": "healthy"
+    }
+  }
