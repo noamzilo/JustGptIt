@@ -27,6 +27,7 @@ jobs:
     #   env:
     #     REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
     #   run: |
+    #     env 
     #     echo -e "\e[31mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
     #     exit 1
 
@@ -59,9 +60,9 @@ jobs:
         cd frontend
         export REACT_APP_BUILD_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
         echo -e "\e[31mBuilding with environment variables:\e[0m"
-        env | grep REACT_APP
+        env
         # npm run build || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
-        echo "Build completed. Checking build output:"
+        echo -e "\e[32mBuild completed. Checking build output:\e[0m"
         # grep -r REACT_APP build || echo "No REACT_APP variables found in build output"
 
     # - name: Setup Pages
