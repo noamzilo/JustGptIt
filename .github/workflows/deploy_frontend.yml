@@ -29,8 +29,8 @@ jobs:
     #   shell: bash
     #   run: |
     #     #env 
-    #     echo -e "\e[31m@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\e[0m"
-    #     echo -e "\e[31mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
+    #     echo -e "\e[32m@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\e[0m"
+    #     echo -e "\e[32mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
     #     env
     #     echo $(env | grep ACTIONS_RUNTIME_TOKEN)
     #     exit 1
@@ -46,8 +46,8 @@ jobs:
         REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
         REACT_APP_ENVIRONMENT: ${{ env.REACT_APP_ENVIRONMENT }}
       run: |
-        echo -e "\e[31mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
-        echo -e "\e[31mREACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT}\e[0m"
+        echo -e "\e[32mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
+        echo -e "\e[32mREACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT}\e[0m"
         env
         echo ACTIONS_RUNTIME_TOKEN=$(env | grep ACTIONS_RUNTIME_TOKEN)
 
@@ -67,7 +67,7 @@ jobs:
         mkdir -p build_logs
         TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
         export REACT_APP_BUILD_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
-        echo -e "\e[31mBuilding with environment variables:\e[0m"
+        echo -e "\e[32mBuilding with environment variables:\e[0m"
         env
         echo -e "\e[32m$(pwd)\e[0m"
         npm run build --verbose > build_logs/build_stdout_${TIMESTAMP}.log 2> build_logs/build_stderr_${TIMESTAMP}.log || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
@@ -75,7 +75,7 @@ jobs:
         # grep -r REACT_APP build || echo "No REACT_APP variables found in build output"
         grep -rho '"REACT_APP_[^"]*":"[^"]*"' build/ | \
           sed -E 's/"([^"]+)":"([^"]+)"/\1=\2/' | \
-          awk '{print "\033[31m" $0 "\033[0m"}' || \
+          awk '{print "\032[32m" $0 "\032[0m"}' || \
           echo "No REACT_APP variables found in build output"
 
     - name: Setup Pages
@@ -83,28 +83,28 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: './frontend/build'
+    # - name: Upload artifact
+    #   uses: actions/upload-pages-artifact@v3
+    #   with:
+    #     path: './frontend/build'
 
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+    # - name: Deploy to GitHub Pages
+    #   id: deployment
+    #   uses: actions/deploy-pages@v4
 
-    - name: Check for API URL in built files
-      shell: bash
-      run: |
-        echo "Checking for API URL in built files:"
-        # grep -r "REACT_APP_API_URL" frontend/build || echo "REACT_APP_API_URL not found in build output"
+    # - name: Check for API URL in built files
+    #   shell: bash
+    #   run: |
+    #     echo "Checking for API URL in built files:"
+    #     # grep -r "REACT_APP_API_URL" frontend/build || echo "REACT_APP_API_URL not found in build output"
 
-    - name: Build Succeeded
-      if: success()
-      run: echo -e "\e[32mBuild succeeded.\e[0m"
+    # - name: Build Succeeded
+    #   if: success()
+    #   run: echo -e "\e[32mBuild succeeded.\e[0m"
 
-    - name: Build Failed
-      if: failure()
-      shell: bash
-      run: |
-        echo -e "\e[31mBuild failed.\e[0m"
-        exit 1
+    # - name: Build Failed
+    #   if: failure()
+    #   shell: bash
+    #   run: |
+    #     echo -e "\e[31mBuild failed.\e[0m"
+    #     exit 1
