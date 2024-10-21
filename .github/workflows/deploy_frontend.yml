@@ -15,21 +15,24 @@ jobs:
       contents: read
       pages: write
       id-token: write
+    env:
+      REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+      ACTIONS_RUNTIME_TOKEN: ${{ secrets.ACTIONS_RUNTIME_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - uses: actions/checkout@v4
 
-
     # - name: Debug REACT_APP_API_URL
     #   shell: bash
-    #   env:
-    #     REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
     #   run: |
     #     #env 
     #     echo -e "\e[31m@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\e[0m"
     #     echo -e "\e[31mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
+    #     env
+    #     echo $(env | grep ACTIONS_RUNTIME_TOKEN)
     #     exit 1
 
     - name: Set up Node.js
@@ -45,6 +48,8 @@ jobs:
       run: |
         echo -e "\e[31mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
         echo -e "\e[31mREACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT}\e[0m"
+        env
+        echo ACTIONS_RUNTIME_TOKEN=$(env | grep ACTIONS_RUNTIME_TOKEN)
 
     - name: Install dependencies
       shell: bash
@@ -78,28 +83,28 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
 
-    # - name: Upload artifact
-    #   uses: actions/upload-pages-artifact@v3
-    #   with:
-    #     path: './frontend/build'
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './frontend/build'
 
-    # - name: Deploy to GitHub Pages
-    #   id: deployment
-    #   uses: actions/deploy-pages@v4
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
 
-    # - name: Check for API URL in built files
-    #   shell: bash
-    #   run: |
-    #     echo "Checking for API URL in built files:"
-    #     grep -r "REACT_APP_API_URL" frontend/build || echo "REACT_APP_API_URL not found in build output"
+    - name: Check for API URL in built files
+      shell: bash
+      run: |
+        echo "Checking for API URL in built files:"
+        # grep -r "REACT_APP_API_URL" frontend/build || echo "REACT_APP_API_URL not found in build output"
 
-    # - name: Build Succeeded
-    #   if: success()
-    #   run: echo -e "\e[32mBuild succeeded.\e[0m"
+    - name: Build Succeeded
+      if: success()
+      run: echo -e "\e[32mBuild succeeded.\e[0m"
 
-    # - name: Build Failed
-    #   if: failure()
-    #   shell: bash
-    #   run: |
-    #     echo -e "\e[31mBuild failed.\e[0m"
-    #     exit 1
+    - name: Build Failed
+      if: failure()
+      shell: bash
+      run: |
+        echo -e "\e[31mBuild failed.\e[0m"
+        exit 1
