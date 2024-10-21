@@ -6,8 +6,14 @@ import ProjectList from './components/ProjectList';
 import Contact from './components/Contact';
 import BackendHealthIndicator from './components/BackendHealthIndicator';
 import BackendStatus from './components/BackendStatus';
+import debugEnvironment from './utils/envDebug';
 
+// Run environment debug on app start
+const envVars = debugEnvironment();
 
+if (!envVars.REACT_APP_API_URL) {
+  console.error('Missing required environment variable: REACT_APP_API_URL');
+}
 console.log('Top level Environment variables:', process.env);
 console.log('Top level REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
 
