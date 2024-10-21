@@ -13,20 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pages: write       # Added for GitHub Pages deployment
+      id-token: write    # Necessary for actions/deploy-pages
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - uses: actions/checkout@v4
 
-    # - name: Debug REACT_APP_API_URL
-    #   shell: bash
-    #   run: |
-    #     echo -e "\e[32m@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\e[0m"
-    #     echo -e "\e[32mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
-    #     env
-    #     echo $(env | grep ACTIONS_RUNTIME_TOKEN)
-    #     exit 1
+    - name: Debug REACT_APP_API_URL
+      shell: bash
+      run: |
+        echo -e "\e[32m@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\e[0m"
+        echo -e "\e[32mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
+        env
+        echo $(env | grep ACTIONS_RUNTIME_TOKEN)
+        # exit 1  # Commented out to allow the workflow to continue
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -61,17 +63,17 @@ jobs:
         echo -e "\e[32m$(pwd)\e[0m"
         npm run build || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
 
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './frontend/build'
+
     - name: Deploy to GitHub Pages
-      env:
-        GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
-      run: |
-        cd frontend/build
-        git init
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add .
-        git commit -m "Deploy frontend"
-        git push --force "https://${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:gh-pages
+      id: deployment
+      uses: actions/deploy-pages@v4
 
     - name: Build Succeeded
       if: success()
