@@ -31,7 +31,7 @@ const ErrorPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <h1 className="text-3xl font-bold mb-4">Error</h1>
-      <p className="mb-6">API URL is not defined. Please contact support.</p>
+      <p className="mb-6">REACT_APP_API_URL is not defined. Please contact support.</p>
       <div className="space-y-2 text-left">
         <p>Build time (Argentina): <span className="font-semibold">{buildTime}</span></p>
         <p>Current time (Argentina): <span className="font-semibold">{currentTime}</span></p>
