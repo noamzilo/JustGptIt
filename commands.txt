@@ -1,0 +1,28 @@
+frontend
+act -j build-and-deploy \
+ -W .github/workflows/deploy_frontend.yml \
+ --secret-file /home/noams/src/personal_website/frontend/.secrets_frontend
+
+npm run build
+ npx serve -s build
+
+ backend
+act --secret-file /home/noams/src/personal_website/backend/.secrets_backend --job deploy -W ~/src/personal_website/.github/workflows/deploy_backend.yml --bind /var/run/docker.sock
+cd ~/src/personal_website/backend
+docker build -t personal-website-backend .
+docker run -it -p 8080:8080 -e GCP_PROJECT_ID=academic-veld-436919-g0 --env-file /home/noams/src/personal_website/backend/.secrets_backend --env-file /home/noams/src/personal_website/backend/.env /bin/bash
+
+docker run -it -p 8080:8080 \
+  --env-file /home/noams/src/personal_website/backend/.secrets_backend \
+  --env-file /home/noams/src/personal_website/backend/.env \
+  personal-website-backend \
+  /bin/bash
+
+  
+Debug:
+ctrl+shift+p
+Remote-Containers: Attach to Running Container
+
+Run as deploy:
+npm run build
+npx serve -s build
