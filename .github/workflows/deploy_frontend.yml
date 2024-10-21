@@ -25,10 +25,8 @@ jobs:
       shell: bash
       env:
         REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
-        AAAA: ${{ env.REACT_APP_ENVIRONMENT }}
       run: |
         echo -e "\e[31mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
-        echo -e "\e[31mAAAA=${AAAA}\e[0m"
         exit 1
 
     - name: Set up Node.js
@@ -38,20 +36,20 @@ jobs:
 
     - name: Print Environment Variables and Secrets
       shell: bash
+      env:
+        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+        REACT_APP_ENVIRONMENT: ${{ secrets.REACT_APP_ENVIRONMENT }}
       run: |
-        printf "\033[31mREACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}\033[0m\n"
-        printf "\033[31mREACT_APP_ENVIRONMENT=${{ secrets.REACT_APP_ENVIRONMENT }}\033[0m\n"
+        echo -e "\e[31mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
+        echo -e "\e[31mREACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT}\e[0m"
         # Uncomment the following line to print GITHUB_TOKEN (not recommended)
-        # printf "\033[31mGITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}\033[0m\n"
+        # echo -e "\e[31mGITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}\e[0m"
 
     - name: Install dependencies
       shell: bash
       run: |
         cd frontend
-        if ! npm ci; then
-          printf "\033[31mInstall dependencies step failed.\033[0m\n"
-          exit 1
-        fi
+        npm ci || (echo -e "\e[31mInstall dependencies step failed.\e[0m" && exit 1)
 
     - name: Build
       shell: bash
@@ -60,37 +58,29 @@ jobs:
         REACT_APP_ENVIRONMENT: ${{ secrets.REACT_APP_ENVIRONMENT }}
       run: |
         cd frontend
-        if ! npm run build; then
-          printf "\033[31mBuild step failed.\033[0m\n"
-          exit 1
-        fi
+        npm run build || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-      continue-on-error: true
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
         path: './frontend/build'
-      continue-on-error: true
 
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
-      continue-on-error: true
 
-    # This step runs when any previous step fails
+    - name: Build Succeeded
+      if: success()
+      run: echo "Build succeeded."
+
     - name: Build Failed
       if: failure()
       shell: bash
       run: |
-        printf "\033[31mBuild failed.\033[0m\n"
+        echo -e "\e[31mBuild failed.\e[0m"
         exit 1
-
-    # This step runs when all previous steps succeed
-    - name: Build Succeeded
-      if: success()
-      run: echo "Build succeeded."
