@@ -58,7 +58,11 @@ jobs:
         REACT_APP_BUILD_TIME: $(date +'%Y-%m-%dT%H:%M:%S%z' -d 'TZ="America/Argentina/Buenos_Aires"')
       run: |
         cd frontend
+        echo -e "\e[31mBuilding with environment variables:\e[0m"
+        env | grep REACT_APP
         npm run build || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
+        echo "Build completed. Checking build output:"
+        grep -r REACT_APP build
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
