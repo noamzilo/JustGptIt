@@ -2,7 +2,7 @@ name: Deploy Frontend
 
 on:
   push:
-    branches: [ main, staging, frontend ]
+    branches: [main, staging, frontend]
     paths:
       - 'frontend/**'
       - '.github/workflows/deploy_frontend.yml'
@@ -12,20 +12,12 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pages: write
-      id-token: write
-    env:
-      REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
-      # ACTIONS_RUNTIME_TOKEN: ${{ secrets.ACTIONS_RUNTIME_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      contents: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - uses: actions/checkout@v4
-
-      
 
     # - name: Debug REACT_APP_API_URL
     #   shell: bash
@@ -45,7 +37,6 @@ jobs:
     - name: Print Environment Variables and Secrets
       shell: bash
       env:
-        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
         REACT_APP_ENVIRONMENT: ${{ env.REACT_APP_ENVIRONMENT }}
       run: |
         echo -e "\e[32mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
@@ -61,9 +52,6 @@ jobs:
 
     - name: Build
       shell: bash
-      # env:
-      #   REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
-      #   REACT_APP_ENVIRONMENT: ${{ env.REACT_APP_ENVIRONMENT }}
       run: |
         cd frontend
         mkdir -p build_logs
@@ -72,18 +60,31 @@ jobs:
         echo -e "\e[32mBuilding with environment variables:\e[0m"
         env
         echo -e "\e[32m$(pwd)\e[0m"
-        npm run build --verbose > build_logs/build_stdout_${TIMESTAMP}.log 2> build_logs/build_stderr_${TIMESTAMP}.log || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
-        echo -e "\e[32mBuild completed. Checking build output:\e[0m"
+        npm run build || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
+        # echo -e "\e[32mBuild completed. Checking build output:\e[0m"
         # grep -r REACT_APP build || echo "No REACT_APP variables found in build output"
-        grep -rho '"REACT_APP_[^"]*":"[^"]*"' build/ | \
-          sed -E 's/"([^"]+)":"([^"]+)"/\1=\2/' | \
-          awk '{print "\032[32m" $0 "\032[0m"}' || \
-          echo "No REACT_APP variables found in build output"
+        # grep -rho '"REACT_APP_[^"]*":"[^"]*"' build/ | \
+        #   sed -E 's/"([^"]+)":"([^"]+)"/\1=\2/' | \
+        #   awk '{print "\032[32m" $0 "\032[0m"}' || \
+        #   echo "No REACT_APP variables found in build output"
+
+    - name: Deploy to GitHub Pages
+      env:
+        GITHUB_REPOSITORY: ${{ env.GITHUB_REPOSITORY }}
+      run: |
+        echo GITHUB_REPOSITORY:${GITHUB_REPOSITORY}
+        cd frontend/build
+        git init
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "Deploy frontend"
+        git push --force "https://${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:gh-pages
 
     # - name: Setup Pages
     #   uses: actions/configure-pages@v4
-    # #   with:
-    # #     token: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     token: ${{ secrets.GITHUB_TOKEN }}
 
     # - name: Upload artifact
     #   uses: actions/upload-pages-artifact@v3
