@@ -28,6 +28,9 @@ jobs:
 
     - name: Debug REACT_APP_API_URL
       shell: bash
+      env:
+        REACT_APP_API_URL: ${{ env.REACT_APP_API_URL }}
+        REACT_APP_ENVIRONMENT: ${{ env.REACT_APP_ENVIRONMENT }}
       run: |
         echo -e "\e[32m@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\e[0m"
         echo -e "\e[32mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
@@ -35,69 +38,69 @@ jobs:
         echo $(env | grep ACTIONS_RUNTIME_TOKEN)
         # exit 1  # Commented out to allow the workflow to continue
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+    # - name: Set up Node.js
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: '20'
 
-    - name: Print Environment Variables and Secrets
-      shell: bash
-      env:
-        REACT_APP_ENVIRONMENT: ${{ env.REACT_APP_ENVIRONMENT }}
-      run: |
-        echo -e "\e[32mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
-        echo -e "\e[32mREACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT}\e[0m"
-        env
-        echo ACTIONS_RUNTIME_TOKEN=$(env | grep ACTIONS_RUNTIME_TOKEN)
+    # - name: Print Environment Variables and Secrets
+    #   shell: bash
+    #   env:
+    #     REACT_APP_ENVIRONMENT: ${{ env.REACT_APP_ENVIRONMENT }}
+    #   run: |
+    #     echo -e "\e[32mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
+    #     echo -e "\e[32mREACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT}\e[0m"
+    #     env
+    #     echo ACTIONS_RUNTIME_TOKEN=$(env | grep ACTIONS_RUNTIME_TOKEN)
 
-    - name: Install dependencies
-      shell: bash
-      run: |
-        cd frontend
-        npm ci 2>&1 || (echo -e "\e[31mInstall dependencies step failed.\e[0m" && exit 1)
+    # - name: Install dependencies
+    #   shell: bash
+    #   run: |
+    #     cd frontend
+    #     npm ci 2>&1 || (echo -e "\e[31mInstall dependencies step failed.\e[0m" && exit 1)
 
-    - name: Build
-      shell: bash
-      run: |
-        npm install env-cmd or npm install -g env-cmd
-        cd frontend
-        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-        export REACT_APP_BUILD_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
-        echo -e "\e[32mBuilding with environment variables:\e[0m"
-        env
-        echo -e "\e[32m$(pwd)\e[0m"
+    # - name: Build
+    #   shell: bash
+    #   run: |
+    #     npm install env-cmd or npm install -g env-cmd
+    #     cd frontend
+    #     TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+    #     export REACT_APP_BUILD_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
+    #     echo -e "\e[32mBuilding with environment variables:\e[0m"
+    #     env
+    #     echo -e "\e[32m$(pwd)\e[0m"
 
-        # Create .env file with environment variables for the build
-        echo "REACT_APP_BUILD_TIME=${TIMESTAMP}" > .env
-        echo "REACT_APP_API_URL=${REACT_APP_API_URL}" >> .env
-        echo "REACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT}" >> .env
-        echo -e "\e[32mCreated .env file for npm run build.\e[0m"
-        echo .env contents:
-        cat .env
-        npm run build || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
-        rm -f .env
-        echo -e "\e[32mDeleted .env file after build.\e[0m"
+    #     # Create .env file with environment variables for the build
+    #     echo "REACT_APP_BUILD_TIME=${TIMESTAMP}" > .env
+    #     echo "REACT_APP_API_URL=${REACT_APP_API_URL}" >> .env
+    #     echo "REACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT}" >> .env
+    #     echo -e "\e[32mCreated .env file for npm run build.\e[0m"
+    #     echo .env contents:
+    #     cat .env
+    #     npm run build || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
+    #     rm -f .env
+    #     echo -e "\e[32mDeleted .env file after build.\e[0m"
 
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
+    # - name: Setup Pages
+    #   uses: actions/configure-pages@v4
 
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: './frontend/build'
+    # - name: Upload artifact
+    #   uses: actions/upload-pages-artifact@v3
+    #   with:
+    #     path: './frontend/build'
 
-    - name: Deploy to GitHub Pages
-      if: ${{ !env.ACT }} # Only run this step if NOT in act
-      id: deployment
-      uses: actions/deploy-pages@v4
+    # - name: Deploy to GitHub Pages
+    #   if: ${{ !env.ACT }} # Only run this step if NOT in act
+    #   id: deployment
+    #   uses: actions/deploy-pages@v4
 
-    - name: Build Succeeded
-      if: success()
-      run: echo -e "\e[32mBuild succeeded.\e[0m"
+    # - name: Build Succeeded
+    #   if: success()
+    #   run: echo -e "\e[32mBuild succeeded.\e[0m"
 
-    - name: Build Failed
-      if: failure()
-      shell: bash
-      run: |
-        echo -e "\e[31mBuild failed.\e[0m"
-        exit 1
+    # - name: Build Failed
+    #   if: failure()
+    #   shell: bash
+    #   run: |
+    #     echo -e "\e[31mBuild failed.\e[0m"
+    #     exit 1
