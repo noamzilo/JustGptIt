@@ -1,5 +1,10 @@
 name: Deploy Frontend
 
+
+env:
+  REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
+  REACT_APP_ENVIRONMENT: ${{ vars.REACT_APP_ENVIRONMENT }}
+
 on:
   push:
     branches: [main, staging, frontend]
@@ -53,9 +58,6 @@ jobs:
 
     - name: Build
       shell: bash
-      env:
-        REACT_APP_API_URL: ${{ env.REACT_APP_API_URL }}
-        REACT_APP_ENVIRONMENT: ${{ env.REACT_APP_ENVIRONMENT }}
       run: |
         npm install env-cmd or npm install -g env-cmd
         cd frontend
