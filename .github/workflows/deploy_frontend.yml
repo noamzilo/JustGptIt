@@ -55,6 +55,7 @@ jobs:
       shell: bash
       env:
         REACT_APP_API_URL: ${{ env.REACT_APP_API_URL }}
+        REACT_APP_ENVIRONMENT: ${{ env.REACT_APP_ENVIRONMENT }}
       run: |
         npm install env-cmd or npm install -g env-cmd
         cd frontend
@@ -65,9 +66,12 @@ jobs:
         echo -e "\e[32m$(pwd)\e[0m"
 
         # Create .env file with environment variables for the build
-        echo "TIMESTAMP=${TIMESTAMP}" > .env
+        echo "REACT_APP_BUILD_TIME=${TIMESTAMP}" > .env
         echo "REACT_APP_API_URL=${REACT_APP_API_URL}" >> .env
-        echo -e "\e[32mCreated .env file with TIMESTAMP and REACT_APP_API_URL.\e[0m"
+        echo "REACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT}" >> .env
+        echo -e "\e[32mCreated .env file for npm run build.\e[0m"
+        echo .env contents:
+        cat .env
         npm run build || (echo -e "\e[31mBuild step failed.\e[0m" && exit 1)
         rm -f .env
         echo -e "\e[32mDeleted .env file after build.\e[0m"
