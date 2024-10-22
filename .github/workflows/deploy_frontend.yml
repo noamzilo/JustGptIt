@@ -73,6 +73,7 @@ jobs:
         path: './frontend/build'
 
     - name: Deploy to GitHub Pages
+      if: ${{ !env.ACT }} # Only run this step if NOT in act
       id: deployment
       uses: actions/deploy-pages@v4
 
