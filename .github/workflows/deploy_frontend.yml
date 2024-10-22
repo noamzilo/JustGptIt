@@ -1,13 +1,14 @@
 name: Deploy Frontend
 
 
-# env:
-#   REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
-#   REACT_APP_ENVIRONMENT: ${{ vars.REACT_APP_ENVIRONMENT }}
 env:
-  REACT_APP_API_URL: MY_REACT_APP_API_URL
-  REACT_APP_ENVIRONMENT: MY_REACT_APP_ENVIRONMENT
-  CORS_ALLOWED_ORIGINS: CORS_ALLOWED_ORIGINS
+  REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
+  REACT_APP_ENVIRONMENT: ${{ vars.REACT_APP_ENVIRONMENT }}
+  CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
+# env:
+#   REACT_APP_API_URL: MY_REACT_APP_API_URL
+#   REACT_APP_ENVIRONMENT: MY_REACT_APP_ENVIRONMENT
+#   CORS_ALLOWED_ORIGINS: CORS_ALLOWED_ORIGINS
 
 
 on:
@@ -26,7 +27,7 @@ jobs:
       pages: write       # Added for GitHub Pages deployment
       id-token: write    # Necessary for actions/deploy-pages
     environment:
-      name: prod
+      name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'staging' }}
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - uses: actions/checkout@v4
@@ -37,6 +38,7 @@ jobs:
         
         echo -e "\e[32m@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\e[0m"
         echo -e "\e[32mREACT_APP_API_URL=${REACT_APP_API_URL}\e[0m"
+        echo -e "\e[32mREACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT}\e[0m"
         echo -e "\e[32mCORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}\e[0m"
         env
         echo $(env | grep ACTIONS_RUNTIME_TOKEN)
