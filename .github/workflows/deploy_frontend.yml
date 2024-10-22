@@ -54,6 +54,7 @@ jobs:
     - name: Build
       shell: bash
       run: |
+        npm install env-cmd or npm install -g env-cmd
         cd frontend
         mkdir -p build_logs
         TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
