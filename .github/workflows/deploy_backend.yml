@@ -20,9 +20,9 @@ jobs:
     environment:
       # name: 'gh-pages'
       name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'staging' }}
-    defaults:
-      run:
-        working-directory: './backend'
+    # defaults:
+    #   run:
+    #     working-directory: './backend'
 
     steps:
     - name: DEBUG VARS
@@ -185,7 +185,7 @@ jobs:
         PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         CLOUD_RUN_SERVICE_ACCOUNT_NAME: ${{ secrets.GCP_CLOUD_RUN_SERVICE_ACCOUNT_NAME }}
       run: |
-  
+        # cd backend
         REGION="us-central1"
         SERVICE_NAME="personal-website-backend"
         GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
