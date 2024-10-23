@@ -190,8 +190,11 @@ jobs:
         SERVICE_NAME="personal-website-backend"
         GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
         SERVICE_ACCOUNT="${CLOUD_RUN_SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"  # Use runtime service account
-        ESCAPED_CORS_ALLOWED_ORIGINS=$(echo $CORS_ALLOWED_ORIGINS | sed 's/,/\\,/g')
-        EXTRA_VARS="--set-env-vars=DEBUG=${DEBUG},CORS_ALLOWED_ORIGINS=\"${ESCAPED_CORS_ALLOWED_ORIGINS}\""
+        
+        echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_temp.yaml
+        echo 'DEBUG: "${DEBUG}"' >> env_temp.yaml
+
+        EXTRA_VARS="--env-vars-file env_temp.yaml"
         echo -e "\e[32EXTRA_VARS=${EXTRA_VARS}\e[0m"
 
         gcloud run deploy $SERVICE_NAME \
@@ -202,6 +205,8 @@ jobs:
           --allow-unauthenticated \
           --service-account=$SERVICE_ACCOUNT \
           ${EXTRA_VARS}
+        
+        rm -f env_temp.yaml
 
         echo -e "\033[0;32mStep succeeded: Deployed to Cloud Run.\033[0m"
 
