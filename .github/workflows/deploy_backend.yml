@@ -10,16 +10,27 @@ on:
       - '.github/workflows/deploy_backend.yml'
   workflow_dispatch:  # Allows manual trigger
 
+env:
+  CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
+  DEBUG: ${{ vars.DEBUG }}
+
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'staging' }}
+    # environment:
+    #   name: 'gh-pages'
+      # name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'staging' }}
     defaults:
       run:
         working-directory: ./backend
 
     steps:
+    # - name: DEBUG VARS
+    #   run: |
+    #     echo -e "\e[32mCORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}.\e[0m"
+    #     echo -e "\e[32mDEBUG=${DEBUG}.\e[0m"
+
     # 1. Checkout the repository
     - name: Checkout Repository
       uses: actions/checkout@v2
@@ -173,8 +184,6 @@ jobs:
       env: 
         PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         CLOUD_RUN_SERVICE_ACCOUNT_NAME: ${{ secrets.GCP_CLOUD_RUN_SERVICE_ACCOUNT_NAME }}
-        CORS_ALLOWED_ORIGINS: ${{ env.CORS_ALLOWED_ORIGINS }}
-        DEBUG: ${{ env.DEBUG }}
       run: |
   
         REGION="us-central1"

@@ -14,6 +14,7 @@ npx serve -s build
 
  backend
 act --secret-file /home/noams/src/personal_website/backend/.secrets_backend --job deploy -W ~/src/personal_website/.github/workflows/deploy_backend.yml --bind /var/run/docker.sock
+
 cd ~/src/personal_website/backend
 docker build -t personal-website-backend .
 docker run -it -p 8080:8080 -e GCP_PROJECT_ID=academic-veld-436919-g0 --env-file /home/noams/src/personal_website/backend/.secrets_backend --env-file /home/noams/src/personal_website/backend/.env /bin/bash
