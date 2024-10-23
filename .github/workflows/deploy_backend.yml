@@ -18,9 +18,9 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # environment:
-    #   name: 'gh-pages'
-      # name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'staging' }}
+    environment:
+      # name: 'gh-pages'
+      name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'staging' }}
     defaults:
       run:
         working-directory: './backend'
