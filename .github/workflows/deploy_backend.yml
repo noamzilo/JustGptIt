@@ -193,8 +193,10 @@ jobs:
         GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
         SERVICE_ACCOUNT="${CLOUD_RUN_SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"  # Use runtime service account
         
+        export BUILD_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
         echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_temp.yaml
         echo 'DEBUG: "${DEBUG}"' >> env_temp.yaml
+        echo "BUILD_TIME: ${BUILD_TIME}" >> env_temp.yaml
 
         EXTRA_VARS="--env-vars-file env_temp.yaml"
         echo -e "\e[32EXTRA_VARS=${EXTRA_VARS}\e[0m"
