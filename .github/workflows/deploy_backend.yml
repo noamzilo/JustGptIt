@@ -23,7 +23,7 @@ jobs:
       # name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'staging' }}
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: './backend'
 
     steps:
     # - name: DEBUG VARS
@@ -198,7 +198,7 @@ jobs:
           --platform managed \
           --allow-unauthenticated \
           --service-account=$SERVICE_ACCOUNT \
-          --set-env-vars "DEBUG=${DEBUG},CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}"
+          --set-env-vars "DEBUG=${DEBUG},CORS_ALLOWED_ORIGINS=\\"http://localhost:3000\\""
 
         echo -e "\033[0;32mStep succeeded: Deployed to Cloud Run.\033[0m"
 
