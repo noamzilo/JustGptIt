@@ -1,7 +1,7 @@
 
 In all answers
 0. Help me with very small steps to give me a chance to reply. When I say you can move on, give the next steps, otherwise help me debug.
-1. always generate all files in full. nothing like "# ... (rest of your existing code)". I need to be able to copy everything. Show full paths of files.
+1. Always generate all files in full. nothing like "# ... (rest of your existing code)". I need to be able to copy everything. Show full paths of files.
 2. Never delete existing features if not specifically requested to. Post files with incremental changes that I can view with git diff.
 3. The answer should be ONLY bullets of what do do, step by step. Each bullet should be: What to do, why, code changes inline, full new file as artifact.
 4. Explain why things are done so that I can learn

@@ -17,6 +17,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:local": "env-cmd -f ./.env.stage npm run-script build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "mock-api": "json-server --watch ../mock-db.json --port 8080",
