@@ -42,7 +42,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # VS Code
-.vscode/
 EOF
 
 # ai
@@ -69,3 +68,7 @@ backend/creds/
 /backend/sandbox
 *.secrets*
 /test_key.json
+
+
+
+!.vscode/
