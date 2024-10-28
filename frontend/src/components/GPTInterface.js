@@ -27,14 +27,6 @@ function GPTInterface() {
             <input type="text" placeholder="Message ChatGPT" />
             <button className={styles.sendButton}>↑</button>
           </div>
-
-          <div className={styles.actionButtons}>
-            <button>Create image</button>
-            <button>Summarize text</button>
-            <button>Make a plan</button>
-            <button>Analyze data</button>
-            <button>More</button>
-          </div>
         </section>
 
         {/* Disclaimer Section */}

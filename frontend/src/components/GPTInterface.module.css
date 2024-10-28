@@ -97,9 +97,9 @@
 
 /* Updated Send Button */
 .inputContainer .sendButton {
-  background-color: #3a3a3a;
+  background-color: #ffffff;
   border: none;
-  color: #ffffff;
+  color: #101010;
   width: 35px;
   height: 35px;
   border-radius: 50%; /* Circle shape for the button */
@@ -112,7 +112,7 @@
 }
 
 .inputContainer .sendButton:hover {
-  background-color: #4e4e4e;
+  background-color: #c1c1c1;
 }
 
 /* Action Buttons */
