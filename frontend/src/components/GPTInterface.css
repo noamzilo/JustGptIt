@@ -1,0 +1,132 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #ffffff;
+  }
+  
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    background-color: #2e2e2e;
+    width: 250px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+  }
+  
+  .menu ul {
+    list-style: none;
+  }
+  
+  .menu li {
+    margin: 15px 0;
+    font-size: 18px;
+  }
+  
+  .footer {
+    font-size: 14px;
+    color: #a0a0a0;
+    text-align: center;
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    padding: 30px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header h1 {
+    font-size: 24px;
+  }
+  
+  .user-icon {
+    width: 35px;
+    height: 35px;
+    background-color: #4caf50;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  
+  .query-section {
+    margin-top: 30px;
+  }
+  
+  .query-section h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+  
+  .input-container {
+    display: flex;
+    align-items: center;
+    background-color: #3e3e3e;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .input-container input {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    flex: 1;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  .input-container .send-button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .action-buttons button {
+    background-color: #3a3a3a;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .action-buttons button:hover {
+    background-color: #4e4e4e;
+  }
+  
