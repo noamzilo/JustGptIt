@@ -1,34 +1,34 @@
 import React from "react";
-import "./GPTInterface.css";
+import styles from "./GPTInterface.module.css"; // Import the CSS Module
 
 function GPTInterface() {
   return (
-    <div className="container">
-      <aside className="sidebar">
-        <div className="logo">ChatGPT</div>
-        <nav className="menu">
+    <div className={styles.container}>
+      <aside className={styles.sidebar}>
+        <div className={styles.logo}>ChatGPT</div>
+        <nav className={styles.menu}>
           <ul>
             <li>ChatGPT</li>
             <li>Explore GPTs</li>
           </ul>
         </nav>
-        <div className="footer">Upgrade plan</div>
+        <div className={styles.footer}>Upgrade plan</div>
       </aside>
 
-      <main className="main-content">
-        <header className="header">
+      <main className={styles.mainContent}>
+        <header className={styles.header}>
           <h1>ChatGPT</h1>
-          <div className="user-icon">N</div>
+          <div className={styles.userIcon}>N</div>
         </header>
 
-        <section className="query-section">
+        <section className={styles.querySection}>
           <h2>What can I help with?</h2>
-          <div className="input-container">
+          <div className={styles.inputContainer}>
             <input type="text" placeholder="Message ChatGPT" />
-            <button className="send-button">↑</button>
+            <button className={styles.sendButton}>↑</button>
           </div>
 
-          <div className="action-buttons">
+          <div className={styles.actionButtons}>
             <button>Create image</button>
             <button>Summarize text</button>
             <button>Make a plan</button>
@@ -36,6 +36,11 @@ function GPTInterface() {
             <button>More</button>
           </div>
         </section>
+
+        {/* Disclaimer Section */}
+        <footer className={styles.disclaimer}>
+          ChatGPT can make mistakes. Check important info.
+        </footer>
       </main>
     </div>
   );
