@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import About from './components/About';
 import ProjectList from './components/ProjectList';
@@ -9,20 +9,11 @@ import BackendStatus from './components/BackendStatus';
 import GPTInterface from './components/GPTInterface';
 import debugEnvironment from './utils/envDebug';
 
-// Run environment debug on app start
 const envVars = debugEnvironment();
 
-const AppContent = () => {
-  const location = useLocation();
-  const isGPTRoute = location.pathname === '/gpt';
-
-  // Only show the main app content if we're not on the GPT route
-  if (isGPTRoute) {
-    return <GPTInterface />;
-  }
-
+function MainLayout() {
   return (
-    <div className="App">
+    <div className="App bg-white">
       <h1>Welcome to My Personal Website</h1>
       <Header />
       <BackendHealthIndicator />
@@ -35,14 +26,14 @@ const AppContent = () => {
       </Routes>
     </div>
   );
-};
+}
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/gpt" element={<GPTInterface />} />
-        <Route path="/*" element={<AppContent />} />
+        <Route path="/*" element={<MainLayout />} />
       </Routes>
     </Router>
   );
