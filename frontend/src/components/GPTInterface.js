@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./GPTInterface.module.css"; // Import the CSS Module
+import ChatComponent from "./ChatComponent";
 
 function GPTInterface() {
   const [message, setMessage] = useState(""); // Track the message input
@@ -31,17 +32,7 @@ function GPTInterface() {
         <section className={styles.querySection}>
           <h2>What can I help with?</h2>
           <div className={styles.inputContainer}>
-            <input
-              type="text"
-              placeholder="Message ChatGPT"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)} // Update message on input change
-            />
-            <button
-              className={`${styles.sendButton} ${message ? styles.sendButtonActive : ""}`}
-            >
-              ↑
-            </button>
+            <ChatComponent />
           </div>
         </section>
 
