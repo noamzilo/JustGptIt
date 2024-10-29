@@ -1,28 +1,13 @@
-import React, { useState } from "react";
-import styles from "./GPTInterface.module.css"; // Import the CSS Module
-import ChatComponent from "./ChatComponent";
+// GPTInterface.js
+import React from "react";
+import styles from "./GPTInterface.module.css";
+import Sidebar from "./sidebar/Sidebar";
+import ChatComponent from "./chat/Chat";
 
 function GPTInterface() {
-  const [message, setMessage] = useState(""); // Track the message input
-
   return (
     <div className={styles.container}>
-      <aside className={styles.sidebar}>
-        <div className={styles.sidebarHeader}>
-          <button className={styles.closeSidebarButton}>☰</button>
-          <div className={styles.logo}>ChatGPT</div>
-          <button className={styles.newChatButton}>＋</button>
-        </div>
-
-        <nav className={styles.menu}>
-          <ul>
-            <li>ChatGPT</li>
-            <li>Explore GPTs</li>
-          </ul>
-        </nav>
-        <div className={styles.footer}>Upgrade plan</div>
-      </aside>
-
+      <Sidebar />
       <main className={styles.mainContent}>
         <header className={styles.header}>
           <h1>ChatGPT</h1>
