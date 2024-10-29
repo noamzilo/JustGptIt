@@ -5,22 +5,13 @@
   box-sizing: border-box;
 }
 
-body {
-  font-family: system-ui, sans-serif;
-}
-
-.main-container {
-  display: flex;
-  height: 100vh;
-  align-items: flex-start;
-  /* Aligns sidebar and main content titles to the same top line */
-  font-family: system-ui, sans-serif;
-}
 
 /* Container Styles */
 .container {
   display: flex;
   height: 100vh;
+  background: #212121;
+  font-family: system-ui, sans-serif;
 }
 
 /* Sidebar Styles */

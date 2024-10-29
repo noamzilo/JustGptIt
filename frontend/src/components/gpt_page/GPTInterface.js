@@ -31,9 +31,7 @@ function GPTInterface() {
 
         <section className={styles.querySection}>
           <h2>What can I help with?</h2>
-          <div className={styles.inputContainer}>
-            <ChatComponent />
-          </div>
+          <ChatComponent />
         </section>
 
         <footer className={styles.disclaimer}>
