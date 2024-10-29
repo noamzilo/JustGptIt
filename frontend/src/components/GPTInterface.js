@@ -5,8 +5,12 @@ function GPTInterface() {
   return (
     <div className={styles.container}>
       <aside className={styles.sidebar}>
+        <div className={styles.sidebarHeader}>
+          <button className={styles.closeSidebarButton}>☰</button>
+          <div className={styles.logo}>ChatGPT</div>
+          <button className={styles.newChatButton}>＋</button>
+        </div>
 
-        <div className={styles.logo}>ChatGPT</div>
         <nav className={styles.menu}>
           <ul>
             <li>ChatGPT</li>

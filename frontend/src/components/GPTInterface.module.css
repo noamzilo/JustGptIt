@@ -15,12 +15,16 @@
 .header h1,
 .sidebar .logo {
   margin: 0;
-  padding-top: 10px; /* Adjust this for alignment */
+  padding-top: 10px;
   font-size: 24px;
 }
 
+.sidebarHeader,
 .header {
-  padding-top: 10px; /* Match with sidebar's logo padding */
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* Sidebar */
@@ -33,10 +37,27 @@
   justify-content: space-between;
 }
 
+.sidebarHeader {
+  margin-bottom: 30px;
+}
+
 .logo {
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 30px;
+}
+
+.newChatButton,
+.closeSidebarButton {
+  background-color: transparent;
+  border: none;
+  color: #B4B4B4;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.newChatButton:hover,
+.closeSidebarButton:hover {
+  color: #ECECEC;
 }
 
 .menu ul {
@@ -58,17 +79,15 @@
 .mainContent {
   color: #E7E7E7;
   flex: 1;
-  padding: 30px;
+  padding: 20px 30px;
+  /* Adjusted padding to better align */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #212121
+  background-color: #212121;
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   color: #B4B4B4;
 }
 
@@ -89,7 +108,6 @@
 }
 
 .querySection {
-  /* background-color: NONE */
   margin-top: 30px;
   text-align: center;
 }
@@ -105,7 +123,7 @@
   align-items: center;
   background-color: #2F2F2F;
   padding: 10px 15px;
-  border-radius: 25px; /* Increased rounding for the input box */
+  border-radius: 25px;
 }
 
 .inputContainer input {
@@ -125,7 +143,7 @@
   color: #101010;
   width: 35px;
   height: 35px;
-  border-radius: 50%; /* Circle shape for the button */
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
