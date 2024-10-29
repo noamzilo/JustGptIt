@@ -1,30 +1,10 @@
-/* Scoped only to GPTInterface component */
+/* Container styles */
 .container {
   display: flex;
   height: 100vh;
   font-family: system-ui, sans-serif;
   background-color: #1e1e1e;
   color: #ECECEC;
-}
-
-.sidebar .logo,
-.sidebar .menu li {
-  color: #B4B4B4;
-}
-
-.header h1,
-.sidebar .logo {
-  margin: 0;
-  padding-top: 10px;
-  font-size: 24px;
-}
-
-.sidebarHeader,
-.header {
-  padding-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 /* Sidebar */
@@ -37,7 +17,16 @@
   justify-content: space-between;
 }
 
+.sidebar .logo,
+.sidebar .menu li {
+  color: #B4B4B4;
+}
+
 .sidebarHeader {
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 30px;
 }
 
@@ -80,19 +69,25 @@
   color: #E7E7E7;
   flex: 1;
   padding: 20px 30px;
-  /* Adjusted padding to better align */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   background-color: #212121;
+  max-width: 800px;
+  /* Max width for larger screens */
+  margin: 0 auto;
 }
 
 .header {
   color: #B4B4B4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .header h1 {
   font-size: 24px;
+  margin: 0;
 }
 
 .userIcon {
@@ -117,7 +112,7 @@
   margin-bottom: 20px;
 }
 
-/* Updated Input Container */
+/* Input Container */
 .inputContainer {
   display: flex;
   align-items: center;
@@ -136,7 +131,6 @@
   padding-left: 5px;
 }
 
-/* Updated Send Button */
 .inputContainer .sendButton {
   background-color: #ffffff;
   border: none;
@@ -156,32 +150,105 @@
   background-color: #c1c1c1;
 }
 
-/* Action Buttons */
-.actionButtons {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-  justify-content: center;
-}
-
-.actionButtons button {
-  background-color: #3a3a3a;
-  color: #ffffff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.actionButtons button:hover {
-  background-color: #4e4e4e;
-}
-
 /* Disclaimer */
 .disclaimer {
   align-self: center;
   font-size: 12px;
   color: #a0a0a0;
   text-align: center;
+}
+
+/* Responsive Styles */
+
+/* For medium screens, reduce the width of the sidebar and main content */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 200px;
+    padding: 15px;
+  }
+
+  .mainContent {
+    max-width: 600px;
+    padding: 15px 20px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .querySection h2 {
+    font-size: 24px;
+  }
+}
+
+/* For small screens, make the layout stack vertically and hide some sidebar elements */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 10px;
+    order: 2;
+    /* Move sidebar to the bottom */
+  }
+
+  .mainContent {
+    width: 100%;
+    max-width: 100%;
+    padding: 15px;
+    order: 1;
+    /* Move main content to the top */
+  }
+
+  .sidebarHeader,
+  .menu,
+  .footer {
+    display: none;
+    /* Hide non-essential sidebar elements on small screens */
+  }
+
+  .userIcon {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .querySection h2 {
+    font-size: 22px;
+  }
+
+  .inputContainer {
+    padding: 8px 12px;
+  }
+}
+
+/* For extra small screens, further reduce font sizes and padding */
+@media (max-width: 480px) {
+  .mainContent {
+    padding: 10px;
+  }
+
+  .header h1 {
+    font-size: 18px;
+  }
+
+  .querySection h2 {
+    font-size: 20px;
+  }
+
+  .inputContainer input {
+    font-size: 14px;
+  }
+
+  .inputContainer .sendButton {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
 }
