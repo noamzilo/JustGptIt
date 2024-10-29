@@ -31,7 +31,7 @@
         
         // JavaScript settings
         "[javascript]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode",
+            "editor.defaultFormatter": "vscode.typescript-language-features",
             "editor.formatOnSave": true
         },
         "[javascriptreact]": {

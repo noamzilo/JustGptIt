@@ -5,6 +5,7 @@ function GPTInterface() {
   return (
     <div className={styles.container}>
       <aside className={styles.sidebar}>
+
         <div className={styles.logo}>ChatGPT</div>
         <nav className={styles.menu}>
           <ul>
