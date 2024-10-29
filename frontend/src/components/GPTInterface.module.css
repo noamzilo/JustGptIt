@@ -152,7 +152,7 @@
   margin-left: 10px;
 }
 
-.inputContainer .sendButton:hover {
+.sendButtonActive:hover {
   background-color: #c1c1c1;
 }
 
