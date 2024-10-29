@@ -1,4 +1,4 @@
-import GptQueryService from "../services/GptQueryService";
+import GptQueryService from "../../services/GptQueryService";
 import { useState } from "react";
 import styles from "./GPTInterface.module.css"; // Import the CSS Module
 
