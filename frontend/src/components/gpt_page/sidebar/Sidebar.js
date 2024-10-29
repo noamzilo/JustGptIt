@@ -7,16 +7,17 @@ function Sidebar() {
         <aside className={styles.sidebar}>
             <div className={styles.sidebarHeader}>
                 <button className={styles.closeSidebarButton}>☰</button>
-                <div className={styles.logo}>ChatGPT</div>
                 <button className={styles.newChatButton}>＋</button>
             </div>
+            <div className={styles.sidebarPinnedItems}>
+                <div className={styles.logo}>ChatGPT</div>
+                <div className={styles.logo}>ChatGPT2</div>
+            </div>
 
-            <nav className={styles.menu}>
-                <ul>
-                    <li>ChatGPT</li>
-                    <li>Explore GPTs</li>
-                </ul>
-            </nav>
+            <div className={styles.sidebarRecentChats}>
+                <div className={styles.sidebarRecentChat}>Chat1</div>
+                <div className={styles.sidebarRecentChat}>Chat2</div>
+            </div>
             <div className={styles.footer}>Upgrade plan</div>
         </aside>
     );
