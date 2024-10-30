@@ -2,62 +2,76 @@ import { useState, useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "./Chat.module.css";
 
-const ChatComponent = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [message, setMessage] = useState('');
-    const [isTyping, setIsTyping] = useState(false);
+const useTypeAnimation = (text, onComplete) => {
+    const [displayText, setDisplayText] = useState('');
+    const [isAnimating, setIsAnimating] = useState(false);
 
     useEffect(() => {
-        const queryParam = searchParams.get('query');
-        if (queryParam && queryParam !== message) {
-            setIsTyping(true);
-            const decodedQuery = decodeURIComponent(queryParam);
-            setMessage(''); // Clear the message first
+        if (!text) return;
 
-            let currentIndex = 0;
-            const typingInterval = setInterval(() => {
-                if (currentIndex < decodedQuery.length) {
-                    setMessage(prev => decodedQuery.slice(0, currentIndex + 1));
-                    currentIndex++;
-                } else {
-                    clearInterval(typingInterval);
-                    setIsTyping(false);
-                }
-            }, 50);
+        setIsAnimating(true);
+        let currentIndex = 0;
 
-            return () => clearInterval(typingInterval);
+        const typingInterval = setInterval(() => {
+            if (currentIndex < text.length) {
+                setDisplayText(text.slice(0, currentIndex + 1));
+                currentIndex++;
+            } else {
+                clearInterval(typingInterval);
+                setIsAnimating(false);
+                onComplete?.();
+            }
+        }, 50);
+
+        return () => clearInterval(typingInterval);
+    }, [text, onComplete]);
+
+    return { displayText, isAnimating };
+};
+
+const ChatComponent = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [inputValue, setInputValue] = useState('');
+
+    const queryParam = searchParams.get('query');
+    const decodedQuery = queryParam ? decodeURIComponent(queryParam) : '';
+
+    const { displayText, isAnimating } = useTypeAnimation(decodedQuery);
+
+    useEffect(() => {
+        if (displayText && !isAnimating) {
+            setInputValue(displayText);
         }
-    }, [searchParams]);
+    }, [displayText, isAnimating]);
 
-    const sendQuery = useCallback(async () => {
-        if (message.trim()) {
-            setSearchParams({ query: message });
-            setMessage('');
+    const handleSend = useCallback(() => {
+        if (inputValue.trim()) {
+            setSearchParams({ query: inputValue });
         }
-    }, [message, setSearchParams]);
+    }, [inputValue, setSearchParams]);
 
-    const handleKeyboardPress = useCallback((e) => {
+    const handleKeyPress = useCallback((e) => {
         if ((e.key === 'Enter' && !e.shiftKey) || e.key === 'ArrowUp') {
             e.preventDefault();
-            sendQuery();
+            handleSend();
         }
-    }, [sendQuery]);
+    }, [handleSend]);
 
     return (
         <div className={styles.inputContainer}>
             <input
                 type="text"
                 placeholder="Message ChatGPT"
-                value={message}
-                onChange={(e) => !isTyping && setMessage(e.target.value)}
-                onKeyDown={handleKeyboardPress}
-                className={isTyping ? styles.typing : ''}
-                readOnly={isTyping}
+                value={isAnimating ? displayText : inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyPress}
+                className={isAnimating ? styles.typing : ''}
+                readOnly={isAnimating}
             />
             <button
-                onClick={sendQuery}
-                className={`${styles.sendButton} ${message ? styles.sendButtonActive : ""}`}
-                disabled={!message.trim() || isTyping}
+                onClick={handleSend}
+                className={`${styles.sendButton} ${inputValue ? styles.sendButtonActive : ""}`}
+                disabled={!inputValue.trim() || isAnimating}
             >
                 ↑
             </button>
