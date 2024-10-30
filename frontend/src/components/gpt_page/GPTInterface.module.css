@@ -12,6 +12,12 @@
   font-family: system-ui, sans-serif;
 }
 
+@media (max-width: 768px) {
+  .pageContainer {
+    flex-direction: column;
+  }
+}
+
 /* Button Styles */
 .button {
   background-color: transparent;
@@ -23,154 +29,4 @@
 
 .button:hover {
   color: #ECECEC;
-}
-
-
-/* Main Content Styles */
-.mainContent {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  max-width: 800px;
-  margin: 0 auto;
-  padding-top: 20px;
-  color: #E7E7E7;
-  background-color: #212121;
-  height: 100vh;
-  /* Full height to ensure it spans the viewport */
-}
-
-.mainContent .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #B4B4B4;
-}
-
-.mainContent .header {
-  font-size: 24px;
-  margin: 0;
-}
-
-/* Adjusting Layout for Small Screens */
-@media (max-width: 768px) {
-  .main-container {
-    flex-direction: column;
-  }
-
-  .mainContent {
-    width: 100%;
-    padding-top: 10px;
-    /* Reduce top padding on smaller screens */
-  }
-}
-
-.mainContent .userIcon {
-  width: 35px;
-  height: 35px;
-  background-color: #4caf50;
-  color: #ffffff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-}
-
-.mainContent .querySection {
-  margin-top: 30px;
-  text-align: center;
-}
-
-.mainContent .querySection h2 {
-  font-size: 28px;
-  margin-bottom: 20px;
-}
-
-/* Disclaimer */
-.disclaimer {
-  margin-top: auto;
-  /* Pushes the disclaimer to the bottom */
-  font-size: 12px;
-  color: #a0a0a0;
-  text-align: center;
-  padding-bottom: 10px;
-  /* Add some spacing if needed */
-}
-
-/* Responsive Styles */
-@media (max-width: 1024px) {
-
-  .mainContent {
-    max-width: 600px;
-    padding: 15px 20px;
-  }
-
-  .header h1 {
-    font-size: 22px;
-  }
-
-  .querySection h2 {
-    font-size: 24px;
-  }
-}
-
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .mainContent {
-    width: 100%;
-    max-width: 100%;
-    padding: 15px;
-    order: 1;
-  }
-
-  .menu,
-  .footer {
-    display: none;
-  }
-
-  .userIcon {
-    width: 30px;
-    height: 30px;
-    font-size: 16px;
-  }
-
-  .header h1 {
-    font-size: 20px;
-  }
-
-  .querySection h2 {
-    font-size: 22px;
-  }
-
-  .inputContainer {
-    padding: 8px 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .mainContent {
-    padding: 10px;
-  }
-
-  .header h1 {
-    font-size: 18px;
-  }
-
-  .querySection h2 {
-    font-size: 20px;
-  }
-
-  .inputContainer input {
-    font-size: 14px;
-  }
-
-  .inputContainer .sendButton {
-    width: 30px;
-    height: 30px;
-    font-size: 18px;
-  }
 }

@@ -1,6 +1,6 @@
 // MainContent.js
 import React from "react";
-import styles from "../GPTInterface.module.css";
+import styles from "./MainContent.module.css";
 import ChatComponent from "../chat/Chat";
 
 const MainContent = () => {
