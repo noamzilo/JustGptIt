@@ -15,7 +15,7 @@
     align-items: center;
     justify-content: space-between;
     color: #B4B4B4;
-    font-size: 24px;
+    font-size: 8px;
     margin: 0;
 }
 
@@ -77,10 +77,6 @@
         padding: 15px 20px;
     }
 
-    .header h1 {
-        font-size: 22px;
-    }
-
     .querySection h2 {
         font-size: 24px;
     }
@@ -105,10 +101,6 @@
         font-size: 16px;
     }
 
-    .header h1 {
-        font-size: 20px;
-    }
-
     .querySection h2 {
         font-size: 22px;
     }
@@ -121,10 +113,6 @@
 @media (max-width: 480px) {
     .mainContent {
         padding: 10px;
-    }
-
-    .header h1 {
-        font-size: 18px;
     }
 
     .querySection h2 {
