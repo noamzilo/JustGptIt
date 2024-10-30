@@ -1,4 +1,5 @@
 frontend
+cd ~/src/personal_website
 act -j build-and-deploy \
 -W .github/workflows/deploy_frontend.yml \
 --secret-file /home/noams/src/personal_website/frontend/.secrets_frontend \
@@ -9,6 +10,7 @@ act -j build-and-deploy \
 
 
 Run as deploy:
+cd ~/src/personal_website/frontend
 npm run build
 npx serve -s build
 
