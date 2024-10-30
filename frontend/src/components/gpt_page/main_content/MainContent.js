@@ -7,7 +7,7 @@ const MainContent = () => {
     return (
         <main className={styles.mainContent}>
             <header className={styles.header}>
-                <h1>ChatGPT</h1>
+                <h1>Let Me GPT It For You</h1>
                 <div className={styles.userIcon}>N</div>
             </header>
 
