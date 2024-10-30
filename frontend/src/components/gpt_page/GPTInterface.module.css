@@ -47,14 +47,11 @@
   align-items: center;
   justify-content: space-between;
   color: #B4B4B4;
-  margin-top: 0;
-  /* Aligns header title with the sidebar logo */
 }
 
-.mainContent .header h1 {
+.mainContent .header {
   font-size: 24px;
   margin: 0;
-  /* Ensures alignment */
 }
 
 /* Adjusting Layout for Small Screens */
@@ -63,7 +60,6 @@
     flex-direction: column;
   }
 
-  .sidebar,
   .mainContent {
     width: 100%;
     padding-top: 10px;
@@ -145,10 +141,6 @@
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
-  .sidebar {
-    width: 200px;
-    padding: 15px;
-  }
 
   .mainContent {
     max-width: 600px;
@@ -169,12 +161,6 @@
     flex-direction: column;
   }
 
-  .sidebar {
-    width: 100%;
-    padding: 10px;
-    order: 2;
-  }
-
   .mainContent {
     width: 100%;
     max-width: 100%;
@@ -182,7 +168,6 @@
     order: 1;
   }
 
-  .sidebarHeader,
   .menu,
   .footer {
     display: none;
