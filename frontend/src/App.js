@@ -11,6 +11,7 @@ import debugEnvironment from './utils/envDebug';
 
 // Run environment debug on app start
 const envVars = debugEnvironment();
+console.debug(`envVars: {envVars}`)
 
 const AppContent = () => {
   const location = useLocation();
