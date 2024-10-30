@@ -1,6 +1,6 @@
 import GptQueryService from "../../../services/GptQueryService";
 import { useState } from "react";
-import styles from "../GPTInterface.module.css"; // Import the CSS Module
+import styles from "./Chat.module.css"; // Import the CSS Module
 
 
 function ChatComponent() {

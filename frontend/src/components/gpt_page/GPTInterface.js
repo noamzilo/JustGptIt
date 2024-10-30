@@ -6,7 +6,7 @@ import MainContent from "./main_content/MainContent";
 
 function GPTInterface() {
   return (
-    <div className={styles.container}>
+    <div className={styles.pageContainer}>
       <Sidebar />
       <MainContent />
     </div>
