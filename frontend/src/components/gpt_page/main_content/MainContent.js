@@ -1,7 +1,7 @@
 // MainContent.js
 import React from "react";
 import styles from "./MainContent.module.css";
-import ChatComponent from "../chat/Chat";
+import ChatComponent from "./chat/Chat";
 
 const MainContent = () => {
     return (
