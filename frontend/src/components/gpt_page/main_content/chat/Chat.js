@@ -51,7 +51,7 @@ const ChatComponent = () => {
     }, [inputValue, setSearchParams]);
 
     const handleKeyPress = useCallback((e) => {
-        if ((e.key === 'Enter' && !e.shiftKey) || e.key === 'ArrowUp') {
+        if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleSend();
         }
