@@ -35,8 +35,6 @@ const ChatComponent = () => {
         }
     }, [sendQuery]);
 
-    const buttonClass = message ? styles.sendButtonActive : styles.sendButton;
-
     return (
         <div className={styles.inputContainer}>
             <input
@@ -48,7 +46,7 @@ const ChatComponent = () => {
             />
             <button
                 onClick={sendQuery}
-                className={styles.button}
+                className={`${styles.sendButton} ${message ? styles.sendButtonActive : ""}`}
                 disabled={!message.trim()}
             >
                 ↑
