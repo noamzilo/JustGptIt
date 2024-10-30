@@ -39,7 +39,7 @@ const ChatComponent = () => {
     const handleAnimationComplete = useCallback((text) => {
         setInputValue(text);
         navigator.clipboard.writeText(text);
-        window.open('https://chat.openai.com', '_blank');
+        // window.open('https://chat.openai.com', '_blank');
     }, []);
 
     const { displayText, isAnimating } = useTypeAnimation(decodedQuery, handleAnimationComplete);
@@ -59,8 +59,7 @@ const ChatComponent = () => {
 
     return (
         <div className={styles.inputContainer}>
-            <input
-                type="text"
+            <textarea
                 placeholder="Message ChatGPT"
                 value={isAnimating ? displayText : inputValue}
                 onChange={(e) => setInputValue(e.target.value)}

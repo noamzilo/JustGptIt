@@ -1,20 +1,25 @@
 /* Input Container */
 .inputContainer {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     background-color: #2F2F2F;
     padding: 10px 15px;
     border-radius: 25px;
+    transition: all 0.2s ease;
 }
 
-.inputContainer input {
+.inputContainer textarea {
     background: transparent;
     border: none;
     color: #ffffff;
     flex: 1;
     font-size: 16px;
+    line-height: 1.5;
+    resize: none;
     outline: none;
-    padding-left: 5px;
+    padding: 5px;
+    max-height: calc(1.5em * 4 + 10px);
+    overflow-y: auto;
 }
 
 .typing {
