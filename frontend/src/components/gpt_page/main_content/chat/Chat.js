@@ -19,7 +19,7 @@ const useTypeAnimation = (text, onComplete) => {
             } else {
                 clearInterval(typingInterval);
                 setIsAnimating(false);
-                onComplete?.();
+                onComplete?.(text);
             }
         }, 50);
 
@@ -36,13 +36,13 @@ const ChatComponent = () => {
     const queryParam = searchParams.get('query');
     const decodedQuery = queryParam ? decodeURIComponent(queryParam) : '';
 
-    const { displayText, isAnimating } = useTypeAnimation(decodedQuery);
+    const handleAnimationComplete = useCallback((text) => {
+        setInputValue(text);
+        navigator.clipboard.writeText(text);
+        window.open('https://chat.openai.com', '_blank');
+    }, []);
 
-    useEffect(() => {
-        if (displayText && !isAnimating) {
-            setInputValue(displayText);
-        }
-    }, [displayText, isAnimating]);
+    const { displayText, isAnimating } = useTypeAnimation(decodedQuery, handleAnimationComplete);
 
     const handleSend = useCallback(() => {
         if (inputValue.trim()) {
