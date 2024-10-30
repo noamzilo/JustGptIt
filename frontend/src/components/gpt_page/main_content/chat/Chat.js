@@ -1,4 +1,6 @@
-import { useState, useCallback, useEffect } from "react";
+// ChatComponent.jsx
+
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "./Chat.module.css";
 
@@ -36,6 +38,8 @@ const ChatComponent = () => {
     const queryParam = searchParams.get('query');
     const decodedQuery = queryParam ? decodeURIComponent(queryParam) : '';
 
+    const textareaRef = useRef(null); // Ref for the textarea
+
     const handleAnimationComplete = useCallback((text) => {
         setInputValue(text);
         navigator.clipboard.writeText(text);
@@ -57,20 +61,37 @@ const ChatComponent = () => {
         }
     }, [handleSend]);
 
+    // Function to adjust the height and scroll
+    const adjustTextarea = useCallback(() => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            textarea.style.height = 'auto'; // Reset height
+            textarea.style.height = `${textarea.scrollHeight}px`; // Set to scrollHeight
+            textarea.scrollTop = textarea.scrollHeight; // Scroll to bottom
+        }
+    }, []);
+
+    useEffect(() => {
+        adjustTextarea();
+    }, [displayText, inputValue, adjustTextarea]);
+
     return (
         <div className={styles.inputContainer}>
             <textarea
+                ref={textareaRef}
                 placeholder="Message ChatGPT"
                 value={isAnimating ? displayText : inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
                 className={isAnimating ? styles.typing : ''}
                 readOnly={isAnimating}
+                aria-label="Message input"
             />
             <button
                 onClick={handleSend}
                 className={`${styles.sendButton} ${inputValue ? styles.sendButtonActive : ""}`}
                 disabled={!inputValue.trim() || isAnimating}
+                aria-label="Send Message"
             >
                 ↑
             </button>

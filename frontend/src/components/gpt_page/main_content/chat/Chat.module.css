@@ -1,13 +1,18 @@
+/* Chat.module.css */
+
 /* Input Container */
 .inputContainer {
     display: flex;
     align-items: flex-end;
+    /* Align items to the bottom to handle vertical growth */
     background-color: #2F2F2F;
     padding: 10px 15px;
     border-radius: 25px;
     transition: all 0.2s ease;
+    /* Smooth transition when container grows */
 }
 
+/* Textarea Styling */
 .inputContainer textarea {
     background: transparent;
     border: none;
@@ -15,30 +20,43 @@
     flex: 1;
     font-size: 16px;
     line-height: 1.5;
+    /* Define line height for consistent sizing */
     resize: none;
+    /* Prevent manual resizing */
     outline: none;
     padding: 5px;
+    min-height: calc(1.5em + 10px);
+    /* Minimum height for 1 line + padding */
     max-height: calc(1.5em * 4 + 10px);
+    /* 4 lines * line-height + padding */
     overflow-y: auto;
+    /* Show scrollbar when content exceeds 4 lines */
+    box-sizing: border-box;
+    /* Include padding in height calculations */
+    transition: height 0.2s ease;
+    /* Smooth height transition */
 }
 
+/* Typing Indicator */
 .typing {
     border-right: 2px solid #ffffff;
     animation: blink-caret 0.75s step-end infinite;
 }
 
+/* Caret Blink Animation */
 @keyframes blink-caret {
 
     from,
     to {
-        border-right-color: transparent
+        border-right-color: transparent;
     }
 
     50% {
-        border-right-color: #ffffff
+        border-right-color: #ffffff;
     }
 }
 
+/* Send Button Styling */
 .sendButton {
     background-color: #ffffff;
     border: none;
@@ -51,13 +69,20 @@
     justify-content: center;
     font-size: 20px;
     cursor: pointer;
-    margin-left: auto;
+    margin-left: 10px;
+    /* Space between textarea and button */
+    transition: background-color 0.2s ease;
 }
 
 .sendButton:hover {
     background-color: #c1c1c1;
 }
 
+.sendButtonActive {
+    /* Optional: Styles when the send button is active */
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .inputContainer {
         padding: 8px 12px;
@@ -65,8 +90,9 @@
 }
 
 @media (max-width: 480px) {
-    .inputContainer input {
+    .inputContainer textarea {
         font-size: 14px;
+        line-height: 1.4;
     }
 
     .sendButton {
@@ -74,4 +100,17 @@
         height: 30px;
         font-size: 18px;
     }
+}
+
+/* Visually Hidden (for accessibility) */
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
