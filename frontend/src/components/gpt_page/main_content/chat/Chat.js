@@ -1,4 +1,4 @@
-import GptQueryService from "../../../../services/GptQueryService";
+// import GptQueryService from "../../../../services/GptQueryService";
 import { useState, useCallback } from "react";
 import styles from "./Chat.module.css";
 
@@ -7,13 +7,13 @@ function ChatComponent() {
 
     const sendQuery = useCallback(async () => {
         if (message.trim()) {
-            const isValid = await GptQueryService.queryGPT(message);
-            if (isValid) {
-                console.log('Message sent successfully');
-            } else {
-                console.log('Message failed to send');
-            }
             setMessage('');
+            // const isValid = await GptQueryService.queryGPT(message);
+            // if (isValid) {
+            //     console.log('Message sent successfully');
+            // } else {
+            //     console.log('Message failed to send');
+            // }
         }
     }, [message]);
 
