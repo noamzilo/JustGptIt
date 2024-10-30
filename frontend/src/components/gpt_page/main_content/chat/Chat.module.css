@@ -3,13 +3,11 @@
 /* Input Container */
 .inputContainer {
     display: flex;
-    align-items: flex-end;
-    /* Align items to the bottom to handle vertical growth */
+    align-items: center;
     background-color: #2F2F2F;
     padding: 10px 15px;
     border-radius: 25px;
     transition: all 0.2s ease;
-    /* Smooth transition when container grows */
 }
 
 /* Textarea Styling */
@@ -20,9 +18,7 @@
     flex: 1;
     font-size: 16px;
     line-height: 1.5;
-    /* Define line height for consistent sizing */
     resize: none;
-    /* Prevent manual resizing */
     outline: none;
     padding: 5px;
     min-height: calc(1.5em + 10px);
@@ -30,11 +26,8 @@
     max-height: calc(1.5em * 4 + 10px);
     /* 4 lines * line-height + padding */
     overflow-y: auto;
-    /* Show scrollbar when content exceeds 4 lines */
     box-sizing: border-box;
-    /* Include padding in height calculations */
     transition: height 0.2s ease;
-    /* Smooth height transition */
 }
 
 /* Typing Indicator */
@@ -70,7 +63,6 @@
     font-size: 20px;
     cursor: pointer;
     margin-left: 10px;
-    /* Space between textarea and button */
     transition: background-color 0.2s ease;
 }
 
