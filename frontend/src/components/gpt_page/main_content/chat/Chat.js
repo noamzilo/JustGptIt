@@ -1,11 +1,11 @@
 import GptQueryService from "../../../../services/GptQueryService";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import styles from "./Chat.module.css";
 
 function ChatComponent() {
     const [message, setMessage] = useState('');
 
-    const sendQuery = async () => {
+    const sendQuery = useCallback(async () => {
         if (message.trim()) {
             const isValid = await GptQueryService.queryGPT(message);
             if (isValid) {
@@ -15,19 +15,14 @@ function ChatComponent() {
             }
             setMessage('');
         }
-    };
+    }, [message]);
 
-    const handleKeyboardPress = (e) => {
+    const handleKeyboardPress = useCallback((e) => {
         if ((e.key === 'Enter' && !e.shiftKey) || e.key === 'ArrowUp') {
             e.preventDefault();
             sendQuery();
         }
-    };
-
-    useEffect(() => {
-        document.addEventListener('keydown', handleKeyboardPress);
-        return () => document.removeEventListener('keydown', handleKeyboardPress);
-    }, [message]); // Re-bind when message changes
+    }, [sendQuery]);
 
     return (
         <div className={styles.inputContainer}>
@@ -36,7 +31,7 @@ function ChatComponent() {
                 placeholder="Message ChatGPT"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                onKeyUp={handleKeyboardPress}
+                onKeyDown={handleKeyboardPress} // Use onKeyDown directly
             />
             <button
                 onClick={sendQuery}
