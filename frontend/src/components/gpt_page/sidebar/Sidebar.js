@@ -10,8 +10,8 @@ function Sidebar() {
                 <button className={styles.newChatButton}>＋</button>
             </div>
             <div className={styles.sidebarPinnedItems}>
-                <div className={styles.logo}>ChatGPT</div>
-                <div className={styles.logo}>ChatGPT2</div>
+                <div className={styles.logo}>Pinned1</div>
+                <div className={styles.logo}>Pinend2</div>
             </div>
 
             <div className={styles.sidebarRecentChats}>
