@@ -21,15 +21,30 @@
     padding: 20px;
 }
 
-.sidebarPinnedItems,
+.sidebarContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.sidebarPinnedItems {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
 .sidebarRecentChats {
     display: flex;
-    justify-content: space-between;
-    /* align-items: start; */
-    margin-bottom: 30px;
     flex-direction: column;
-    overflow-y: auto;
+    gap: 10px;
+    margin-top: 30px;
+    width: 100%;
     flex: 1;
+    overflow-y: auto;
 }
 
 .footer {
