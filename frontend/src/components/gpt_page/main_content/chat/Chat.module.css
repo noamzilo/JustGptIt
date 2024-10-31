@@ -1,6 +1,5 @@
 /* Chat.module.css */
 
-/* Input Container */
 .inputContainer {
     display: flex;
     align-items: center;
@@ -10,7 +9,6 @@
     transition: all 0.2s ease;
 }
 
-/* Textarea Styling */
 .inputContainer textarea {
     background: transparent;
     border: none;
@@ -22,21 +20,17 @@
     outline: none;
     padding: 5px;
     min-height: calc(1.5em + 10px);
-    /* Minimum height for 1 line + padding */
     max-height: calc(1.5em * 4 + 10px);
-    /* 4 lines * line-height + padding */
     overflow-y: auto;
     box-sizing: border-box;
     transition: height 0.2s ease;
 }
 
-/* Typing Indicator */
 .typing {
     border-right: 2px solid #ffffff;
     animation: blink-caret 0.75s step-end infinite;
 }
 
-/* Caret Blink Animation */
 @keyframes blink-caret {
 
     from,
@@ -49,7 +43,6 @@
     }
 }
 
-/* Send Button Styling */
 .sendButton {
     background-color: #ffffff;
     border: none;
@@ -71,10 +64,9 @@
 }
 
 .sendButtonActive {
-    /* Optional: Styles when the send button is active */
+    /* Styles when the send button is active */
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
     .inputContainer {
         padding: 8px 12px;
@@ -94,7 +86,6 @@
     }
 }
 
-/* Visually Hidden (for accessibility) */
 .visuallyHidden {
     position: absolute;
     width: 1px;
