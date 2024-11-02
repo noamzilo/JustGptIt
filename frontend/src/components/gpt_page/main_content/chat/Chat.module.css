@@ -26,7 +26,7 @@
     transition: height 0.2s ease;
 }
 
-.typing {
+.typingAnimation {
     border-right: 2px solid #ffffff;
     animation: blink-caret 0.75s step-end infinite;
 }
