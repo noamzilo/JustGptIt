@@ -1,6 +1,6 @@
 // ChatComponent.jsx
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "./Chat.module.css";
 import mitt from 'mitt';
@@ -20,7 +20,7 @@ const ChatComponent = () => {
     const textareaRef = useRef(null);
 
     // Handle query parameter changes and start mouse animation
-    function handleQueryParamChange() {
+    const handleQueryParamChange = useCallback(() => {
         if (!decodedQuery.trim()) {
             return;
         }
@@ -28,20 +28,23 @@ const ChatComponent = () => {
         setIsMouseAnimating(true);
 
         console.log('Mouse move effect started');
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
             setIsMouseAnimating(false);
             console.log('Mouse move effect complete');
             emitter.emit('mouseAnimationDone');
         }, 1000);
 
-    }
+        return () => clearTimeout(timeoutId);
+    }, [decodedQuery, emitter]);
 
-    useEffect(handleQueryParamChange, [decodedQuery]);
+    useEffect(() => {
+        handleQueryParamChange();
+    }, [handleQueryParamChange]);
 
     // Start typing animation when mouse animation is done
-    function handleMouseAnimationDone() {
+    const handleMouseAnimationDone = useCallback(() => {
         setIsAnimatingTyping(true);
-    }
+    }, []);
 
     useEffect(() => {
         emitter.on('mouseAnimationDone', handleMouseAnimationDone);
@@ -49,10 +52,10 @@ const ChatComponent = () => {
         return () => {
             emitter.off('mouseAnimationDone', handleMouseAnimationDone);
         };
-    }, [emitter]);
+    }, [emitter, handleMouseAnimationDone]);
 
     // Typing animation effect
-    function typingAnimationEffect() {
+    useEffect(() => {
         if (isAnimatingTyping) {
             const text = decodedQuery;
             let index = 0;
@@ -70,16 +73,14 @@ const ChatComponent = () => {
 
             return () => clearInterval(intervalId);
         }
-    }
-
-    useEffect(typingAnimationEffect, [isAnimatingTyping, decodedQuery, emitter]);
+    }, [isAnimatingTyping, decodedQuery, emitter]);
 
     // Log when typing animation is done
-    function handleTypingAnimationDone() {
+    const handleTypingAnimationDone = useCallback(() => {
         console.log('Typing animation done');
         // Update the inputValue after typing animation is complete
         setInputValue(decodedQuery);
-    }
+    }, [decodedQuery]);
 
     useEffect(() => {
         emitter.on('typingAnimationDone', handleTypingAnimationDone);
@@ -87,18 +88,16 @@ const ChatComponent = () => {
         return () => {
             emitter.off('typingAnimationDone', handleTypingAnimationDone);
         };
-    }, [decodedQuery, emitter]);
+    }, [emitter, handleTypingAnimationDone]);
 
     // Scroll to bottom of textarea
-    function scrollToBottomEffect() {
+    useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
             textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
             textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
         }
-    }
-
-    useEffect(scrollToBottomEffect, [animatingTextValue, inputValue]);
+    }, [animatingTextValue, inputValue]);
 
     const handleSendClick = () => {
         if (inputValue.trim()) {
