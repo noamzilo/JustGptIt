@@ -98,6 +98,7 @@ const ChatComponent = () => {
 
     const handleSendClick = () => {
         if (inputValue.trim()) {
+            setInputValue('');
             setSearchParams({ query: inputValue });
         }
     };
