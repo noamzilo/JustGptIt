@@ -34,11 +34,13 @@ const ChatComponent = () => {
             emitter.emit('mouseAnimationDone');
         }, 1000);
 
+        // Cleanup in case the component unmounts before timeout
         return () => clearTimeout(timeoutId);
     }, [decodedQuery, emitter]);
 
     useEffect(() => {
-        handleQueryParamChange();
+        const cleanup = handleQueryParamChange();
+        return cleanup;
     }, [handleQueryParamChange]);
 
     // Start typing animation when mouse animation is done
@@ -55,7 +57,7 @@ const ChatComponent = () => {
     }, [emitter, handleMouseAnimationDone]);
 
     // Typing animation effect
-    useEffect(() => {
+    const typingAnimationEffect = useCallback(() => {
         if (isAnimatingTyping) {
             const text = decodedQuery;
             let index = 0;
@@ -71,9 +73,15 @@ const ChatComponent = () => {
                 }
             }, 50);
 
+            // Cleanup in case the component unmounts before interval completes
             return () => clearInterval(intervalId);
         }
     }, [isAnimatingTyping, decodedQuery, emitter]);
+
+    useEffect(() => {
+        const cleanup = typingAnimationEffect();
+        return cleanup;
+    }, [typingAnimationEffect]);
 
     // Log when typing animation is done
     const handleTypingAnimationDone = useCallback(() => {
@@ -91,13 +99,17 @@ const ChatComponent = () => {
     }, [emitter, handleTypingAnimationDone]);
 
     // Scroll to bottom of textarea
-    useEffect(() => {
+    const scrollToBottomEffect = useCallback(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
             textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
             textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
         }
-    }, [animatingTextValue, inputValue]);
+    }, []);
+
+    useEffect(() => {
+        scrollToBottomEffect();
+    }, [animatingTextValue, inputValue, scrollToBottomEffect]);
 
     const handleSendClick = () => {
         if (inputValue.trim()) {
