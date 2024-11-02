@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import { motion } from "framer-motion"; // Importing Framer Motion
+import { motion } from "framer-motion";
 import styles from "./Chat.module.css";
 import mitt from 'mitt';
 import mouse_cursor from "../../../../assets/mouse_cursor.svg";
 
 function ChatComponent() {
-    // Use useMemo to create a persistent emitter instance
     const emitter = useMemo(() => mitt(), []);
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -16,14 +15,13 @@ function ChatComponent() {
     const decodedQuery = queryParam ? decodeURIComponent(queryParam) : '';
 
     const [inputValue, setInputValue] = useState('');
-    const [cursorPosition, setCursorPosition] = useState({ top: '-50px', left: '-50px' });
+    const [cursorPosition, setCursorPosition] = useState({ top: -50, left: -50 });
     const cursorRef = useRef(null);
     const [isAnimatingMouseMove, setIsMouseAnimating] = useState(false);
     const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
     const [animatingTextValue, setAnimatingTextValue] = useState('');
     const textareaRef = useRef(null);
 
-    // Function to handle the mouse animation with a delay
     const startMouseAnimation = useCallback(() => {
         setAnimatingTextValue('');
         setIsMouseAnimating(true);
@@ -35,15 +33,12 @@ function ChatComponent() {
 
         const textBoxRect = textareaRef.current.getBoundingClientRect();
 
-        // Move cursor from off-screen to the textarea
-        setCursorPosition({ top: '-50px', left: '-50px' }); // Initial off-screen position
-
         const targetPosition = {
             top: textBoxRect.top + window.scrollY,
             left: textBoxRect.left + window.scrollX
         };
 
-        // Using Framer Motion's animate prop for smooth animation
+        // Update cursor position to trigger animation
         setCursorPosition(targetPosition);
 
         setTimeout(() => {
@@ -51,7 +46,7 @@ function ChatComponent() {
             emitter.emit('mouseAnimationDone');
         }, 2000); // animation duration
 
-    }, [emitter]);    // Handle query parameter changes and trigger mouse animation
+    }, [emitter]);
 
     const handleQueryParamChange = useCallback(() => {
         if (!decodedQuery.trim()) {
@@ -65,7 +60,6 @@ function ChatComponent() {
         return cleanup;
     }, [handleQueryParamChange]);
 
-    // Start typing animation when mouse animation is done
     const handleMouseAnimationDone = useCallback(() => {
         setIsAnimatingTyping(true);
     }, []);
@@ -78,7 +72,6 @@ function ChatComponent() {
         };
     }, [emitter, handleMouseAnimationDone]);
 
-    // Typing animation effect
     const typingAnimationEffect = useCallback(() => {
         if (isAnimatingTyping) {
             const text = decodedQuery;
@@ -95,7 +88,6 @@ function ChatComponent() {
                 }
             }, 50);
 
-            // Cleanup in case the component unmounts before interval completes
             return () => clearInterval(intervalId);
         }
     }, [isAnimatingTyping, decodedQuery, emitter]);
@@ -105,10 +97,8 @@ function ChatComponent() {
         return cleanup;
     }, [typingAnimationEffect]);
 
-    // Log when typing animation is done
     const handleTypingAnimationDone = useCallback(() => {
         console.log('Typing animation done');
-        // Update the inputValue after typing animation is complete
         setInputValue(decodedQuery);
     }, [decodedQuery]);
 
@@ -120,7 +110,6 @@ function ChatComponent() {
         };
     }, [emitter, handleTypingAnimationDone]);
 
-    // Scroll to bottom of textarea
     const scrollToBottomEffect = useCallback(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
@@ -153,11 +142,15 @@ function ChatComponent() {
             <motion.img
                 src={mouse_cursor}
                 ref={cursorRef}
-                className={isAnimatingMouseMove ? styles.cursorAnimation : styles.cursorAnimationHidden}
                 alt="Animated Mouse Cursor"
-                animate={{ top: cursorPosition.top, left: cursorPosition.left }}
-                transition={{ duration: 2, ease: "easeInOut" }} // Framer Motion animation settings
-                style={{ position: 'absolute' }}
+                initial={{ top: -50, left: -50, opacity: 0 }}
+                animate={
+                    isAnimatingMouseMove
+                        ? { top: cursorPosition.top, left: cursorPosition.left, opacity: 1 }
+                        : { opacity: 0 }
+                }
+                transition={{ duration: 2, ease: "easeOut" }}
+                style={{ position: 'absolute', width: '20px', height: '20px' }}
             />
             <textarea
                 ref={textareaRef}

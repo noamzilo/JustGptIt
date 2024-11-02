@@ -1,5 +1,9 @@
 /* Chat.module.css */
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .inputContainer {
     display: flex;
     align-items: center;
@@ -27,10 +31,8 @@
 }
 
 .cursorAnimation {
-    position: absolute;
     width: 20px;
     height: 20px;
-    transition: top 2s ease, left 2s ease;
 }
 
 .cursorAnimationHidden {
