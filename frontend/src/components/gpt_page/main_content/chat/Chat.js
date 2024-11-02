@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { useSearchParams } from "react-router-dom";
 import styles from "./Chat.module.css";
 import mitt from 'mitt';
+import mouse_cursor from "./mouse_cursor.svg";
 
 function ChatComponent() {
     // Use useMemo to create a persistent emitter instance
@@ -14,6 +15,8 @@ function ChatComponent() {
     const decodedQuery = queryParam ? decodeURIComponent(queryParam) : '';
 
     const [inputValue, setInputValue] = useState('');
+    const [cursorPosition, setCursorPosition] = useState({ top: '-50px', left: '-50px' });
+    const cursorRef = useRef(null);
     const [isAnimatingMouseMove, setIsMouseAnimating] = useState(false);
     const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
     const [animatingTextValue, setAnimatingTextValue] = useState('');
@@ -23,19 +26,31 @@ function ChatComponent() {
     const startMouseAnimation = useCallback(() => {
         setAnimatingTextValue('');
         setIsMouseAnimating(true);
-
         console.log('Mouse move effect started');
-        const timeoutId = setTimeout(() => {
-            setIsMouseAnimating(false);
-            console.log('Mouse move effect complete');
-            emitter.emit('mouseAnimationDone');
-        }, 1000);
 
-        // Cleanup in case the component unmounts before timeout
-        return () => clearTimeout(timeoutId);
-    }, [emitter]);
+        if (cursorRef.current && textareaRef.current) {
+            const textBoxRect = textareaRef.current.getBoundingClientRect();
 
-    // Handle query parameter changes and trigger mouse animation
+            // Move cursor from off-screen to the textarea
+            setCursorPosition({ top: '-50px', left: '-50px' }); // Initial off-screen position
+            setTimeout(() => {
+                setCursorPosition({
+                    top: `${textBoxRect.top + window.scrollY + 10}px`,
+                    left: `${textBoxRect.left + window.scrollX + 10}px`
+                });
+            }, 0); // Start animation
+
+            const timeoutId = setTimeout(() => {
+                setIsMouseAnimating(false);
+                console.log('Mouse move effect complete');
+                emitter.emit('mouseAnimationDone');
+            }, 2000); // 2-second animation duration
+
+            // Cleanup if component unmounts
+            return () => clearTimeout(timeoutId);
+        }
+    }, [emitter]);    // Handle query parameter changes and trigger mouse animation
+
     const handleQueryParamChange = useCallback(() => {
         if (!decodedQuery.trim()) {
             return;
@@ -132,6 +147,14 @@ function ChatComponent() {
     const isAnimating = isAnimatingTyping || isAnimatingMouseMove;
     return (
         <div className={styles.inputContainer}>
+            <img
+                src={mouse_cursor}
+                ref={cursorRef}
+                className={styles.cursor}
+                visible={isAnimatingMouseMove}
+                style={{ top: cursorPosition.top, left: cursorPosition.left }}
+                alt="Animated Mouse Cursor"
+            />
             <textarea
                 ref={textareaRef}
                 placeholder="Message ChatGPT"

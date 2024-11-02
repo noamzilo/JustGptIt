@@ -26,6 +26,13 @@
     transition: height 0.2s ease;
 }
 
+.cursorAnimation {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    transition: top 2s ease, left 2s ease;
+}
+
 .typingAnimation {
     border-right: 2px solid #ffffff;
     animation: blink-caret 0.75s step-end infinite;
