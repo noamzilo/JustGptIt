@@ -19,11 +19,8 @@ function ChatComponent() {
     const [animatingTextValue, setAnimatingTextValue] = useState('');
     const textareaRef = useRef(null);
 
-    // Handle query parameter changes and start mouse animation
-    const handleQueryParamChange = useCallback(() => {
-        if (!decodedQuery.trim()) {
-            return;
-        }
+    // Function to handle the mouse animation with a delay
+    const startMouseAnimation = useCallback(() => {
         setAnimatingTextValue('');
         setIsMouseAnimating(true);
 
@@ -36,7 +33,15 @@ function ChatComponent() {
 
         // Cleanup in case the component unmounts before timeout
         return () => clearTimeout(timeoutId);
-    }, [decodedQuery, emitter]);
+    }, [emitter]);
+
+    // Handle query parameter changes and trigger mouse animation
+    const handleQueryParamChange = useCallback(() => {
+        if (!decodedQuery.trim()) {
+            return;
+        }
+        return startMouseAnimation();
+    }, [decodedQuery, startMouseAnimation]);
 
     useEffect(() => {
         const cleanup = handleQueryParamChange();
