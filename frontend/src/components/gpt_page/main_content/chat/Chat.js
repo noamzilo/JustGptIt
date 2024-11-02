@@ -150,9 +150,7 @@ function ChatComponent() {
             <img
                 src={mouse_cursor}
                 ref={cursorRef}
-                className={styles.cursor}
-                visible={isAnimatingMouseMove}
-                style={{ top: cursorPosition.top, left: cursorPosition.left }}
+                className={isAnimatingMouseMove ? styles.cursorAnimation : styles.cursorAnimationHidden}
                 alt="Animated Mouse Cursor"
             />
             <textarea
