@@ -21,15 +21,19 @@ const ChatComponent = () => {
 
     // Handle query parameter changes and start mouse animation
     function handleQueryParamChange() {
-        if (decodedQuery) {
-            setIsMouseAnimating(true);
-            console.log('Mouse move effect started');
-            setTimeout(() => {
-                setIsMouseAnimating(false);
-                console.log('Mouse move effect complete');
-                emitter.emit('mouseAnimationDone');
-            }, 1000);
+        if (!decodedQuery.trim()) {
+            return;
         }
+        setAnimatingTextValue('');
+        setIsMouseAnimating(true);
+
+        console.log('Mouse move effect started');
+        setTimeout(() => {
+            setIsMouseAnimating(false);
+            console.log('Mouse move effect complete');
+            emitter.emit('mouseAnimationDone');
+        }, 1000);
+
     }
 
     useEffect(handleQueryParamChange, [decodedQuery]);
@@ -98,7 +102,6 @@ const ChatComponent = () => {
 
     const handleSendClick = () => {
         if (inputValue.trim()) {
-            setInputValue('');
             setSearchParams({ query: inputValue });
         }
     };
@@ -110,16 +113,17 @@ const ChatComponent = () => {
         }
     };
 
+    let isAnimating = isAnimatingTyping || isAnimatingMouseMove;
     return (
         <div className={styles.inputContainer}>
             <textarea
                 ref={textareaRef}
                 placeholder="Message ChatGPT"
-                value={isAnimatingTyping ? animatingTextValue : inputValue}
+                value={isAnimating ? animatingTextValue : inputValue}
                 onChange={e => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
-                className={isAnimatingTyping ? styles.typingAnimation : ''}
-                readOnly={isAnimatingTyping || isAnimatingMouseMove}
+                className={isAnimating ? styles.typingAnimation : ''}
+                readOnly={isAnimating}
                 aria-label="Message input"
             />
             <button
