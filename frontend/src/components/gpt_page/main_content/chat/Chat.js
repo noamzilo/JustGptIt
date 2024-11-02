@@ -17,23 +17,36 @@ const ChatComponent = () => {
     const [animatingTextValue, setAnimatingTextValue] = useState('');
     const textareaRef = useRef(null);
 
-    // Start mouse animation when query param changes
-    useEffect(() => {
-        if (decodedQuery) {
-            setIsMouseAnimating(true);
-            console.log('Mouse move effect started');
-            setTimeout(() => {
-                setIsMouseAnimating(false);
-                console.log('Mouse move effect complete');
-                emitter.emit('mouseAnimationDone');
-            }, 1000);
+    // Function to start mouse animation
+    const startMouseAnimation = () => {
+        if (!decodedQuery.trim()) {
+            return;
         }
+
+        setIsMouseAnimating(true);
+        console.log('Mouse move effect started');
+        setTimeout(() => {
+            setIsMouseAnimating(false);
+            console.log('Mouse move effect complete');
+            emitter.emit('mouseAnimationDone');
+        }, 1000);
+    };
+
+    // Effect to start mouse animation when query param changes
+    useEffect(() => {
+        startMouseAnimation();
     }, [decodedQuery]);
 
-    // Start typing animation when mouse animation is done
+    // Function to start typing animation
+    const startTypingAnimation = () => {
+        setIsAnimatingTyping(true);
+        setAnimatingTextValue('');
+    };
+
+    // Effect to start typing animation when mouse animation is done
     useEffect(() => {
         const handleMouseAnimationDone = () => {
-            setIsAnimatingTyping(true);
+            startTypingAnimation();
         };
         emitter.on('mouseAnimationDone', handleMouseAnimationDone);
 
@@ -42,34 +55,42 @@ const ChatComponent = () => {
         };
     }, []);
 
-    // Typing animation effect
+    // Function to run typing animation
+    const runTypingAnimation = () => {
+        const text = decodedQuery;
+        let index = 0;
+
+        const intervalId = setInterval(() => {
+            index += 1;
+            setAnimatingTextValue(text.slice(0, index));
+
+            if (index >= text.length) {
+                clearInterval(intervalId);
+                setIsAnimatingTyping(false);
+                emitter.emit('typingAnimationDone');
+            }
+        }, 50);
+
+        return () => clearInterval(intervalId);
+    };
+
+    // Effect to handle typing animation
     useEffect(() => {
         if (isAnimatingTyping) {
-            const text = decodedQuery;
-            let index = 0;
-
-            const intervalId = setInterval(() => {
-                index += 1;
-                setAnimatingTextValue(text.slice(0, index));
-
-                if (index >= text.length) {
-                    clearInterval(intervalId);
-                    setIsAnimatingTyping(false);
-                    emitter.emit('typingAnimationDone');
-                }
-            }, 50);
-
-            return () => clearInterval(intervalId);
+            const cleanup = runTypingAnimation();
+            return cleanup;
         }
     }, [isAnimatingTyping, decodedQuery]);
 
-    // Log when typing animation is done
+    // Function to handle typing animation completion
+    const handleTypingAnimationDone = () => {
+        console.log('Typing animation done');
+        // Update the inputValue after typing animation is complete
+        setInputValue(decodedQuery);
+    };
+
+    // Effect to handle typing animation completion
     useEffect(() => {
-        const handleTypingAnimationDone = () => {
-            console.log('Typing animation done');
-            // Update the inputValue after typing animation is complete
-            setInputValue(decodedQuery);
-        };
         emitter.on('typingAnimationDone', handleTypingAnimationDone);
 
         return () => {
@@ -77,7 +98,7 @@ const ChatComponent = () => {
         };
     }, [decodedQuery]);
 
-    // Scroll to bottom of textarea
+    // Effect to scroll to bottom of textarea
     useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
@@ -86,12 +107,14 @@ const ChatComponent = () => {
         }
     }, [animatingTextValue, inputValue]);
 
+    // Function to handle send button click
     const handleSendClick = () => {
         if (inputValue.trim()) {
             setSearchParams({ query: inputValue });
         }
     };
 
+    // Function to handle key press in textarea
     const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
