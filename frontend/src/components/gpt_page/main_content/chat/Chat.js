@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { useSearchParams } from "react-router-dom";
 import styles from "./Chat.module.css";
 import mitt from 'mitt';
-import mouse_cursor from "./mouse_cursor.svg";
+import mouse_cursor from "../../../../assets/mouse_cursor.svg";
 
 function ChatComponent() {
     // Use useMemo to create a persistent emitter instance
@@ -28,27 +28,35 @@ function ChatComponent() {
         setIsMouseAnimating(true);
         console.log('Mouse move effect started');
 
-        if (cursorRef.current && textareaRef.current) {
-            const textBoxRect = textareaRef.current.getBoundingClientRect();
-
-            // Move cursor from off-screen to the textarea
-            setCursorPosition({ top: '-50px', left: '-50px' }); // Initial off-screen position
-            setTimeout(() => {
-                setCursorPosition({
-                    top: `${textBoxRect.top + window.scrollY + 10}px`,
-                    left: `${textBoxRect.left + window.scrollX + 10}px`
-                });
-            }, 0); // Start animation
-
-            const timeoutId = setTimeout(() => {
-                setIsMouseAnimating(false);
-                console.log('Mouse move effect complete');
-                emitter.emit('mouseAnimationDone');
-            }, 2000); // 2-second animation duration
-
-            // Cleanup if component unmounts
-            return () => clearTimeout(timeoutId);
+        if (!cursorRef.current && !textareaRef.current) {
+            return;
         }
+
+        const textBoxRect = textareaRef.current.getBoundingClientRect();
+
+        // Move cursor from off-screen to the textarea
+        setCursorPosition({ top: '-50px', left: '-50px' }); // Initial off-screen position
+        let index = 0;
+        const interval = 50;
+        const animationDuration = 2000;
+        const n_steps = animationDuration / interval; // 50ms interval
+        const pixels_per_step = [(textBoxRect.top + window.scrollY) / n_steps, (textBoxRect.left + window.scrollX) / n_steps];
+        const intervalId = setInterval(() => {
+            index += 1;
+            setCursorPosition({ top: `${textBoxRect.top + index * pixels_per_step[1]}px`, left: `${textBoxRect.left + index * pixels_per_step[0]}px` });
+
+            if (index >= n_steps) {
+                clearInterval(intervalId);
+                setIsMouseAnimating(false);
+                emitter.emit('mouseAnimationDone');
+            }
+        }, interval);
+
+
+
+        // Cleanup if component unmounts
+        return () => clearTimeout(intervalId);
+
     }, [emitter]);    // Handle query parameter changes and trigger mouse animation
 
     const handleQueryParamChange = useCallback(() => {
@@ -152,6 +160,7 @@ function ChatComponent() {
                 ref={cursorRef}
                 className={isAnimatingMouseMove ? styles.cursorAnimation : styles.cursorAnimationHidden}
                 alt="Animated Mouse Cursor"
+                location={cursorPosition}
             />
             <textarea
                 ref={textareaRef}
