@@ -1,129 +1,103 @@
 // ChatComponent.jsx
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "./Chat.module.css";
-import { emitter } from './eventEmitter';
+import mitt from 'mitt';
 
+const ChatComponent = () => {
+    const emitter = mitt();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const queryParam = searchParams.get('query');
+    const decodedQuery = queryParam ? decodeURIComponent(queryParam) : '';
 
-// Custom hook to animate mouse move effect
-function useMouseMoveAnimation(isAnimatingMouseMove, setIsMouseAnimating) {
+    const [inputValue, setInputValue] = useState('');
+    const [isAnimatingMouseMove, setIsMouseAnimating] = useState(false);
+    const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
+    const [animatingTextValue, setAnimatingTextValue] = useState('');
+    const textareaRef = useRef(null);
+
+    // Start mouse animation when query param changes
     useEffect(() => {
-        setIsMouseAnimating(true);
-        // Mouse move effect: simulate a sleep of 1000 and then notify the animation is complete
-        console.log('Mouse move effect started');
-        setTimeout(() => {
-            setIsMouseAnimating(false);
-            console.log('Mouse move effect complete');
-            emitter.emit('mouseAnimationDone');
-        }, 1000);
-
+        if (decodedQuery) {
+            setIsMouseAnimating(true);
+            console.log('Mouse move effect started');
+            setTimeout(() => {
+                setIsMouseAnimating(false);
+                console.log('Mouse move effect complete');
+                emitter.emit('mouseAnimationDone');
+            }, 1000);
+        }
     }, [decodedQuery]);
-}
 
-//start typing animation when mouse move effect is complete
-function useRegisterEvents(handleTypingAnimation) {
+    // Start typing animation when mouse animation is done
     useEffect(() => {
         const handleMouseAnimationDone = () => {
-            handleTypingAnimation();
+            setIsAnimatingTyping(true);
         };
-
         emitter.on('mouseAnimationDone', handleMouseAnimationDone);
 
         return () => {
             emitter.off('mouseAnimationDone', handleMouseAnimationDone);
         };
     }, []);
-}
 
-// Custom hook to animate text typing effect. When done, send an event 
-function handleTypingAnimation(
-    isAnimatingTyping,
-    setIsAnimatingTyping,
-) {
-    if (!isAnimatingTyping) {
-        return { animatingTextValue: '', isAnimatingTyping, setDisplayText };
-    }
-    const [animatingTextValue, setDisplayText] = useState('');
-    const timeoutRef = useRef();
-
-    if (animatingTextValue.length < text.length) {
-        timeoutRef.current = setTimeout(() => {
-            setDisplayText(text.slice(0, animatingTextValue.length + 1));
-        }, 50);
-    } else {
-        setIsAnimatingTyping(false);
-        // emitter.emit('typingAnimationDone');
-    }
-
-};
-
-function useTypingAnimationComplete(isAnimating) {
-    // Make sure text area gets the value of the query after typing animation is complete
+    // Typing animation effect
     useEffect(() => {
-        if (!isAnimating) {
-            textareaRef.current.value = decodedQuery;
+        if (isAnimatingTyping) {
+            const text = decodedQuery;
+            let index = 0;
+
+            const intervalId = setInterval(() => {
+                index += 1;
+                setAnimatingTextValue(text.slice(0, index));
+
+                if (index >= text.length) {
+                    clearInterval(intervalId);
+                    setIsAnimatingTyping(false);
+                    emitter.emit('typingAnimationDone');
+                }
+            }, 50);
+
+            return () => clearInterval(intervalId);
         }
-    }, [isAnimating]);
-}
+    }, [isAnimatingTyping, decodedQuery]);
 
-function useParsedSearchParams() {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const queryParam = searchParams.get('query');
-    const decodedQuery = queryParam ? decodeURIComponent(queryParam) : '';
-
-    return [decodedQuery, setSearchParams];
-}
-
-// Custom hook to scroll to bottom of textarea
-function useScrollToBottomOfTextArea() {
+    // Log when typing animation is done
     useEffect(() => {
-        const textarea = textareaRef.current;
-        if (textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = `${textarea.scrollHeight}px`;
-            textarea.scrollTop = textarea.scrollHeight;
+        const handleTypingAnimationDone = () => {
+            console.log('Typing animation done');
+            // Update the inputValue after typing animation is complete
+            setInputValue(decodedQuery);
+        };
+        emitter.on('typingAnimationDone', handleTypingAnimationDone);
+
+        return () => {
+            emitter.off('typingAnimationDone', handleTypingAnimationDone);
+        };
+    }, [decodedQuery]);
+
+    // Scroll to bottom of textarea
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+            textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
         }
     }, [animatingTextValue, inputValue]);
-}
 
-const ChatComponent = () => {
-    const [isAnimatingMouseMove, setIsMouseAnimating] = useState(false);
-    const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
-    const [decodedQuery, setSearchParams] = useParsedSearchParams();
-    const [inputValue, setInputValue] = useState('');
-    const textareaRef = useRef(null); //used for scrolling to bottom of textarea
+    const handleSendClick = () => {
+        if (inputValue.trim()) {
+            setSearchParams({ query: inputValue });
+        }
+    };
 
-    useMouseMoveAnimation(setDisplayText, isAnimatingMouseMove, setIsMouseAnimating);
-    const { animatingTextValue, setDisplayText } = handleTypingAnimation(
-        isAnimatingTyping,
-        setIsAnimatingTyping,
-        decodedQuery,
-    );
-
-    function handleSendClick() {
-        useCallback(() => {
-            if (inputValue.trim()) {
-                setSearchParams({ query: inputValue });
-            }
-        }, [inputValue, setSearchParams]);
-    }
-
-    function handleKeyPress() {
-        useCallback(
-            (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendClick();
-                }
-            },
-            [handleSendClick]
-        );
-    }
-
-    useScrollToBottomOfTextArea();
-    useTypingAnimationComplete(isAnimatingTyping);
-    useRegisterEvents(handleTypingAnimation)
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendClick();
+        }
+    };
 
     return (
         <div className={styles.inputContainer}>
