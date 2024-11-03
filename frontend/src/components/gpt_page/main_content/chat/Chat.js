@@ -33,6 +33,13 @@ function ChatComponent() {
             return;
         }
 
+        // Jump to (0,0) of the DOM
+        await controls.set({
+            top: 0,
+            left: 0,
+        });
+
+        // Get textarea position
         const textBoxRect = textareaRef.current.getBoundingClientRect();
 
         const targetPosition = {
@@ -40,17 +47,19 @@ function ChatComponent() {
             left: textBoxRect.left + window.scrollX
         };
 
-        console.log('Setting cursor position to top left');
-        await controls.start({
-            top: -50,
-            left: -50
-        });
-
         console.log('Animating cursor to text box position:', targetPosition);
+
+        // Animate cursor to textarea position
         await controls.start({
             top: targetPosition.top,
-            left: targetPosition.left
+            left: targetPosition.left,
         }, { duration: 2, ease: "easeOut" });
+
+        // Jump back to (0,0) of the DOM
+        await controls.set({
+            top: 0,
+            left: 0,
+        });
 
         setIsMouseAnimating(false);
         emitter.emit('mouseAnimationDone');
@@ -60,7 +69,7 @@ function ChatComponent() {
         if (!decodedQuery.trim()) {
             return;
         }
-        return startMouseAnimation();
+        startMouseAnimation();
     }, [decodedQuery, startMouseAnimation]);
 
     useEffect(() => {
@@ -150,7 +159,7 @@ function ChatComponent() {
                 src={mouse_cursor}
                 ref={cursorRef}
                 alt="Animated Mouse Cursor"
-                initial={{ top: -50, left: -50 }}
+                initial={{ top: 0, left: 0 }}
                 animate={controls}
                 transition={{ duration: 2, ease: "easeOut" }}
                 style={{ position: 'absolute', width: '20px', height: '20px' }}
