@@ -7,6 +7,7 @@
     max-width: 600px;
     width: 90%;
     margin: 0 auto;
+    position: 'relative';
 }
 
 .inputContainer textarea {
@@ -20,10 +21,13 @@
     outline: none;
     padding: 5px;
     min-height: calc(1.5em + 10px);
-    max-height: calc(1.5em * 4 + 10px);
+    max-height: calc(1.5em * 10 + 10px);
     overflow-y: auto;
     box-sizing: border-box;
     transition: height 0.2s ease;
+    width: '300px';
+    height: '100px';
+    padding: '10px';
 }
 
 .sendButton {
@@ -39,6 +43,7 @@
     font-size: 20px;
     cursor: pointer;
     margin-left: auto;
+    padding: '10px 20px';
 }
 
 .sendButton:hover {

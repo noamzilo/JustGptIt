@@ -162,7 +162,7 @@ function ChatComponent() {
     const isAnimating = isAnimatingTyping || isAnimatingMouseMove;
 
     return (
-        <div className={styles.inputContainer} style={{ position: 'relative', height: '100vh' }}>
+        <div className={styles.inputContainer}>
             <motion.img
                 src={mouse_cursor}
                 ref={cursorRef}
@@ -181,14 +181,12 @@ function ChatComponent() {
                 className={isAnimating ? styles.typingAnimation : ''}
                 readOnly={isAnimating}
                 aria-label="Message input"
-                style={{ width: '300px', height: '100px', padding: '10px' }}
             />
             <button
                 onClick={handleSendClick}
                 className={`${styles.sendButton} ${inputValue.trim() ? styles.sendButtonActive : ''}`}
                 disabled={!inputValue.trim() || isAnimatingTyping}
                 aria-label="Send Message"
-                style={{ marginLeft: '10px', padding: '10px 20px' }}
             >
                 ↑
             </button>
