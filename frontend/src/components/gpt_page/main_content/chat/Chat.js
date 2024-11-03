@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { motion, useAnimation } from "framer-motion";
 import styles from "./Chat.module.css";
 import mitt from 'mitt';
-// import mouse_cursor from "../../../../assets/mouse_cursor.svg";
+
 
 function ChatComponent() {
     const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
@@ -56,7 +56,9 @@ function ChatComponent() {
             left: targetPosition.left,
         }, { duration: 2, ease: "easeOut" });
 
-        // Jump back to (0,0) of the DOM
+        // Optionally, you can keep the cursor at the text box or jump back
+        // To jump back to (0,0) after staying at the text box for a moment:
+        await new Promise(resolve => setTimeout(resolve, 500)); // Wait for 0.5 seconds
         await controls.set({
             top: 0,
             left: 0,
@@ -155,7 +157,7 @@ function ChatComponent() {
     const isAnimating = isAnimatingTyping || isAnimatingMouseMove;
 
     return (
-        <div className={styles.inputContainer}>
+        <div className={styles.inputContainer} style={{ position: 'relative', height: '100vh' }}>
             <motion.img
                 src={mouse_cursor}
                 ref={cursorRef}
@@ -163,7 +165,7 @@ function ChatComponent() {
                 initial={{ top: 0, left: 0 }}
                 animate={controls}
                 transition={{ duration: 2, ease: "easeOut" }}
-                className={isAnimatingMouseMove ? styles.cursorAnimation : styles.cursorAnimationHidden}
+                style={{ position: 'fixed', width: '20px', height: '20px', pointerEvents: 'none' }}
             />
             <textarea
                 ref={textareaRef}
@@ -174,12 +176,14 @@ function ChatComponent() {
                 className={isAnimating ? styles.typingAnimation : ''}
                 readOnly={isAnimating}
                 aria-label="Message input"
+                style={{ width: '300px', height: '100px', padding: '10px' }}
             />
             <button
                 onClick={handleSendClick}
                 className={`${styles.sendButton} ${inputValue.trim() ? styles.sendButtonActive : ''}`}
                 disabled={!inputValue.trim() || isAnimatingTyping}
                 aria-label="Send Message"
+                style={{ marginLeft: '10px', padding: '10px 20px' }}
             >
                 ↑
             </button>
