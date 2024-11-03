@@ -1,4 +1,3 @@
-/* Global Styles */
 * {
   margin: 0;
   padding: 0;
@@ -7,9 +6,10 @@
 
 .pageContainer {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   background: #212121;
   font-family: system-ui, sans-serif;
+  overflow: hidden;
 }
 
 @media (max-width: 768px) {
