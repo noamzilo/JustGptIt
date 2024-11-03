@@ -38,6 +38,7 @@ function ChatComponent() {
         await controls.set({
             top: 0,
             left: 0,
+            opacity: 0,
         });
 
         // Get textarea position relative to the viewport
@@ -51,6 +52,9 @@ function ChatComponent() {
         console.log('Animating cursor to text box position:', targetPosition);
 
         // Animate cursor to textarea position
+        await controls.set({
+            opacity: 1,
+        });
         await controls.start({
             top: targetPosition.top,
             left: targetPosition.left,
@@ -62,6 +66,7 @@ function ChatComponent() {
         await controls.set({
             top: 0,
             left: 0,
+            opacity: 0,
         });
 
         setIsMouseAnimating(false);
