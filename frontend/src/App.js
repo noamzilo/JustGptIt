@@ -8,7 +8,6 @@ import BackendHealthIndicator from './components/BackendHealthIndicator';
 import BackendStatus from './components/BackendStatus';
 import GPTInterface from './components/gpt_page/GPTInterface.js';
 import debugEnvironment from './utils/envDebug';
-import './index.css';
 
 // Run environment debug on app start
 const envVars = debugEnvironment();
