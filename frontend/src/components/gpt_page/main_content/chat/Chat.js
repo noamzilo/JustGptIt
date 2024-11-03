@@ -5,9 +5,10 @@ import { useSearchParams } from "react-router-dom";
 import { motion, useAnimation } from "framer-motion";
 import styles from "./Chat.module.css";
 import mitt from 'mitt';
-import mouse_cursor from "../../../../assets/mouse_cursor.svg";
+// import mouse_cursor from "../../../../assets/mouse_cursor.svg";
 
 function ChatComponent() {
+    const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
     const emitter = useMemo(() => mitt(), []);
 
     const [searchParams, setSearchParams] = useSearchParams();
