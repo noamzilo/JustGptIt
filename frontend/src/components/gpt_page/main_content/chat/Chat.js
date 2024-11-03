@@ -45,8 +45,8 @@ function ChatComponent() {
         const textBoxRect = textareaRef.current.getBoundingClientRect();
 
         const targetPosition = {
-            top: textBoxRect.top + window.scrollY,
-            left: textBoxRect.left + window.scrollX
+            top: (textBoxRect.top + textBoxRect.height / 2) + window.scrollY,
+            left: (textBoxRect.left) + window.scrollX
         };
 
         console.log('Animating cursor to text box position:', targetPosition);
