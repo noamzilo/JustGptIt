@@ -17,7 +17,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "_start_": "react-scripts start",
+    "start": "cross-env NODE_ENV=production react-scripts start",
     "build": "react-scripts build",
     "build:local": "env-cmd -f ./.env.stage npm run-script build",
     "test": "react-scripts test",
