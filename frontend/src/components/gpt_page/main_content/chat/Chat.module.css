@@ -1,9 +1,5 @@
 /* Chat.module.css */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 .inputContainer {
     display: flex;
     align-items: center;
