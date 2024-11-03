@@ -33,6 +33,7 @@
 .cursorAnimation {
     width: 20px;
     height: 20px;
+    position: 'fixed';
 }
 
 .cursorAnimationHidden {

@@ -39,7 +39,7 @@ function ChatComponent() {
             left: 0,
         });
 
-        // Get textarea position
+        // Get textarea position relative to the viewport
         const textBoxRect = textareaRef.current.getBoundingClientRect();
 
         const targetPosition = {
@@ -154,7 +154,7 @@ function ChatComponent() {
     const isAnimating = isAnimatingTyping || isAnimatingMouseMove;
 
     return (
-        <div className={styles.inputContainer} style={{ position: 'relative' }}>
+        <div className={styles.inputContainer}>
             <motion.img
                 src={mouse_cursor}
                 ref={cursorRef}
@@ -162,7 +162,7 @@ function ChatComponent() {
                 initial={{ top: 0, left: 0 }}
                 animate={controls}
                 transition={{ duration: 2, ease: "easeOut" }}
-                style={{ position: 'absolute', width: '20px', height: '20px' }}
+                className={isAnimatingMouseMove ? styles.cursorAnimation : styles.cursorAnimationHidden}
             />
             <textarea
                 ref={textareaRef}
