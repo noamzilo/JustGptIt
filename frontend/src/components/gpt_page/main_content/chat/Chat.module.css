@@ -52,7 +52,7 @@
 }
 
 @media (max-width: 480px) {
-    .inputContainer input {
+    .inputContainer textarea {
         font-size: 14px;
     }
 

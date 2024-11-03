@@ -58,7 +58,7 @@ function ChatComponent() {
         await controls.start({
             top: targetPosition.top,
             left: targetPosition.left,
-        }, { duration: 2, ease: "easeOut" });
+        }, { duration: 1.5, ease: "easeOut" });
 
         // Optionally, you can keep the cursor at the text box or jump back
         // To jump back to (0,0) after staying at the text box for a moment:
@@ -169,7 +169,7 @@ function ChatComponent() {
                 alt="Animated Mouse Cursor"
                 initial={{ top: 0, left: 0 }}
                 animate={controls}
-                transition={{ duration: 2, ease: "easeOut" }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
                 style={{ position: 'fixed', width: '20px', height: '20px', pointerEvents: 'none' }}
             />
             <textarea
