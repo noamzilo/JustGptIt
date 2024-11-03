@@ -9,15 +9,21 @@
     margin: 0 auto;
 }
 
-.inputContainer input {
+.inputContainer textarea {
     background: transparent;
     border: none;
     color: #ffffff;
     flex: 1;
     font-size: 16px;
+    line-height: 1.5;
+    resize: none;
     outline: none;
-    padding-left: 5px;
-    max-height: 40px;
+    padding: 5px;
+    min-height: calc(1.5em + 10px);
+    max-height: calc(1.5em * 4 + 10px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    transition: height 0.2s ease;
 }
 
 .sendButton {
