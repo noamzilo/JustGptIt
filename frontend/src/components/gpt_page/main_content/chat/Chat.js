@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import styles from "./Chat.module.css";
 import mitt from 'mitt';
 import mouse_cursor from "../../../../assets/mouse_cursor.svg";
@@ -15,7 +15,6 @@ function ChatComponent() {
     const decodedQuery = queryParam ? decodeURIComponent(queryParam) : '';
 
     const [inputValue, setInputValue] = useState('');
-    const [cursorPosition, setCursorPosition] = useState({ top: -50, left: -50 });
     const cursorRef = useRef(null);
     const textareaRef = useRef(null);
 
@@ -23,9 +22,11 @@ function ChatComponent() {
     const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
     const [animatingTextValue, setAnimatingTextValue] = useState('');
 
-    const startMouseAnimation = useCallback(() => {
+    const controls = useAnimation();
+
+    const startMouseAnimation = useCallback(async () => {
         setAnimatingTextValue('');
-        setIsMouseAnimating(true); // Retained for component logic
+        setIsMouseAnimating(true);
         console.log('Mouse move effect started');
 
         if (!cursorRef.current && !textareaRef.current) {
@@ -39,15 +40,21 @@ function ChatComponent() {
             left: textBoxRect.left + window.scrollX
         };
 
-        console.log('Setting cursor position to:', targetPosition);
-        setCursorPosition(targetPosition); // Set cursor to textarea position
+        console.log('Setting cursor position to top left');
+        await controls.start({
+            top: -50,
+            left: -50
+        });
 
-        setTimeout(() => {
-            setIsMouseAnimating(false); // Retained for component logic
-            emitter.emit('mouseAnimationDone');
-        }, 2000); // animation duration
+        console.log('Animating cursor to text box position:', targetPosition);
+        await controls.start({
+            top: targetPosition.top,
+            left: targetPosition.left
+        }, { duration: 2, ease: "easeOut" });
 
-    }, [emitter]);
+        setIsMouseAnimating(false);
+        emitter.emit('mouseAnimationDone');
+    }, [controls, emitter]);
 
     const handleQueryParamChange = useCallback(() => {
         if (!decodedQuery.trim()) {
@@ -138,16 +145,13 @@ function ChatComponent() {
     const isAnimating = isAnimatingTyping || isAnimatingMouseMove;
 
     return (
-        <div className={styles.inputContainer} style={{ position: 'relative' }}> {/* Ensure relative positioning */}
+        <div className={styles.inputContainer} style={{ position: 'relative' }}>
             <motion.img
                 src={mouse_cursor}
                 ref={cursorRef}
                 alt="Animated Mouse Cursor"
                 initial={{ top: -50, left: -50 }}
-                animate={{
-                    top: cursorPosition.top,
-                    left: cursorPosition.left,
-                }}
+                animate={controls}
                 transition={{ duration: 2, ease: "easeOut" }}
                 style={{ position: 'absolute', width: '20px', height: '20px' }}
             />
