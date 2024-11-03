@@ -17,14 +17,15 @@ function ChatComponent() {
     const [inputValue, setInputValue] = useState('');
     const [cursorPosition, setCursorPosition] = useState({ top: -50, left: -50 });
     const cursorRef = useRef(null);
+    const textareaRef = useRef(null);
+
     const [isAnimatingMouseMove, setIsMouseAnimating] = useState(false);
     const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
     const [animatingTextValue, setAnimatingTextValue] = useState('');
-    const textareaRef = useRef(null);
 
     const startMouseAnimation = useCallback(() => {
         setAnimatingTextValue('');
-        setIsMouseAnimating(true);
+        setIsMouseAnimating(true); // Retained for component logic
         console.log('Mouse move effect started');
 
         if (!cursorRef.current && !textareaRef.current) {
@@ -38,11 +39,11 @@ function ChatComponent() {
             left: textBoxRect.left + window.scrollX
         };
 
-        // Update cursor position to trigger animation
-        setCursorPosition(targetPosition);
+        console.log('Setting cursor position to:', targetPosition);
+        setCursorPosition(targetPosition); // Set cursor to textarea position
 
         setTimeout(() => {
-            setIsMouseAnimating(false);
+            setIsMouseAnimating(false); // Retained for component logic
             emitter.emit('mouseAnimationDone');
         }, 2000); // animation duration
 
@@ -56,8 +57,7 @@ function ChatComponent() {
     }, [decodedQuery, startMouseAnimation]);
 
     useEffect(() => {
-        const cleanup = handleQueryParamChange();
-        return cleanup;
+        handleQueryParamChange();
     }, [handleQueryParamChange]);
 
     const handleMouseAnimationDone = useCallback(() => {
@@ -138,17 +138,16 @@ function ChatComponent() {
     const isAnimating = isAnimatingTyping || isAnimatingMouseMove;
 
     return (
-        <div className={styles.inputContainer}>
+        <div className={styles.inputContainer} style={{ position: 'relative' }}> {/* Ensure relative positioning */}
             <motion.img
                 src={mouse_cursor}
                 ref={cursorRef}
                 alt="Animated Mouse Cursor"
-                initial={{ top: -50, left: -50, opacity: 0 }}
-                animate={
-                    isAnimatingMouseMove
-                        ? { top: cursorPosition.top, left: cursorPosition.left, opacity: 1 }
-                        : { opacity: 0 }
-                }
+                initial={{ top: -50, left: -50 }}
+                animate={{
+                    top: cursorPosition.top,
+                    left: cursorPosition.left,
+                }}
                 transition={{ duration: 2, ease: "easeOut" }}
                 style={{ position: 'absolute', width: '20px', height: '20px' }}
             />
