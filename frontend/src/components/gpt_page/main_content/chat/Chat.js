@@ -170,7 +170,7 @@ function ChatComponent() {
                 initial={{ top: 0, left: 0 }}
                 animate={controls}
                 transition={{ duration: 1.5, ease: "easeOut" }}
-                style={{ position: 'fixed', width: '20px', height: '20px', pointerEvents: 'none' }}
+                style={{ position: 'fixed', width: '20px', height: '20px', pointerEvents: 'none', opacity: 0 }}
             />
             <textarea
                 ref={textareaRef}
