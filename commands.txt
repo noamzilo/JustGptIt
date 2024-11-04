@@ -5,9 +5,9 @@ npm run build
 npx serve -s build
 
 run as develop:
-npm start:local
-npm start:local-staging
-npm start:local-production
+npm run start:local
+npm run start:local-staging
+npm run start:local-production
 
  backend
 act --secret-file /home/noams/src/personal_website/backend/.secrets_backend --job deploy -W ~/src/personal_website/.github/workflows/deploy_backend.yml --bind /var/run/docker.sock

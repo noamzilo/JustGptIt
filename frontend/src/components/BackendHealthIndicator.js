@@ -20,7 +20,7 @@ const BackendHealthIndicator = () => {
     };
 
     checkHealth();
-    const interval = setInterval(checkHealth, 300000); // Check every 300 seconds
+    const interval = setInterval(checkHealth, 15000); // Check every 15 seconds
 
     return () => clearInterval(interval);
   }, []);
