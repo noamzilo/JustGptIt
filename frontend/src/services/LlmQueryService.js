@@ -1,6 +1,6 @@
 import apiService from './apiService';
 
-const GptQueryService = {
+const LlmQueryService = {
     queryGPT: async (payload) => {
         try {
             const response = await apiService.post('/gpt/query', { "message": payload });
@@ -13,4 +13,4 @@ const GptQueryService = {
     }
 };
 
-export default GptQueryService;
+export default LlmQueryService;
