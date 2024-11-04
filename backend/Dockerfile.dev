@@ -1,7 +1,7 @@
 # Dockerfile.dev
 
 # Use the production image as the base
-FROM my_django_app_prod
+FROM personal-website-backend
 
 # Install debugpy for debugging
 RUN pip install debugpy
