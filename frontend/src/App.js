@@ -8,6 +8,7 @@ import BackendHealthIndicator from './components/BackendHealthIndicator';
 import BackendStatus from './components/BackendStatus';
 import GPTInterface from './components/gpt_page/GPTInterface.js';
 import debugEnvironment from './utils/envDebug';
+import VersionData from './components/VersionData.jsx';
 
 // Run environment debug on app start
 const envVars = debugEnvironment();
@@ -34,6 +35,7 @@ const AppContent = () => {
         <Route path="/projects" element={<ProjectList />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
+      <VersionData />
     </div>
   );
 };
