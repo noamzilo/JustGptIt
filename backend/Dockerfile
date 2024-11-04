@@ -46,9 +46,8 @@ EXPOSE 8080
 # This is important for the version endpoint
 RUN TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S" > /app/build_time.txt
 
-# Copy the docker_entrypoint.sh script and make it executable
+COPY docker_entrypoint_common.sh /app/docker_entrypoint_common.sh
 COPY docker_entrypoint.sh /app/docker_entrypoint.sh
-RUN chmod +x /app/docker_entrypoint.sh
+RUN chmod +x /app/docker_entrypoint.sh /app/docker_entrypoint_common.sh
 
-# Set the entrypoint
 ENTRYPOINT ["/app/docker_entrypoint.sh"]

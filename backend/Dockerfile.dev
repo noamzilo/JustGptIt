@@ -1,0 +1,21 @@
+# Dockerfile.dev
+
+# Use the production image as the base
+FROM my_django_app_prod
+
+# Install debugpy for debugging
+RUN pip install debugpy
+
+# Expose the debugging port
+EXPOSE 5678
+
+# Copy the common and development entrypoint scripts
+COPY docker_entrypoint_common.sh /app/docker_entrypoint_common.sh
+COPY docker_entrypoint_dev.sh /app/docker_entrypoint.sh
+RUN chmod +x /app/docker_entrypoint.sh /app/docker_entrypoint_common.sh
+
+# Mount your source code for hot-reloading (optional, see note below)
+# This step is typically done at run time with a volume mount, not in the Dockerfile
+
+# Set the entrypoint
+ENTRYPOINT ["/app/docker_entrypoint.sh"]
