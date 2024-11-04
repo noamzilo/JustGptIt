@@ -1,18 +1,13 @@
 frontend
-cd ~/src/personal_website
-act -j build-and-deploy \
--W .github/workflows/deploy_frontend.yml \
---secret-file /home/noams/src/personal_website/frontend/.secrets_frontend \
---env-file /home/noams/src/personal_website/frontend/.env \
---env ACT=TRUE \
---artifact-server-path /tmp/artifacts \
---verbose
-
-
 Run as deploy:
 cd ~/src/personal_website/frontend
 npm run build
 npx serve -s build
+
+run as develop:
+npm start:local
+npm start:local-staging
+npm start:local-production
 
  backend
 act --secret-file /home/noams/src/personal_website/backend/.secrets_backend --job deploy -W ~/src/personal_website/.github/workflows/deploy_backend.yml --bind /var/run/docker.sock

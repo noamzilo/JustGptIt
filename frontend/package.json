@@ -8,6 +8,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
+    "env-cmd": "^10.1.0",
     "framer-motion": "^11.11.11",
     "mitt": "^3.0.1",
     "react": "^18.3.1",
@@ -17,8 +18,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "env-cmd -f .env -f .env.local react-scripts start",
     "_start_": "cross-env NODE_ENV=production react-scripts start",
+    "start:local": "env-cmd -f .env -f .env.local react-scripts start",
+    "start:staging": "env-cmd -f .env -f .env.local-staging react-scripts start",
+    "start:production": "env-cmd -f .env -f .env.local-production react-scripts start",
     "build": "react-scripts build",
     "build:local": "env-cmd -f ./.env.stage npm run-script build",
     "test": "react-scripts test",
