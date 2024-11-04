@@ -42,14 +42,14 @@ class ProjectList(generics.ListAPIView):
     serializer_class = ProjectSerializer
 
 
-def test_gcp(request):
-    try:
-        # Create a storage client using the credentials from settings
-        storage_client = storage.Client(project=settings.GCP_PROJECT_ID, credentials=settings.GCP_CREDENTIALS)
-        
-        # List buckets in the project
-        buckets = list(storage_client.list_buckets())
-        
-        return HttpResponse(f"Successfully connected to GCP. Found {len(buckets)} buckets.")
-    except Exception as e:
-        return HttpResponse(f"Error connecting to GCP: {str(e)}")
+def llm(request):
+    # parse a POST request parameter with a string of the query the user would like to pass on to gpt. Return the response from gpt.
+
+    # get the query from the POST request
+    query = request.POST.get('query', None)
+    if query is None:
+        return HttpResponse("No query provided", status=400)
+    
+    # simulate the gpt response
+    response = f"Response from GPT: {query}"
+    return HttpResponse(response)

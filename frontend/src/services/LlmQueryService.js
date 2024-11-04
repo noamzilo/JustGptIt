@@ -1,14 +1,14 @@
 import apiService from './apiService';
 
 const LlmQueryService = {
-    queryLLMService: async (payload) => {
+    queryLLMService: async (query) => {
         try {
-            console.log(`LlmQueryService asked ${payload} and awaiting response`)
-            const response = await apiService.post('/llm/query', { "message": payload });
-            console.log(`LlmQueryService asked ${payload} and was answered ${response}`)
+            console.log(`LlmQueryService asked ${query} and awaiting response`)
+            const response = await apiService.post('/llm', { "query": query });
+            console.log(`LlmQueryService asked ${query} and was answered ${response}`)
             return response.status === 'valid';
         } catch (error) {
-            console.error(`Llm Query with payload ${payload} got error: `, error);
+            console.error(`Llm Query with query ${query} got error: `, error);
             return false;
         }
     }

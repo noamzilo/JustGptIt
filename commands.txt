@@ -31,3 +31,9 @@ Remote-Containers: Attach to Running Container
 Run as deploy:
 npm run build
 npx serve -s build
+
+
+POST
+curl -X POST http://your-api-endpoint/llm \
+     -H "Content-Type: application/json" \
+     -d '{"query": "abcd"}'
