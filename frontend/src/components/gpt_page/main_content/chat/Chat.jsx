@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { motion, useAnimation } from "framer-motion";
 import styles from "./Chat.module.css";
 import mitt from 'mitt';
-
+import LlmQueryService from "../../../../services/LlmQueryService";
 
 function ChatComponent() {
     const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
@@ -146,11 +146,20 @@ function ChatComponent() {
         scrollToBottomEffect();
     }, [animatingTextValue, inputValue, scrollToBottomEffect]);
 
-    const handleSendClick = useCallback(() => {
-        if (inputValue.trim()) {
-            setSearchParams({ query: inputValue });
+const handleSendClick = useCallback(async () => {
+    if (inputValue.trim()) {
+        setSearchParams({ query: inputValue });
+
+        try {
+            console.log(`LlmQueryService asked ${inputValue} and awaiting response`)
+            const response = await LlmQueryService.queryLLMService(inputValue);
+            console.log("Response from LLM:", response);
+            // Handle the response as required (e.g., display in UI)
+        } catch (error) {
+            console.error("Error communicating with LLM:", error);
         }
-    }, [inputValue, setSearchParams]);
+    }
+}, [inputValue, setSearchParams]);
 
     const handleKeyPress = useCallback((e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
