@@ -44,14 +44,14 @@ class ProjectList(generics.ListAPIView):
 def llm(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body.decode('utf-8'))
-            query = data.get('query')
+            query = request.data.get('query')
             if not query:
                 return JsonResponse({'error': 'No query provided'}, status=400)
-            # Process the query as needed
+   
             response = {'message': f'Received query: {query}'}
             return JsonResponse(response)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+    
