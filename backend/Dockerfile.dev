@@ -10,16 +10,26 @@ ENV PYTHONMUTEX=1
 # Install debugpy for debugging
 RUN pip install debugpy watchdog
 
+# Install basic tools: netcat, nano, ping, curl, ps, ssh server
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    netcat-openbsd \
+    nano \
+    iputils-ping \
+    curl \
+    procps \
+    openssh-server \
+    && rm -rf /var/lib/apt/lists/*
+
 # Expose the debugging port
 EXPOSE 5678
 
 # Copy the common and development entrypoint scripts
 COPY docker_entrypoint_common.sh /app/docker_entrypoint_common.sh
-COPY docker_entrypoint_dev.sh /app/docker_entrypoint.sh
+COPY docker_entrypoint_dev.sh /app/docker_entrypoint_dev.sh
 RUN chmod +x /app/docker_entrypoint.sh /app/docker_entrypoint_common.sh
 
 # Mount your source code for hot-reloading (optional, see note below)
 # This step is typically done at run time with a volume mount, not in the Dockerfile
 
 # Set the entrypoint
-ENTRYPOINT ["/app/docker_entrypoint.sh"]
+ENTRYPOINT ["/app/docker_entrypoint_dev.sh"]

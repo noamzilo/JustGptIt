@@ -15,7 +15,8 @@ act --secret-file /home/noams/src/personal_website/backend/.secrets_backend --jo
 cd ~/src/personal_website/backend
 
 // prod image:
-docker build -t personal-website-backend .
+//docker build -t personal-website-backend .
+dockebuild -f Dockerfile -t personal-website-backend .
 docker run -it \
     -p 8080:8080 \
     -e GCP_PROJECT_ID=academic-veld-436919-g0 \
