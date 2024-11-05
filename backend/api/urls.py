@@ -3,6 +3,8 @@ from . import views
 from django.views.generic import TemplateView
 import sys
 
+app_name = 'api'
+
 print("URLs module loaded", file=sys.stderr)
 
 urlpatterns = [

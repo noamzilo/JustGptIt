@@ -59,6 +59,7 @@ LOGGING = {
 INSTALLED_APPS = [
     'corsheaders',
     'api',
+    'llm',
     'rest_framework',
     'storages',  # Ensure 'storages' is included
     'django.contrib.admin',
