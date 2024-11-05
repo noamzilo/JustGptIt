@@ -12,6 +12,8 @@ sqlparse
 asgiref
 google-cloud-storage
 django-storages
+requests
+beautifulsoup4
 
 pytest>=7.4.0
 pytest-django>=4.5.2
