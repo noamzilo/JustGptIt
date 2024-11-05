@@ -1,12 +1,8 @@
 # Use Python 3.11.3 as the base image
 FROM python:3.11.3-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=config.settings
 
-# Set work directory
 WORKDIR /app
 
 # Install system dependencies and debugging tools

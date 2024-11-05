@@ -3,8 +3,12 @@
 # Use the production image as the base
 FROM personal-website-backend
 
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONMUTEX=1
+
 # Install debugpy for debugging
-RUN pip install debugpy
+RUN pip install debugpy watchdog
 
 # Expose the debugging port
 EXPOSE 5678
