@@ -39,19 +39,3 @@ class ProjectList(generics.ListAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
-
-@api_view(['POST'])
-def llm(request):
-    if request.method == 'POST':
-        try:
-            query = request.data.get('query')
-            if not query:
-                return JsonResponse({'error': 'No query provided'}, status=400)
-   
-            response = {'message': f'Received query: {query}'}
-            return JsonResponse(response)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
-    else:
-        return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-    
