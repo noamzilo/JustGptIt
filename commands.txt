@@ -16,7 +16,13 @@ cd ~/src/personal_website/backend
 
 // prod image:
 docker build -t personal-website-backend .
-docker run -it -p 8080:8080 -e GCP_PROJECT_ID=academic-veld-436919-g0 --env-file /home/noams/src/personal_website/backend/.secrets_backend --env-file /home/noams/src/personal_website/backend/.env /bin/bash
+docker run -it \
+    -p 8080:8080 \
+    -e GCP_PROJECT_ID=academic-veld-436919-g0 \
+    --env-file /home/noams/src/personal_website/backend/.secrets_backend \
+    --env-file /home/noams/src/personal_website/backend/.env \
+    personal-website-backend \
+    /bin/bash
 
 //dev image:
 docker build -f Dockerfile.dev -t personal-website-backend_dev .
@@ -27,7 +33,7 @@ docker run -it \
     -e GCP_PROJECT_ID=academic-veld-436919-g0 \
     --env-file /home/noams/src/personal_website/backend/.secrets_backend \
     --env-file /home/noams/src/personal_website/backend/.env \
-    my_django_app_dev \
+    personal-website-backend_dev \
     /bin/bash
 
 

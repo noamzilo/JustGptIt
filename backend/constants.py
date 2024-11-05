@@ -34,7 +34,11 @@ GCP_PROJECT_ID = read_env_variable('GCP_PROJECT_ID')
 GCP_CLOUD_RUN_SERVICE_ACCOUNT_NAME = read_env_variable('GCP_CLOUD_RUN_SERVICE_ACCOUNT_NAME')
 
 DEPLOY_TIME = read_env_variable('DEPLOY_TIME', 'UNKNOWN DEPLOY TIME')
-
+try:
+    with open("/build_artifacts/build_time.txt", "r") as f: # created during docker build
+        BUILD_TIME = f.read().strip()
+except FileNotFoundError:
+    BUILD_TIME = 'Build time not available'
 
 # Not supported yet
 GS_BUCKET_NAME = read_env_variable('GS_BUCKET_NAME', 'your-gcs-bucket-name')

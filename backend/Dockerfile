@@ -44,7 +44,7 @@ RUN python -c "import sys; print(f'Python path: {sys.path}')"
 EXPOSE 8080
 
 # This is important for the version endpoint
-RUN TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S" > /app/build_time.txt
+RUN mkdir /build_artifacts; TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S" > /build_artifacts/build_time.txt
 
 COPY docker_entrypoint_common.sh /app/docker_entrypoint_common.sh
 COPY docker_entrypoint.sh /app/docker_entrypoint.sh

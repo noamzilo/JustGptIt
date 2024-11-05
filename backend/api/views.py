@@ -9,7 +9,7 @@ from django.http import HttpResponse
 import logging
 import os
 import sys
-from constants import backend_version_name, DEPLOY_TIME
+from constants import backend_version_name, DEPLOY_TIME, BUILD_TIME
 
 print("Views module loaded", file=sys.stderr)
 
@@ -23,15 +23,11 @@ def test_view(request):
 @api_view(['GET'])
 def version(request):
     version = backend_version_name
-    try:
-        with open("/app/build_time.txt", "r") as f: # created during docker build
-            build_time = f.read().strip()
-    except FileNotFoundError:
-        build_time = 'Build time not available'
-    return Response({"version": f"{version}",
-                     "docker_build_time": f"{build_time}",
-                     "deploy_time": f"{DEPLOY_TIME}"
-                     })
+    return Response({
+        "version": f"{version}",
+        "docker_build_time": f"{BUILD_TIME}",
+        "deploy_time": f"{DEPLOY_TIME}"
+    })
 
 @api_view(['GET'])
 def health_check(request):
