@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -5,11 +6,12 @@ from rest_framework import generics
 from .models import Project
 from .serializers import ProjectSerializer
 from google.cloud import storage
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import logging
 import os
 import sys
 from constants import backend_version_name, DEPLOY_TIME, BUILD_TIME
+from django.views.decorators.csrf import csrf_exempt
 
 print("Views module loaded", file=sys.stderr)
 
@@ -38,14 +40,18 @@ class ProjectList(generics.ListAPIView):
     serializer_class = ProjectSerializer
 
 
+@api_view(['POST'])
 def llm(request):
-    # parse a POST request parameter with a string of the query the user would like to pass on to gpt. Return the response from gpt.
-
-    # get the query from the POST request
-    query = request.POST.get('query', None)
-    if query is None:
-        return HttpResponse("No query provided", status=400)
-    
-    # simulate the gpt response
-    response = f"Response from GPT: {query}"
-    return HttpResponse(response)
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            query = data.get('query')
+            if not query:
+                return JsonResponse({'error': 'No query provided'}, status=400)
+            # Process the query as needed
+            response = {'message': f'Received query: {query}'}
+            return JsonResponse(response)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
