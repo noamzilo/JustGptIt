@@ -49,4 +49,4 @@ npx serve -s build
 
 
 POST
-curl -X POST localhost:8080/api/llm -H "Content-Type: application/json" -d '{"query": "abcd"}'
+curl -X POST localhost:8080/llm/query -H "Content-Type: application/json" -d '{"query": "abcd"}'

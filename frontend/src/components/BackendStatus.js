@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import apiService from '../services/apiService';
+import BackendLivenessService from '../services/backendLivenessService';
 
 function BackendStatus() {
   const [status, setStatus] = useState('Checking...');
@@ -8,7 +9,7 @@ function BackendStatus() {
   useEffect(() => {
     const checkBackend = async () => {
       try {
-        const response = await apiService.get('/health');
+        const response = await BackendLivenessService.isBackendHealthy();
         setStatus(response.status);
         setError(null);
       } catch (error) {
@@ -21,7 +22,7 @@ function BackendStatus() {
     checkBackend();
     const interval = setInterval(checkBackend, 15000);
 
-    return () => clearInterval(interval); 
+    return () => clearInterval(interval);
   }, []);
 
   return (

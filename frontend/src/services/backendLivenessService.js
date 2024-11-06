@@ -3,7 +3,7 @@ import apiService from './apiService';
 const BackendLivenessService = {
   isBackendHealthy: async () => {
     try {
-      const response = await apiService.get('/health');
+      const response = await apiService.get('/api/health');
       console.log(response)
       return response.status === 'healthy';
     } catch (error) {
