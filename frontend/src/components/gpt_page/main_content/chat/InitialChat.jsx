@@ -45,8 +45,8 @@ function InitialChat() {
         const textBoxRect = textareaRef.current.getBoundingClientRect();
 
         const targetPosition = {
-            top: (textBoxRect.top + textBoxRect.height / 2) + window.scrollY,
-            left: (textBoxRect.left) + window.scrollX
+            top: (textBoxRect.top + textBoxRect.height / 4) + window.scrollY,
+            left: (textBoxRect.left + 10) + window.scrollX
         };
 
         console.log('Animating cursor to text box position:', targetPosition);
@@ -60,14 +60,13 @@ function InitialChat() {
             left: targetPosition.left,
         }, { duration: 1.5, ease: "easeOut" });
 
-        // Optionally, you can keep the cursor at the text box or jump back
-        // To jump back to (0,0) after staying at the text box for a moment:
-        await new Promise(resolve => setTimeout(resolve, 500)); // Wait for 0.5 seconds
+        await new Promise(resolve => setTimeout(resolve, 150));
         await controls.set({
             top: 0,
             left: 0,
             opacity: 0,
         });
+        await new Promise(resolve => setTimeout(resolve, 100));
 
         setIsMouseAnimating(false);
         emitter.emit('mouseAnimationDone');
