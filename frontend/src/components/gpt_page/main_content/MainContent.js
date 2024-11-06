@@ -1,13 +1,17 @@
 // MainContent.js
-import React from "react";
+import React, { useCallback, useState } from "react";
 import styles from "./MainContent.module.css";
 import InitialChat from "./chat/InitialChat";
 import { GPT_PAGE_CONSTANTS } from "../constants";
-import { useState } from "react";
 import ResponseChat from "./chat/ResponseChat";
 
 const MainContent = () => {
     const [isInitialChat, setIsInitialChat] = useState(true);
+
+    const handleTypingAnimationDone = useCallback(() => {
+        setIsInitialChat(false);
+    }, []);
+
 
     return (
         <main className={styles.mainContent}>
@@ -17,8 +21,14 @@ const MainContent = () => {
             </header>
 
             <section className={styles.querySection}>
-                {isInitialChat ? <h2>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT}</h2> : null}
-                {isInitialChat ? <InitialChat /> : <ResponseChat />}
+                {isInitialChat
+                    ? <h2>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT}</h2>
+                    : null}
+                {isInitialChat
+                    ? <InitialChat onTypingAnimationDone={handleTypingAnimationDone} />
+                    : <div>BALLS</div>
+                    // <ResponseChat query="Hello" response="Hi there!" />
+                }
             </section>
 
             <footer className={styles.disclaimer}>

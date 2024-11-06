@@ -7,7 +7,7 @@ import styles from "./InitialChat.module.css";
 import mitt from 'mitt';
 import LlmQueryService from "../../../../services/LlmQueryService";
 
-function InitialChat() {
+function InitialChat({onTypingAnimationDone}) {
     const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
     const emitter = useMemo(() => mitt(), []);
 
@@ -123,7 +123,8 @@ function InitialChat() {
     const handleTypingAnimationDone = useCallback(() => {
         console.log('Typing animation done');
         setInputValue(decodedQuery);
-    }, [decodedQuery]);
+        onTypingAnimationDone();
+    }, [decodedQuery, onTypingAnimationDone]);
 
     useEffect(() => {
         emitter.on('typingAnimationDone', handleTypingAnimationDone);
