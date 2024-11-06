@@ -83,7 +83,7 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
         } catch (error) {
             console.error("Error communicating with LLM:", error);
         }
-    }, [decodedQuery, onLlmResponse]);
+    }, [onLlmResponse]);
     
     useEffect(() => {
         if (!decodedQuery.trim()) {
@@ -91,11 +91,11 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
         }
         queryLlm(decodedQuery);
         startMouseAnimation();
-    }, [decodedQuery, startMouseAnimation]);
+    }, [decodedQuery, startMouseAnimation, queryLlm]);
 
     const handleMouseAnimationDone = useCallback(() => {
         setIsAnimatingTyping(true);
-    }, [queryLlm]);
+    }, []);
 
     useEffect(() => {
         emitter.on('mouseAnimationDone', handleMouseAnimationDone);
@@ -123,7 +123,7 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
 
             return () => clearInterval(intervalId);
         }
-    }, [isAnimatingTyping, emitter]);
+    }, [isAnimatingTyping, emitter, decodedQuery]);
 
     useEffect(() => {
         const cleanup = typingAnimationEffect();
@@ -132,7 +132,7 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
 
     const handleTypingAnimationDone = useCallback(() => {
         console.log('Typing animation done');
-        // setInputValue(decodedQuery);
+        setInputValue(decodedQuery);
         onTypingAnimationDone();
     }, [decodedQuery, onTypingAnimationDone]);
 
