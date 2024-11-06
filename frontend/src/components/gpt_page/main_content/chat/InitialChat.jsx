@@ -7,7 +7,7 @@ import styles from "./InitialChat.module.css";
 import mitt from 'mitt';
 import LlmQueryService from "../../../../services/LlmQueryService";
 
-function ChatComponent() {
+function InitialChat() {
     const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
     const emitter = useMemo(() => mitt(), []);
 
@@ -203,4 +203,4 @@ const handleSendClick = useCallback(async () => {
     );
 }
 
-export default ChatComponent;
+export default InitialChat;

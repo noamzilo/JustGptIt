@@ -1,10 +1,14 @@
 // MainContent.js
 import React from "react";
 import styles from "./MainContent.module.css";
-import ChatComponent from "./chat/InitialChat";
+import InitialChat from "./chat/InitialChat";
 import { GPT_PAGE_CONSTANTS } from "../constants";
+import { useState } from "react";
+import ResponseChat from "./chat/ResponseChat";
 
 const MainContent = () => {
+    const [isInitialChat, setIsInitialChat] = useState(true);
+
     return (
         <main className={styles.mainContent}>
             <header className={styles.header}>
@@ -13,8 +17,8 @@ const MainContent = () => {
             </header>
 
             <section className={styles.querySection}>
-                <h2>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT}</h2>
-                <ChatComponent />
+                {isInitialChat ? <h2>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT}</h2> : null}
+                {isInitialChat ? <InitialChat /> : <ResponseChat />}
             </section>
 
             <footer className={styles.disclaimer}>
