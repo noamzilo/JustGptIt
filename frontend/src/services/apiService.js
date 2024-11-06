@@ -15,7 +15,15 @@ const apiService = {
 
   post: async (endpoint, data) => {
     try {
-      const response = await axios.post(`${REACT_APP_API_URL}${endpoint}`, data);
+      console.log("POSTING TO", `${REACT_APP_API_URL}${endpoint}`)
+      const response = await axios.post(
+        `${REACT_APP_API_URL}${endpoint}`,
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        },
+        JSON.stringify(data)
+      );
       return response.data;
     } catch (error) {
       console.error(`Error posting data to ${endpoint}:`, error);

@@ -9,7 +9,7 @@ const LlmQueryService = {
             return response.status === 'valid';
         } catch (error) {
             console.error(`Llm Query with query ${query} got error: `, error);
-            return false;
+            throw error;
         }
     }
 };
