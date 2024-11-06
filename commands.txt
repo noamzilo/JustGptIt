@@ -37,13 +37,6 @@ docker run -it \
     personal-website-backend_dev \
     /bin/bash
 
-
-docker run -it -p 8080:8080 \
-  --env-file /home/noams/src/personal_website/backend/.secrets_backend \
-  --env-file /home/noams/src/personal_website/backend/.env \
-  personal-website-backend \
-  /bin/bash
-
 '/home/runner/work/personal_website/personal_website/./backend' <working-directory: ./backend>
   
 Debug:

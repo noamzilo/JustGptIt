@@ -5,11 +5,11 @@ const About = () => {
     <div className="about">
       <h2>About Me</h2>
       <p>
-        Hello! I'm [Your Name], a [Your Profession] based in [Your Location]. 
+        Hello! I'm [Your Name], a [Your Profession] based in [Your Location].
         I'm passionate about [Your Interests/Specialties].
       </p>
       <p>
-        With [X] years of experience in [Your Field], I've worked on a variety of projects 
+        With [X] years of experience in [Your Field], I've worked on a variety of projects
         ranging from [Type of Project] to [Type of Project].
       </p>
       <p>
