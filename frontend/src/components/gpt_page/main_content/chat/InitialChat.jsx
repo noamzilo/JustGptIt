@@ -7,7 +7,7 @@ import styles from "./InitialChat.module.css";
 import mitt from 'mitt';
 import LlmQueryService from "../../../../services/LlmQueryService";
 
-function InitialChat({onTypingAnimationDone}) {
+function InitialChat({onTypingAnimationDone, onLlmResponse}) {
     const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
     const emitter = useMemo(() => mitt(), []);
 
@@ -60,7 +60,7 @@ function InitialChat({onTypingAnimationDone}) {
             left: targetPosition.left,
         }, { duration: 1.5, ease: "easeOut" });
 
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 0));
         await controls.set({
             top: 0,
             left: 0,
@@ -72,10 +72,24 @@ function InitialChat({onTypingAnimationDone}) {
         emitter.emit('mouseAnimationDone');
     }, [controls, emitter]);
 
+    const queryLlm = useCallback(async (decodedQuery) => {
+        try {
+            console.log(`LlmQueryService asked ${decodedQuery} and awaiting response`)
+            // const response = await LlmQueryService.queryLLMService(inputValue);
+            const response = "SOME RESPONSE";
+            await new Promise(resolve => setTimeout(resolve, 500));
+            console.log("Response from LLM:", response);
+            onLlmResponse(decodedQuery, response);
+        } catch (error) {
+            console.error("Error communicating with LLM:", error);
+        }
+    }, [decodedQuery, onLlmResponse]);
+    
     const handleQueryParamChange = useCallback(() => {
         if (!decodedQuery.trim()) {
             return;
         }
+        queryLlm(decodedQuery);
         startMouseAnimation();
     }, [decodedQuery, startMouseAnimation]);
 
@@ -146,20 +160,12 @@ function InitialChat({onTypingAnimationDone}) {
         scrollToBottomEffect();
     }, [animatingTextValue, inputValue, scrollToBottomEffect]);
 
-const handleSendClick = useCallback(async () => {
-    if (inputValue.trim()) {
-        setSearchParams({ query: inputValue });
-
-        try {
-            console.log(`LlmQueryService asked ${inputValue} and awaiting response`)
-            const response = await LlmQueryService.queryLLMService(inputValue);
-            console.log("Response from LLM:", response);
-            // Handle the response as required (e.g., display in UI)
-        } catch (error) {
-            console.error("Error communicating with LLM:", error);
+    const handleSendClick = useCallback(async () => {
+        console.log('Send button clicked');
+        if (inputValue.trim()) {
+            setSearchParams({ query: inputValue });
         }
-    }
-}, [inputValue, setSearchParams]);
+    }, [inputValue, setSearchParams]);
 
     const handleKeyPress = useCallback((e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
