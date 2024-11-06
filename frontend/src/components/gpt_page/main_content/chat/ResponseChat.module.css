@@ -1,0 +1,50 @@
+.chatContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.messageContainer {
+    display: flex;
+    margin: 10px 0;
+}
+
+.userMessage {
+    flex-direction: row-reverse;
+}
+
+.userMessage .messageContent {
+    background-color: #dcf8c6;
+    /* Light green background for user messages */
+}
+
+.assistantMessage .messageContent {
+    background-color: #f1f0f0;
+    /* Light gray background for assistant messages */
+}
+
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #0084ff;
+    /* Blue background for avatars */
+    color: #fff;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+.messageContent {
+    max-width: 80%;
+    padding: 10px;
+    border-radius: 10px;
+    overflow-wrap: break-word;
+}
+
+.messageText {
+    white-space: pre-wrap;
+}
