@@ -75,8 +75,8 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
     const queryLlm = useCallback(async (decodedQuery) => {
         try {
             console.log(`LlmQueryService asked ${decodedQuery} and awaiting response`)
-            const response = await LlmQueryService.queryLLMService(inputValue);
-            // const response = "SOME RESPONSE";
+            // const response = await LlmQueryService.queryLLMService(inputValue);
+            const response = "SOME RESPONSE";
             await new Promise(resolve => setTimeout(resolve, 500));
             console.log("Response from LLM:", response);
             onLlmResponse(decodedQuery, response);

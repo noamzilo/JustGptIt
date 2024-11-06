@@ -11,6 +11,8 @@ const typingAnimation = {
 };
 
 function ChatMessage({ message, isUser }) {
+    console.log(`ChatMessage: message=${message}, isUser=${isUser}`);
+    
     useEffect(() => {
         emitter.emit('typingCompleted');
     }, [message]);
