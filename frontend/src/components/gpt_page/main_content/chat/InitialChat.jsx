@@ -15,13 +15,6 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
     const queryParam = searchParams.get('query');
     const decodedQuery = queryParam ? decodeURIComponent(queryParam) : '';
 
-    // useEffect(async () => {
-    //     const response = await LlmQueryService.queryLLMService(decodedQuery);
-    //     console.log("Response from LLM:", response);
-    //     onLlmResponse(decodedQuery, response);
-    // }, [decodedQuery]);
-
-
     const [inputValue, setInputValue] = useState('');
     const cursorRef = useRef(null);
     const textareaRef = useRef(null);
@@ -80,19 +73,17 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
         emitter.emit('mouseAnimationDone');
     }, [controls, emitter]);
 
-    let count = 0
     const queryLlm = useCallback(async (decodedQuery) => {
         try {
-            console.log(`LlmQueryService ${++count} asked ${decodedQuery} and awaiting response`)
+            console.log(`LlmQueryService asked ${decodedQuery} and awaiting response`)
             const response = await LlmQueryService.queryLLMService(decodedQuery);
-            // const response = "SOME RESPONSE";
             await new Promise(resolve => setTimeout(resolve, 500));
             console.log("Response from LLM:", response);
             onLlmResponse(decodedQuery, response);
         } catch (error) {
             console.error("Error communicating with LLM:", error);
         }
-    }, [decodedQuery]);
+    }, [decodedQuery, onLlmResponse]);
     
     useEffect(() => {
         if (!decodedQuery.trim()) {
@@ -104,7 +95,7 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
 
     const handleMouseAnimationDone = useCallback(() => {
         setIsAnimatingTyping(true);
-    }, []);
+    }, [queryLlm]);
 
     useEffect(() => {
         emitter.on('mouseAnimationDone', handleMouseAnimationDone);
@@ -132,7 +123,7 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
 
             return () => clearInterval(intervalId);
         }
-    }, [isAnimatingTyping, decodedQuery, emitter]);
+    }, [isAnimatingTyping, emitter]);
 
     useEffect(() => {
         const cleanup = typingAnimationEffect();

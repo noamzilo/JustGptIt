@@ -1,5 +1,5 @@
 // MainContent.js
-import React, { useCallback, useState, use, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import styles from "./MainContent.module.css";
 import InitialChat from "./chat/InitialChat";
 import { GPT_PAGE_CONSTANTS } from "../constants";
