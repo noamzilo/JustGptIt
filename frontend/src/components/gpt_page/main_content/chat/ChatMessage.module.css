@@ -1,4 +1,4 @@
-.messageContainer {
+.messageListItem {
     display: flex;
     margin: 10px 0;
 }
@@ -7,14 +7,16 @@
     flex-direction: row-reverse;
 }
 
+.assistantMessage {
+    flex-direction: row;
+}
+
 .userMessage .messageContent {
-    background-color: #dcf8c6;
-    /* Light green background for user messages */
+    background-color: #2F2F2F;
 }
 
 .assistantMessage .messageContent {
-    background-color: #f1f0f0;
-    /* Light gray background for assistant messages */
+    background-color: transparent;
 }
 
 .messageContent {
@@ -22,6 +24,7 @@
     padding: 10px;
     border-radius: 10px;
     overflow-wrap: break-word;
+    text-align: left;
 }
 
 .messageText {

@@ -6,7 +6,7 @@ import styles from './ChatMessage.module.css';
 
 function ChatMessage({ message, isUser }) {
     return (
-        <div className={`${styles.messageContainer} ${isUser ? styles.userMessage : styles.assistantMessage}`}>
+        <div className={`${styles.messageListItem} ${isUser ? styles.userMessage : styles.assistantMessage}`}>
             <div className={styles.messageContent}>
             <div className={styles.messageText}>{message}</div>
             </div>
