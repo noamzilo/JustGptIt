@@ -1,9 +1,9 @@
-// ChatComponent.jsx
+// InitialChat.jsx
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion, useAnimation } from "framer-motion";
-import styles from "./Chat.module.css";
+import styles from "./InitialChat.module.css";
 import mitt from 'mitt';
 import LlmQueryService from "../../../../services/LlmQueryService";
 
