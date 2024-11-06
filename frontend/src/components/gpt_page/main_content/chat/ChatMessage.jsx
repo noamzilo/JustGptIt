@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import mitt from 'mitt';
 import styles from './ChatMessage.module.css';
+import AnimatedText from './AnimatedText';
+
 
 const emitter = mitt();
 
@@ -12,7 +14,7 @@ const typingAnimation = {
 
 function ChatMessage({ message, isUser }) {
     console.log(`ChatMessage: message=${message}, isUser=${isUser}`);
-    
+
     useEffect(() => {
         emitter.emit('typingCompleted');
     }, [message]);
@@ -22,26 +24,8 @@ function ChatMessage({ message, isUser }) {
             <div className={styles.messageContent}>
                 {isUser ? (
                     <div className={styles.messageText}>{message}</div>
-                ) : (
-                    <motion.div
-                        className={styles.messageText}
-                        initial="hidden"
-                        animate="visible"
-                        variants={{
-                            visible: {
-                                transition: {
-                                    staggerChildren: 0.01, // Controls typing speed
-                                },
-                            },
-                        }}
-                    >
-                        {message.split('').map((char, index) => (
-                            <motion.span key={index} variants={typingAnimation}>
-                                {char}
-                            </motion.span>
-                        ))}
-                    </motion.div>
-                )}
+                ) : AnimatedText({ text: message })
+                }
             </div>
         </div>
     );
@@ -49,3 +33,6 @@ function ChatMessage({ message, isUser }) {
 
 export default ChatMessage;
 export { emitter };
+
+
+
