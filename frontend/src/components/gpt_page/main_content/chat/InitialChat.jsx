@@ -72,30 +72,27 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
         emitter.emit('mouseAnimationDone');
     }, [controls, emitter]);
 
+    let count = 0
     const queryLlm = useCallback(async (decodedQuery) => {
         try {
-            console.log(`LlmQueryService asked ${decodedQuery} and awaiting response`)
-            const response = await LlmQueryService.queryLLMService(inputValue);
-            // const response = "SOME RESPONSE";
+            console.log(`LlmQueryService ${++count} asked ${decodedQuery} and awaiting response`)
+            // const response = await LlmQueryService.queryLLMService(decodedQuery);
+            const response = "SOME RESPONSE";
             await new Promise(resolve => setTimeout(resolve, 500));
             console.log("Response from LLM:", response);
             onLlmResponse(decodedQuery, response);
         } catch (error) {
             console.error("Error communicating with LLM:", error);
         }
-    }, [decodedQuery, onLlmResponse]);
+    }, [decodedQuery]);
     
-    const handleQueryParamChange = useCallback(() => {
+    useEffect(() => {
         if (!decodedQuery.trim()) {
             return;
         }
         queryLlm(decodedQuery);
         startMouseAnimation();
     }, [decodedQuery, startMouseAnimation]);
-
-    useEffect(() => {
-        handleQueryParamChange();
-    }, [handleQueryParamChange]);
 
     const handleMouseAnimationDone = useCallback(() => {
         setIsAnimatingTyping(true);
@@ -136,7 +133,7 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
 
     const handleTypingAnimationDone = useCallback(() => {
         console.log('Typing animation done');
-        setInputValue(decodedQuery);
+        // setInputValue(decodedQuery);
         onTypingAnimationDone();
     }, [decodedQuery, onTypingAnimationDone]);
 
