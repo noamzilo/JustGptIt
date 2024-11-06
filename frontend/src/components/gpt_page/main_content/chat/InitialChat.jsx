@@ -15,6 +15,13 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
     const queryParam = searchParams.get('query');
     const decodedQuery = queryParam ? decodeURIComponent(queryParam) : '';
 
+    // useEffect(async () => {
+    //     const response = await LlmQueryService.queryLLMService(decodedQuery);
+    //     console.log("Response from LLM:", response);
+    //     onLlmResponse(decodedQuery, response);
+    // }, [decodedQuery]);
+
+
     const [inputValue, setInputValue] = useState('');
     const cursorRef = useRef(null);
     const textareaRef = useRef(null);
@@ -68,6 +75,7 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
         });
         await new Promise(resolve => setTimeout(resolve, 150));
 
+        console.log('Mouse move effect done');
         setIsMouseAnimating(false);
         emitter.emit('mouseAnimationDone');
     }, [controls, emitter]);
@@ -76,8 +84,8 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
     const queryLlm = useCallback(async (decodedQuery) => {
         try {
             console.log(`LlmQueryService ${++count} asked ${decodedQuery} and awaiting response`)
-            // const response = await LlmQueryService.queryLLMService(decodedQuery);
-            const response = "SOME RESPONSE";
+            const response = await LlmQueryService.queryLLMService(decodedQuery);
+            // const response = "SOME RESPONSE";
             await new Promise(resolve => setTimeout(resolve, 500));
             console.log("Response from LLM:", response);
             onLlmResponse(decodedQuery, response);

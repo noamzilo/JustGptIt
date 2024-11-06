@@ -24,7 +24,7 @@ const apiService = {
           withCredentials: true
         }
       );
-      return response.data;
+      return response;
     } catch (error) {
       console.error(`Error posting data to ${endpoint}:`, error);
       throw error;
