@@ -24,10 +24,11 @@ const MainContent = () => {
                 {isInitialChat
                     ? <h2>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT}</h2>
                     : null}
-                {isInitialChat
-                    ? <InitialChat onTypingAnimationDone={handleTypingAnimationDone} />
-                    : <div>BALLS</div>
-                    // <ResponseChat query="Hello" response="Hi there!" />
+                {
+                    // isInitialChat
+                    // ? <InitialChat onTypingAnimationDone={handleTypingAnimationDone} />
+                    // :
+                    < ResponseChat query="Hello" response="Hi there!" />
                 }
             </section>
 

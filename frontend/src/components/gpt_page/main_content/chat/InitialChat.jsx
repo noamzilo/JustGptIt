@@ -60,13 +60,13 @@ function InitialChat({onTypingAnimationDone}) {
             left: targetPosition.left,
         }, { duration: 1.5, ease: "easeOut" });
 
-        await new Promise(resolve => setTimeout(resolve, 150));
+        await new Promise(resolve => setTimeout(resolve, 200));
         await controls.set({
             top: 0,
             left: 0,
             opacity: 0,
         });
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 150));
 
         setIsMouseAnimating(false);
         emitter.emit('mouseAnimationDone');

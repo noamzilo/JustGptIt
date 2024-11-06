@@ -1,0 +1,29 @@
+.messageContainer {
+    display: flex;
+    margin: 10px 0;
+}
+
+.userMessage {
+    flex-direction: row-reverse;
+}
+
+.userMessage .messageContent {
+    background-color: #dcf8c6;
+    /* Light green background for user messages */
+}
+
+.assistantMessage .messageContent {
+    background-color: #f1f0f0;
+    /* Light gray background for assistant messages */
+}
+
+.messageContent {
+    max-width: 80%;
+    padding: 10px;
+    border-radius: 10px;
+    overflow-wrap: break-word;
+}
+
+.messageText {
+    white-space: pre-wrap;
+}
