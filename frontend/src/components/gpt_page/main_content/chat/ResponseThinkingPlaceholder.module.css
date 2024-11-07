@@ -1,0 +1,9 @@
+.thinkingDot {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background-color: transparent;
+	margin-right: 5px;
+	animation: thinkingDot 1.5s infinite;
+}

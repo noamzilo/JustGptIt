@@ -21,15 +21,6 @@ const MainContent = () => {
         setLlmResponse(response);
     }, []);
 
-    const [initialChatDone, setInitialChatDone] = useState(false);
-
-    useEffect(() => {
-        if (llmResponse !== '' && isInitialChatDoneAnimating) {
-            setInitialChatDone(true);
-            console.log('MainContent: Initial chat done');
-        }
-    }, [llmResponse, isInitialChatDoneAnimating]);
-
     return (
         <main className={styles.mainContent}>
             <header className={styles.header}>
@@ -38,14 +29,13 @@ const MainContent = () => {
             </header>
 
             <section className={styles.querySection}>
-                {isInitialChatDoneAnimating
+                {!isInitialChatDoneAnimating
                     ? <h2>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT}</h2>
                     : null}
                 {
                     !isInitialChatDoneAnimating ?
                         <InitialChat onTypingAnimationDone={handleTypingAnimationDone} onLlmResponse={onLlmResponse} />
                         :
-                        // < ResponseChat query="Hello is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchange" response="Hi there! is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchange" />
                         < ResponseChat query={llmQuery} response={llmResponse} />
                 }
             </section>
