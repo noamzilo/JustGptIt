@@ -4,8 +4,8 @@ const LlmQueryService = {
     queryLLMService: async (query) => {
         try {
             console.log(`LlmQueryService asked ${query} and awaiting response`)
-            //simulate a long wait of 3 seconds
-            await new Promise(resolve => setTimeout(resolve, 5012));
+
+            // await new Promise(resolve => setTimeout(resolve, 5012));
             const response = await apiService.post('/llm/query', { "query": query });
             if (response.status !== 200) {
                 throw new Error(`Llm Query with query ${query} got error: ${response.data}`);

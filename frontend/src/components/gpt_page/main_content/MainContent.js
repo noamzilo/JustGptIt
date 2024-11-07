@@ -20,8 +20,8 @@ const MainContent = () => {
         setIsInitialChatDoneAnimating(true);
     }, []);
 
-    const onLlmResponse = useCallback((query, response) => {
-        console.log(`MainContent: LLM query: ${query}, response:`, response);
+    const onLlmResponse = useCallback((response) => {
+        console.log(`MainContent: LLM response:`, response);
         setLlmResponse(response);
     }, []);
 
