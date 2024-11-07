@@ -6,8 +6,9 @@ import { motion, useAnimation } from "framer-motion";
 import styles from "./InitialChat.module.css";
 import mitt from 'mitt';
 import LlmQueryService from "../../../../services/LlmQueryService";
+import ChatInputPane from "./ChatInputPane";
 
-function InitialChat({onTypingAnimationDone, onLlmResponse, onQueryChange}) {
+function InitialChat({ onTypingAnimationDone, onLlmResponse, onQueryChange }) {
     const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
     const emitter = useMemo(() => mitt(), []);
 
@@ -17,7 +18,6 @@ function InitialChat({onTypingAnimationDone, onLlmResponse, onQueryChange}) {
 
     const [inputValue, setInputValue] = useState('');
     const cursorRef = useRef(null);
-    const textareaRef = useRef(null);
 
     const [isAnimatingMouseMove, setIsMouseAnimating] = useState(false);
     const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
@@ -25,7 +25,6 @@ function InitialChat({onTypingAnimationDone, onLlmResponse, onQueryChange}) {
 
     const controls = useAnimation();
 
-    // notify parent when decodedQuery changes
     useEffect(() => {
         if (decodedQuery.trim()) {
             onQueryChange(decodedQuery);
@@ -37,47 +36,22 @@ function InitialChat({onTypingAnimationDone, onLlmResponse, onQueryChange}) {
         setIsMouseAnimating(true);
         console.log('Mouse move effect started');
 
-        if (!cursorRef.current && !textareaRef.current) {
-            return;
-        }
+        if (!cursorRef.current) return;
 
-        // Jump to (0,0) of the DOM
-        await controls.set({
-            top: 0,
-            left: 0,
-            opacity: 0,
-        });
-
-        // Get textarea position relative to the viewport
-        const textBoxRect = textareaRef.current.getBoundingClientRect();
-
+        await controls.set({ top: 0, left: 0, opacity: 0 });
         const targetPosition = {
-            top: (textBoxRect.top + textBoxRect.height / 4) + window.scrollY,
-            left: (textBoxRect.left + 10) + window.scrollX
+            top: window.innerHeight / 2,
+            left: window.innerWidth / 2,
         };
 
-        console.log('Animating cursor to text box position:', targetPosition);
-
-        // Animate cursor to textarea position
-        await controls.set({
-            opacity: 1,
-        });
+        await controls.set({ opacity: 1 });
         await controls.start({
             top: targetPosition.top,
             left: targetPosition.left,
         }, { duration: 1.5, ease: "easeOut" });
 
-        await new Promise(resolve => setTimeout(resolve, 0));
-        await controls.set({
-            top: 0,
-            left: 0,
-            opacity: 0,
-        });
-        await new Promise(resolve => setTimeout(resolve, 150));
-
-        console.log('Mouse move effect done');
         setIsMouseAnimating(false);
-        emitter.emit('mouseAnimationDone');
+        emitter.emit('mouseAnimationDone'); // Trigger mouse animation done event
     }, [controls, emitter]);
 
     const queryLlm = useCallback(async (decodedQuery) => {
@@ -94,11 +68,9 @@ function InitialChat({onTypingAnimationDone, onLlmResponse, onQueryChange}) {
             console.error("Error communicating with LLM:", error);
         }
     }, [onLlmResponse]);
-    
+
     useEffect(() => {
-        if (!decodedQuery.trim()) {
-            return;
-        }
+        if (!decodedQuery.trim()) return;
         queryLlm(decodedQuery);
         startMouseAnimation();
     }, [decodedQuery, startMouseAnimation, queryLlm]);
@@ -107,32 +79,34 @@ function InitialChat({onTypingAnimationDone, onLlmResponse, onQueryChange}) {
         setIsAnimatingTyping(true);
     }, []);
 
+    // Listen for mouse animation done and start typing animation
     useEffect(() => {
         emitter.on('mouseAnimationDone', handleMouseAnimationDone);
-
         return () => {
             emitter.off('mouseAnimationDone', handleMouseAnimationDone);
         };
     }, [emitter, handleMouseAnimationDone]);
 
     const typingAnimationEffect = useCallback(() => {
-        if (isAnimatingTyping) {
-            const text = decodedQuery;
-            let index = 0;
-
-            const intervalId = setInterval(() => {
-                index += 1;
-                setAnimatingTextValue(text.slice(0, index));
-
-                if (index >= text.length) {
-                    clearInterval(intervalId);
-                    setIsAnimatingTyping(false);
-                    emitter.emit('typingAnimationDone');
-                }
-            }, 50);
-
-            return () => clearInterval(intervalId);
+        if (!isAnimatingTyping) {
+            return () => {};
         }
+        const text = decodedQuery;
+        let index = 0;
+
+        const intervalId = setInterval(() => {
+            index += 1;
+            setAnimatingTextValue(text.slice(0, index));
+
+            if (index >= text.length) {
+                clearInterval(intervalId);
+                setIsAnimatingTyping(false);
+                emitter.emit('typingAnimationDone');
+            }
+        }, 50);
+
+        return () => clearInterval(intervalId);
+        
     }, [isAnimatingTyping, emitter, decodedQuery]);
 
     useEffect(() => {
@@ -140,31 +114,19 @@ function InitialChat({onTypingAnimationDone, onLlmResponse, onQueryChange}) {
         return cleanup;
     }, [typingAnimationEffect]);
 
-    const handleTypingAnimationDone = useCallback(() => {
-        console.log('Typing animation done');
+    const handleTypingAnimationDone = useCallback(async () => {
         setInputValue(decodedQuery);
+        await new Promise(resolve => setTimeout(resolve, 200));  // would put this in the typing animation but that is hard to do now
+        console.log('Typing animation done');
         onTypingAnimationDone();
     }, [decodedQuery, onTypingAnimationDone]);
 
     useEffect(() => {
         emitter.on('typingAnimationDone', handleTypingAnimationDone);
-
         return () => {
             emitter.off('typingAnimationDone', handleTypingAnimationDone);
         };
     }, [emitter, handleTypingAnimationDone]);
-
-    const scrollToBottomEffect = useCallback(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-            textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
-        }
-    }, []);
-
-    useEffect(() => {
-        scrollToBottomEffect();
-    }, [animatingTextValue, inputValue, scrollToBottomEffect]);
 
     const handleSendClick = useCallback(async () => {
         console.log('Send button clicked');
@@ -172,13 +134,6 @@ function InitialChat({onTypingAnimationDone, onLlmResponse, onQueryChange}) {
             setSearchParams({ query: inputValue });
         }
     }, [inputValue, setSearchParams]);
-
-    const handleKeyPress = useCallback((e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSendClick();
-        }
-    }, [handleSendClick]);
 
     const isAnimating = isAnimatingTyping || isAnimatingMouseMove;
 
@@ -191,26 +146,23 @@ function InitialChat({onTypingAnimationDone, onLlmResponse, onQueryChange}) {
                 initial={{ top: 0, left: 0 }}
                 animate={controls}
                 transition={{ duration: 1.5, ease: "easeOut" }}
-                style={{ position: 'fixed', width: '20px', height: '20px', pointerEvents: 'none', opacity: 0 }}
+                style={{ 
+                    position: 'fixed',
+                     width: '20px',
+                      height: '20px', 
+                      pointerEvents: 'none',
+                       opacity: 0,
+                       zIndex: 9999,
+                }}
+                
             />
-            <textarea
-                ref={textareaRef}
-                placeholder="Message ChatGPT"
-                value={isAnimating ? animatingTextValue : inputValue}
-                onChange={e => setInputValue(e.target.value)}
-                onKeyDown={handleKeyPress}
-                className={isAnimating ? styles.typingAnimation : ''}
-                readOnly={isAnimating}
-                aria-label="Message input"
+            <ChatInputPane
+                inputValue={inputValue}
+                setInputValue={setInputValue}
+                onSendClick={handleSendClick}
+                isAnimating={isAnimating}
+                animatingTextValue={animatingTextValue}
             />
-            <button
-                onClick={handleSendClick}
-                className={`${styles.sendButton} ${inputValue.trim() ? styles.sendButtonActive : ''}`}
-                disabled={!inputValue.trim() || isAnimatingTyping}
-                aria-label="Send Message"
-            >
-                ↑
-            </button>
         </div>
     );
 }
