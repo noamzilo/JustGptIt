@@ -6,9 +6,9 @@ import ProjectList from './components/ProjectList';
 import Contact from './components/Contact';
 import BackendHealthIndicator from './components/BackendHealthIndicator';
 import BackendStatus from './components/BackendStatus';
-import GPTInterface from './components/gpt_page/GPTInterface.js';
+import GPTInterface from './components/gpt_page/GPTInterface';
 import debugEnvironment from './utils/envDebug';
-import VersionData from './components/VersionData.jsx';
+import VersionData from './components/VersionData';
 
 // Run environment debug on app start
 const envVars = debugEnvironment();

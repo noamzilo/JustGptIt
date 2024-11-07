@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import BackendLivenessService from '../services/backendLivenessService.js';
+import BackendLivenessService from '../services/backendLivenessService';
 
-import ErrorPage from '../components/ErrorPage';
+import ErrorPage from './ErrorPage';
 import ReactDOM from 'react-dom';
 
 const BackendHealthIndicator = () => {
