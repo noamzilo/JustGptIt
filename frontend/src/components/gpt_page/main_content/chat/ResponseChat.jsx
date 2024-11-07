@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "./ResponseChat.module.css";
 import ChatMessage from "./ChatMessage";
-import ResponseThinkingPlaceholder from "./ResponseThinkingPlaceholder";
 
 function ResponseChat({ query, response }) {
     return (

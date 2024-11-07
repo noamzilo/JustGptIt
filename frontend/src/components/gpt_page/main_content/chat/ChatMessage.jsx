@@ -11,7 +11,7 @@ function ChatMessage({ message, isUser }) {
 
     const [waitingForResponse, setwaitingForResponse] = useState(true);
     useEffect(() => {
-        if (message === '') {
+        if (!message) {
             setwaitingForResponse(true);
         } else {
             setwaitingForResponse(false);

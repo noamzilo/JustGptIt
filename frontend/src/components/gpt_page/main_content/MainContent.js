@@ -10,6 +10,11 @@ const MainContent = () => {
     const [llmQuery, setLlmQuery] = useState('');
     const [llmResponse, setLlmResponse] = useState('');
 
+    const onQueryChange = useCallback((query) => {
+        console.log(`MainContent: Query changed to: ${query}`);
+        setLlmQuery(query);
+    }, []);
+
     const handleTypingAnimationDone = useCallback(() => {
         console.log('MainContent: Typing animation done');
         setIsInitialChatDoneAnimating(true);
@@ -17,7 +22,6 @@ const MainContent = () => {
 
     const onLlmResponse = useCallback((query, response) => {
         console.log(`MainContent: LLM query: ${query}, response:`, response);
-        setLlmQuery(query);
         setLlmResponse(response);
     }, []);
 
@@ -34,7 +38,10 @@ const MainContent = () => {
                     : null}
                 {
                     !isInitialChatDoneAnimating ?
-                        <InitialChat onTypingAnimationDone={handleTypingAnimationDone} onLlmResponse={onLlmResponse} />
+                        <InitialChat
+                            onTypingAnimationDone={handleTypingAnimationDone}
+                            onLlmResponse={onLlmResponse}
+                            onQueryChange={onQueryChange} />
                         :
                         < ResponseChat query={llmQuery} response={llmResponse} />
                 }

@@ -7,7 +7,7 @@ import styles from "./InitialChat.module.css";
 import mitt from 'mitt';
 import LlmQueryService from "../../../../services/LlmQueryService";
 
-function InitialChat({onTypingAnimationDone, onLlmResponse}) {
+function InitialChat({onTypingAnimationDone, onLlmResponse, onQueryChange}) {
     const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
     const emitter = useMemo(() => mitt(), []);
 
@@ -24,6 +24,13 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
     const [animatingTextValue, setAnimatingTextValue] = useState('');
 
     const controls = useAnimation();
+
+    // notify parent when decodedQuery changes
+    useEffect(() => {
+        if (decodedQuery.trim()) {
+            onQueryChange(decodedQuery);
+        }
+    }, [decodedQuery, onQueryChange]);
 
     const startMouseAnimation = useCallback(async () => {
         setAnimatingTextValue('');
@@ -77,9 +84,12 @@ function InitialChat({onTypingAnimationDone, onLlmResponse}) {
         try {
             console.log(`LlmQueryService asked ${decodedQuery} and awaiting response`)
             const response = await LlmQueryService.queryLLMService(decodedQuery);
+            if (!response) {
+                throw new Error(`Llm Query with query ${decodedQuery} got empty response`);
+            }
             await new Promise(resolve => setTimeout(resolve, 500));
             console.log("Response from LLM:", response);
-            onLlmResponse(decodedQuery, response);
+            onLlmResponse(response);
         } catch (error) {
             console.error("Error communicating with LLM:", error);
         }
