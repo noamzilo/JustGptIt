@@ -1,11 +1,10 @@
-// MainContent.jsx
-
 import React, { useCallback, useState, useEffect } from 'react';
 import styles from './MainContent.module.css';
 import InitialChat from './chat/InitialChat';
 import { GPT_PAGE_CONSTANTS } from '../constants';
 import ResponseChat from './chat/ResponseChat';
 import useLlmQuery from './chat/hooks/useLlmQuery';
+import { useSearchParams } from 'react-router-dom';
 
 const MainContent = () => {
   const [isInitialChatDoneAnimating, setIsInitialChatDoneAnimating] = useState(false);
@@ -13,6 +12,17 @@ const MainContent = () => {
   const [llmResponse, setLlmResponse] = useState('');
 
   const queryLlm = useLlmQuery(setLlmResponse);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryFromUrl = searchParams.get('query') || '';
+
+  useEffect(() => {
+    if (queryFromUrl) {
+      console.log(`MainContent: Query from URL: ${queryFromUrl}`);
+      queryLlm(queryFromUrl);
+      setLlmQuery(queryFromUrl);
+    }
+  }, [queryFromUrl, queryLlm]);
 
   const onQueryChange = useCallback((query) => {
     console.log(`MainContent: Query changed to: ${query}`);
@@ -24,16 +34,20 @@ const MainContent = () => {
     setIsInitialChatDoneAnimating(true);
     if (llmQuery.trim()) {
       queryLlm(llmQuery);
+      searchParams.set('query', llmQuery);
+      setSearchParams(searchParams);
     }
-  }, [llmQuery, queryLlm]);
+  }, [llmQuery, queryLlm, searchParams, setSearchParams]);
 
   const handleSendMessage = useCallback(
     (message) => {
       console.log(`MainContent: User sent message: ${message}`);
       setLlmQuery(message);
       queryLlm(message);
+      searchParams.set('query', message);
+      setSearchParams(searchParams);
     },
-    [queryLlm]
+    [queryLlm, searchParams, setSearchParams]
   );
 
   return (
@@ -46,6 +60,7 @@ const MainContent = () => {
       <section className={styles.querySection}>
         {!isInitialChatDoneAnimating ? (
           <InitialChat
+            initialQuery={llmQuery}
             onTypingAnimationDone={handleTypingAnimationDone}
             onLlmResponse={setLlmResponse}
             onQueryChange={onQueryChange}
