@@ -1,11 +1,16 @@
-// ChatInputPane.jsx
-
 import React, { useCallback, useRef, useState } from 'react';
+import useTypingAnimation from './hooks/useTypingAnimation'; // Import the useTypingAnimation hook
 import styles from './ChatInputPane.module.css';
 
 function ChatInputPane({ onSubmit, isAnimating, animatingTextValue }) {
   const [inputValue, setInputValue] = useState('');
   const textareaRef = useRef(null);
+
+  // Integrate useTypingAnimation
+  const animatedText = useTypingAnimation(animatingTextValue, isAnimating, () => {
+    // Animation completion callback to clear animation or handle state change
+    if (!isAnimating) setInputValue(''); 
+  });
 
   const handleSendClick = useCallback(() => {
     if (inputValue.trim()) {
@@ -28,7 +33,8 @@ function ChatInputPane({ onSubmit, isAnimating, animatingTextValue }) {
     setInputValue(e.target.value);
   }, []);
 
-  const displayValue = isAnimating ? animatingTextValue : inputValue;
+  // Display animated text when animating, otherwise show the regular input
+  const displayValue = isAnimating ? animatedText : inputValue;
 
   return (
     <div className={styles.inputContainer}>
@@ -39,7 +45,7 @@ function ChatInputPane({ onSubmit, isAnimating, animatingTextValue }) {
         onChange={handleChange}
         onKeyDown={handleKeyPress}
         className={isAnimating ? styles.typingAnimation : ''}
-        readOnly={isAnimating}
+        readOnly={isAnimating} // Disable editing while animating
         aria-label="Message input"
       />
       <button
