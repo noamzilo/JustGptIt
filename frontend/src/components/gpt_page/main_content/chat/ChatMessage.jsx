@@ -1,12 +1,16 @@
 // ChatMessage.jsx
-
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './ChatMessage.module.css';
 import AnimatedText from './AnimatedText';
 import ResponseThinkingPlaceholder from './ResponseThinkingPlaceholder';
 
 function ChatMessage({ message, isUser }) {
-  console.log(`ChatMessage: message=${message}, isUser=${isUser}`);
+  const [isAnimating, setIsAnimating] = useState(true);
+
+  const handleAnimationComplete = () => {
+    setIsAnimating(false);
+    // You can perform additional actions here if needed
+  };
 
   const waitingForResponse = !message;
 
@@ -22,7 +26,11 @@ function ChatMessage({ message, isUser }) {
         ) : waitingForResponse ? (
           <ResponseThinkingPlaceholder />
         ) : (
-          <AnimatedText text={message} />
+          <AnimatedText
+            text={message}
+            isAnimating={isAnimating}
+            onComplete={handleAnimationComplete}
+          />
         )}
       </div>
     </div>

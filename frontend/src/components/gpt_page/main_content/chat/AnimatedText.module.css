@@ -1,3 +1,4 @@
 .animatedText {
     display: inline;
+    /* white-space: pre-wrap; */
 }

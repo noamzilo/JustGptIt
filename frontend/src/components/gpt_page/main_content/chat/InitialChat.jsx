@@ -6,8 +6,7 @@ import styles from './InitialChat.module.css';
 import mitt from 'mitt';
 import ChatInputPane from './ChatInputPane';
 import useMouseAnimation from './hooks/useMouseAnimation';
-import useTypingAnimation from './hooks/useTypingAnimation';
-import useLlmQuery from './hooks/useLlmQuery';
+import AnimatedText from './AnimatedText';
 
 function InitialChat({ onTypingAnimationDone, onLlmResponse, onQueryChange }) {
   const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
@@ -20,20 +19,12 @@ function InitialChat({ onTypingAnimationDone, onLlmResponse, onQueryChange }) {
   const { isAnimatingMouseMove, startMouseAnimation, controls } = useMouseAnimation(emitter);
   const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
 
-  const animatingTextValue = useTypingAnimation(decodedQuery, isAnimatingTyping, () => {
-    setIsAnimatingTyping(false);
-    emitter.emit('typingAnimationDone');
-  });
-
-  const queryLlm = useLlmQuery(onLlmResponse);
-
   useEffect(() => {
     if (decodedQuery.trim()) {
       onQueryChange(decodedQuery);
-      queryLlm(decodedQuery);
       startMouseAnimation();
     }
-  }, [decodedQuery, onQueryChange, queryLlm, startMouseAnimation]);
+  }, [decodedQuery, onQueryChange, startMouseAnimation]);
 
   useEffect(() => {
     const handleMouseAnimationDone = () => {
@@ -45,13 +36,18 @@ function InitialChat({ onTypingAnimationDone, onLlmResponse, onQueryChange }) {
     };
   }, [emitter]);
 
+  const handleTypingAnimationDone = useCallback(() => {
+    setIsAnimatingTyping(false);
+    emitter.emit('typingAnimationDone');
+  }, [emitter]);
+
   useEffect(() => {
-    const handleTypingAnimationDone = () => {
+    const handleAnimationDone = () => {
       onTypingAnimationDone();
     };
-    emitter.on('typingAnimationDone', handleTypingAnimationDone);
+    emitter.on('typingAnimationDone', handleAnimationDone);
     return () => {
-      emitter.off('typingAnimationDone', handleTypingAnimationDone);
+      emitter.off('typingAnimationDone', handleAnimationDone);
     };
   }, [emitter, onTypingAnimationDone]);
 
@@ -63,12 +59,11 @@ function InitialChat({ onTypingAnimationDone, onLlmResponse, onQueryChange }) {
         newSearchParams.set('query', inputValue);
         window.history.replaceState(null, '', `?${newSearchParams.toString()}`);
         setSearchParams(newSearchParams);
+        onQueryChange(inputValue);
       }
     },
-    [setSearchParams]
+    [setSearchParams, onQueryChange]
   );
-
-  const isAnimating = isAnimatingTyping || isAnimatingMouseMove;
 
   return (
     <div className={styles.inputContainer}>
@@ -89,9 +84,12 @@ function InitialChat({ onTypingAnimationDone, onLlmResponse, onQueryChange }) {
       />
       <ChatInputPane
         onSubmit={handleSend}
-        isAnimating={isAnimating}
-        animatingTextValue={animatingTextValue}
+        isAnimating={isAnimatingMouseMove || isAnimatingTyping}
+        animatingTextValue={decodedQuery}
       />
+      {isAnimatingTyping && (
+        <AnimatedText text={decodedQuery} onComplete={handleTypingAnimationDone} />
+      )}
     </div>
   );
 }

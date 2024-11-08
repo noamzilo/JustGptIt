@@ -1,6 +1,6 @@
 // MainContent.jsx
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import styles from './MainContent.module.css';
 import InitialChat from './chat/InitialChat';
 import { GPT_PAGE_CONSTANTS } from '../constants';
@@ -22,7 +22,10 @@ const MainContent = () => {
   const handleTypingAnimationDone = useCallback(() => {
     console.log('MainContent: Typing animation done');
     setIsInitialChatDoneAnimating(true);
-  }, []);
+    if (llmQuery.trim()) {
+      queryLlm(llmQuery);
+    }
+  }, [llmQuery, queryLlm]);
 
   const handleSendMessage = useCallback(
     (message) => {
