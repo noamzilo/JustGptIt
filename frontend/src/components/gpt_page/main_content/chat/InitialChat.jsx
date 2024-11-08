@@ -15,6 +15,8 @@ function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQue
 
   const { isAnimatingMouseMove, startMouseAnimation, controls } = useMouseAnimation(emitter);
   const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
+  const [readyForTypingAnimation, setReadyForTypingAnimation] = useState(false);
+  const [animatingTextValue, setAnimatingTextValue] = useState('');
 
   useEffect(() => {
     if (decodedQuery.trim()) {
@@ -25,13 +27,22 @@ function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQue
 
   useEffect(() => {
     const handleMouseAnimationDone = () => {
-      setIsAnimatingTyping(true);
+      setReadyForTypingAnimation(true); // Set readyForTypingAnimation to true when mouse animation is done
     };
+
     emitter.on('mouseAnimationDone', handleMouseAnimationDone);
     return () => {
       emitter.off('mouseAnimationDone', handleMouseAnimationDone);
     };
   }, [emitter]);
+
+  useEffect(() => {
+    // Start typing animation only after the mouse animation is done
+    if (readyForTypingAnimation) {
+      setAnimatingTextValue(decodedQuery);
+      setIsAnimatingTyping(true);
+    }
+  }, [readyForTypingAnimation, decodedQuery]);
 
   const handleTypingAnimationDone = useCallback(() => {
     setIsAnimatingTyping(false);
@@ -79,11 +90,11 @@ function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQue
       <ChatInputPane
         onSubmit={handleSend}
         isAnimating={isAnimatingMouseMove || isAnimatingTyping}
-        animatingTextValue={decodedQuery}
+        animatingTextValue={animatingTextValue}
       />
-      {isAnimatingTyping && (
+      {/* {isAnimatingTyping && (
         <AnimatedText text={decodedQuery} onComplete={handleTypingAnimationDone} />
-      )}
+      )} */}
     </div>
   );
 }
