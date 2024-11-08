@@ -2,14 +2,20 @@ import React, { useCallback, useRef, useState } from 'react';
 import useTypingAnimation from './hooks/useTypingAnimation'; // Import the useTypingAnimation hook
 import styles from './ChatInputPane.module.css';
 
-function ChatInputPane({ onSubmit, isAnimating, animatingTextValue }) {
+function ChatInputPane({ onSubmit, isAnimating, animatingTextValue, onAnimationComplete }) {
   const [inputValue, setInputValue] = useState('');
   const textareaRef = useRef(null);
 
   // Integrate useTypingAnimation
-  const animatedText = useTypingAnimation(animatingTextValue, isAnimating, () => {
+  const animatedText = useTypingAnimation(animatingTextValue, isAnimating, async () => {
     // Animation completion callback to clear animation or handle state change
-    if (!isAnimating) setInputValue(''); 
+    if (!isAnimating) {
+		setInputValue(''); 
+	}
+	//wait for a second before calling onAnimationComplete
+	await new Promise(r => setTimeout(r, 300));
+
+	onAnimationComplete();
   });
 
   const handleSendClick = useCallback(() => {

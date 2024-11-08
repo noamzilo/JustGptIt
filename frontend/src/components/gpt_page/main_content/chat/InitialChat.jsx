@@ -91,6 +91,7 @@ function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQue
         onSubmit={handleSend}
         isAnimating={isAnimatingMouseMove || isAnimatingTyping}
         animatingTextValue={animatingTextValue}
+        onAnimationComplete={handleTypingAnimationDone}
       />
       {/* {isAnimatingTyping && (
         <AnimatedText text={decodedQuery} onComplete={handleTypingAnimationDone} />
