@@ -7,6 +7,7 @@ import mitt from 'mitt';
 import ChatInputPane from './ChatInputPane';
 import useMouseAnimation from './hooks/useMouseAnimation';
 import AnimatedText from './AnimatedText';
+import { GPT_PAGE_CONSTANTS } from '../../constants';
 
 function InitialChat({ onTypingAnimationDone, onLlmResponse, onQueryChange }) {
   const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
@@ -67,29 +68,30 @@ function InitialChat({ onTypingAnimationDone, onLlmResponse, onQueryChange }) {
 
   return (
     <div className={styles.inputContainer}>
-      <motion.img
+        <h2>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT}</h2>
+        <motion.img
         src={mouse_cursor}
         alt="Animated Mouse Cursor"
         initial={{ top: 0, left: 0 }}
         animate={controls}
         transition={{ duration: 1.5, ease: 'easeOut' }}
         style={{
-          position: 'fixed',
-          width: '20px',
-          height: '20px',
-          pointerEvents: 'none',
-          opacity: 0,
-          zIndex: 9999,
+            position: 'fixed',
+            width: '20px',
+            height: '20px',
+            pointerEvents: 'none',
+            opacity: 0,
+            zIndex: 9999,
         }}
-      />
-      <ChatInputPane
-        onSubmit={handleSend}
-        isAnimating={isAnimatingMouseMove || isAnimatingTyping}
-        animatingTextValue={decodedQuery}
-      />
-      {isAnimatingTyping && (
-        <AnimatedText text={decodedQuery} onComplete={handleTypingAnimationDone} />
-      )}
+        />
+        <ChatInputPane
+            onSubmit={handleSend}
+            isAnimating={isAnimatingMouseMove || isAnimatingTyping}
+            animatingTextValue={decodedQuery}
+        />
+        {isAnimatingTyping && (
+        <   AnimatedText text={decodedQuery} onComplete={handleTypingAnimationDone} />
+        )}
     </div>
   );
 }

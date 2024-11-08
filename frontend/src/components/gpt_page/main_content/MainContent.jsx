@@ -44,7 +44,6 @@ const MainContent = () => {
       </header>
 
       <section className={styles.querySection}>
-        {!isInitialChatDoneAnimating ? <h2>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT}</h2> : null}
         {!isInitialChatDoneAnimating ? (
           <InitialChat
             onTypingAnimationDone={handleTypingAnimationDone}
