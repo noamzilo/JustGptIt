@@ -1,40 +1,57 @@
 // ChatInputPane.jsx
 
-import React, { useCallback, useRef } from "react";
-import styles from "./ChatInputPane.module.css";
+import React, { useCallback, useRef, useState } from 'react';
+import styles from './ChatInputPane.module.css';
 
-function ChatInputPane({ inputValue, setInputValue, onSendClick, isAnimating, animatingTextValue }) {
-    const textareaRef = useRef(null);
+function ChatInputPane({ onSubmit, isAnimating, animatingTextValue }) {
+  const [inputValue, setInputValue] = useState('');
+  const textareaRef = useRef(null);
 
-    const handleKeyPress = useCallback((e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            onSendClick();
-        }
-    }, [onSendClick]);
+  const handleSendClick = useCallback(() => {
+    if (inputValue.trim()) {
+      onSubmit(inputValue);
+      setInputValue('');
+    }
+  }, [inputValue, onSubmit]);
 
-    return (
-        <div className={styles.inputContainer}>
-            <textarea
-                ref={textareaRef}
-                placeholder="Message ChatGPT"
-                value={isAnimating ? animatingTextValue : inputValue}
-                onChange={e => setInputValue(e.target.value)}
-                onKeyDown={handleKeyPress}
-                className={isAnimating ? styles.typingAnimation : ''}
-                readOnly={isAnimating}
-                aria-label="Message input"
-            />
-            <button
-                onClick={onSendClick}
-                className={`${styles.sendButton} ${inputValue.trim() ? styles.sendButtonActive : ''}`}
-                disabled={!inputValue.trim() || isAnimating}
-                aria-label="Send Message"
-            >
-                ↑
-            </button>
-        </div>
-    );
+  const handleKeyPress = useCallback(
+    (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSendClick();
+      }
+    },
+    [handleSendClick]
+  );
+
+  const handleChange = useCallback((e) => {
+    setInputValue(e.target.value);
+  }, []);
+
+  const displayValue = isAnimating ? animatingTextValue : inputValue;
+
+  return (
+    <div className={styles.inputContainer}>
+      <textarea
+        ref={textareaRef}
+        placeholder="Message ChatGPT"
+        value={displayValue}
+        onChange={handleChange}
+        onKeyDown={handleKeyPress}
+        className={isAnimating ? styles.typingAnimation : ''}
+        readOnly={isAnimating}
+        aria-label="Message input"
+      />
+      <button
+        onClick={handleSendClick}
+        className={`${styles.sendButton} ${displayValue.trim() ? styles.sendButtonActive : ''}`}
+        disabled={!displayValue.trim() || isAnimating}
+        aria-label="Send Message"
+      >
+        ↑
+      </button>
+    </div>
+  );
 }
 
 export default ChatInputPane;

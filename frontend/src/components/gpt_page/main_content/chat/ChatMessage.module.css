@@ -1,3 +1,5 @@
+/* ChatMessage.module.css */
+
 .messageListItem {
     display: flex;
     margin: 10px 0;
@@ -12,7 +14,7 @@
 }
 
 .userMessage .messageContent {
-    background-color: #2F2F2F;
+    background-color: #2f2f2f;
 }
 
 .assistantMessage .messageContent {

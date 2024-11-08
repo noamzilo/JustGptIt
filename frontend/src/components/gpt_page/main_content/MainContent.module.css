@@ -1,3 +1,5 @@
+/* MainContent.module.css */
+
 .mainContent {
     display: flex;
     flex-direction: column;
@@ -5,7 +7,7 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    color: #E7E7E7;
+    color: #e7e7e7;
     background-color: #212121;
     min-height: 100vh;
     overflow-y: auto;
@@ -15,7 +17,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: #B4B4B4;
+    color: #b4b4b4;
     font-size: 8px;
     margin: 0;
 }

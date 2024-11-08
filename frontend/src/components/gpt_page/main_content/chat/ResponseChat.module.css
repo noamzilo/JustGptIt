@@ -1,7 +1,7 @@
+/* ResponseChat.module.css */
+
 .chatContainer {
     display: flex;
     flex-direction: column;
     width: 100%;
-
-
 }
