@@ -13,7 +13,7 @@
     overflow-y: auto;
 }
 
-.mainContent .header {
+.header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -22,18 +22,7 @@
     margin: 0;
 }
 
-@media (max-width: 768px) {
-    .main-container {
-        flex-direction: column;
-    }
-
-    .mainContent {
-        width: 100%;
-        padding-top: 10px;
-    }
-}
-
-.mainContent .userIcon {
+.userIcon {
     width: 35px;
     height: 35px;
     background-color: #4caf50;
@@ -45,19 +34,24 @@
     font-size: 18px;
 }
 
-.mainContent .querySection {
-    text-align: center;
+.querySection {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    overflow: hidden;
     margin: 20px 0;
-    max-height: calc(100vh - 200px);
-    overflow-y: auto;
 }
 
-.mainContent .querySection h2 {
+.centeredQuerySection {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.querySection h2 {
     font-size: 28px;
     margin-bottom: 20px;
 }
@@ -82,7 +76,8 @@
         padding: 15px 20px;
     }
 
-    .querySection h2 {
+    .querySection h2,
+    .centeredQuerySection h2 {
         font-size: 24px;
     }
 }
@@ -106,7 +101,8 @@
         font-size: 16px;
     }
 
-    .querySection h2 {
+    .querySection h2,
+    .centeredQuerySection h2 {
         font-size: 22px;
     }
 
@@ -120,7 +116,8 @@
         padding: 10px;
     }
 
-    .querySection h2 {
+    .querySection h2,
+    .centeredQuerySection h2 {
         font-size: 20px;
     }
 

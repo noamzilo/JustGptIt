@@ -15,8 +15,11 @@ function ResponseChat({ query, response, onSendMessage }) {
 
   return (
     <div className={styles.chatContainer}>
-      <ChatMessage message={query} isUser={true} />
-      <ChatMessage message={response} isUser={false} />
+      <div className={styles.messagesContainer}>
+        <ChatMessage message={query} isUser={true} />
+        <ChatMessage message={response} isUser={false} />
+        {/* Add more ChatMessage components as needed */}
+      </div>
       <ChatInputPane onSubmit={handleSend} isAnimating={false} animatingTextValue="" />
     </div>
   );

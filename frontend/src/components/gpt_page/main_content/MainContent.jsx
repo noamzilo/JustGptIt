@@ -1,3 +1,5 @@
+// MainContent.jsx
+
 import React, { useCallback, useState, useEffect } from 'react';
 import styles from './MainContent.module.css';
 import InitialChat from './chat/InitialChat';
@@ -57,7 +59,7 @@ const MainContent = () => {
         <div className={styles.userIcon}>{GPT_PAGE_CONSTANTS.USER_ICON_TEXT}</div>
       </header>
 
-      <section className={styles.querySection}>
+      <section className={isInitialChatDoneAnimating ? styles.querySection : styles.centeredQuerySection}>
         {!isInitialChatDoneAnimating ? (
           <InitialChat
             initialQuery={llmQuery}
