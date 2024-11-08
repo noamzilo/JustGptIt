@@ -4,11 +4,14 @@ import styles from "./MainContent.module.css";
 import InitialChat from "./chat/InitialChat";
 import { GPT_PAGE_CONSTANTS } from "../constants";
 import ResponseChat from "./chat/ResponseChat";
+import { useSearchParams } from "react-router-dom";
 
 const MainContent = () => {
     const [isInitialChatDoneAnimating, setIsInitialChatDoneAnimating] = useState(false);
     const [llmQuery, setLlmQuery] = useState('');
     const [llmResponse, setLlmResponse] = useState('');
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const onQueryChange = useCallback((query) => {
         console.log(`MainContent: Query changed to: ${query}`);
@@ -41,7 +44,9 @@ const MainContent = () => {
                         <InitialChat
                             onTypingAnimationDone={handleTypingAnimationDone}
                             onLlmResponse={onLlmResponse}
-                            onQueryChange={onQueryChange} />
+                            onQueryChange={onQueryChange} 
+                            searchParams={searchParams}
+                            setSearchParams={setSearchParams}/>
                         :
                         < ResponseChat query={llmQuery} response={llmResponse} />
                 }
