@@ -5,10 +5,11 @@ import styles from './ResponseChat.module.css';
 import ChatMessage from './ChatMessage';
 import ChatInputPane from './ChatInputPane';
 
-function ResponseChat({ query, response, onSendMessage }) {
+function ResponseChat({ query, response, setResponse, onSendMessage }) {
   const handleSend = useCallback(
     (inputValue) => {
       onSendMessage(inputValue);
+      setResponse('');
     },
     [onSendMessage]
   );
@@ -18,7 +19,6 @@ function ResponseChat({ query, response, onSendMessage }) {
       <div className={styles.messagesContainer}>
         <ChatMessage message={query} isUser={true} />
         <ChatMessage message={response} isUser={false} />
-        {/* Add more ChatMessage components as needed */}
       </div>
       <ChatInputPane onSubmit={handleSend} isAnimating={false} animatingTextValue="" />
     </div>

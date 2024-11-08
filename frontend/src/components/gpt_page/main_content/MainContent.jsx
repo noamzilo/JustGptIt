@@ -70,6 +70,7 @@ const MainContent = () => {
           <ResponseChat
             query={llmQuery}
             response={llmResponse}
+            setResponse={setLlmResponse}
             onSendMessage={handleSendMessage}
           />
         )}
