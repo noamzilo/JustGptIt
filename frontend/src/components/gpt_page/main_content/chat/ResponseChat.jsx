@@ -11,7 +11,7 @@ function ResponseChat({ query, response, setResponse, onSendMessage }) {
       onSendMessage(inputValue);
       setResponse('');
     },
-    [onSendMessage]
+    [onSendMessage, setResponse]
   );
 
   return (

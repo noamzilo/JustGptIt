@@ -4,7 +4,6 @@ import styles from './InitialChat.module.css';
 import mitt from 'mitt';
 import ChatInputPane from './ChatInputPane';
 import useMouseAnimation from './hooks/useMouseAnimation';
-import AnimatedText from './AnimatedText';
 import { GPT_PAGE_CONSTANTS } from '../../constants';
 
 function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQueryChange }) {
