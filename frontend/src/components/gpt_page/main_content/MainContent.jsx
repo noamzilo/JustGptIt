@@ -77,7 +77,7 @@ const MainContent = () => {
         )}
       </section>
 
-      <footer className={styles.disclaimer} >
+      <footer className={styles.footer} >
         <ShareButtons />
         <div className={styles.disclaimer}>
           {GPT_PAGE_CONSTANTS.DISCLAIMER}

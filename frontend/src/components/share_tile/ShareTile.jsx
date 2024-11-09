@@ -3,6 +3,7 @@ import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 
 const ShareButtons = () => {
     const urlToShare = window.location.href;
+	const iconSize = 25;
 
     const shareOnFacebook = () => {
         const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlToShare)}`;
@@ -25,18 +26,18 @@ const ShareButtons = () => {
     };
 
     return (
-        <div className="share-buttons">
+        <div className="shareButtons">
             <button onClick={shareOnFacebook}>
-                <FaFacebook /> Share on Facebook
+                <FaFacebook size={iconSize}/>
             </button>
             <button onClick={shareOnTwitter}>
-                <FaTwitter /> Share on Twitter
+                <FaTwitter size={iconSize}/>
             </button>
             <button onClick={shareOnLinkedIn}>
-                <FaLinkedin /> Share on LinkedIn
+                <FaLinkedin size={iconSize}/>
             </button>
             <button onClick={shareOnWhatsApp}>
-                <FaWhatsapp /> Share on WhatsApp
+                <FaWhatsapp size={iconSize}/>
             </button>
         </div>
     );
