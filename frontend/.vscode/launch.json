@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "/home/noams/src/personal_website/backend",
+            "env": {
+                "PYTHONPATH": "/home/noams/src/personal_website/backend"
+            },
+        },
+        {
             "name": "Launch Chrome",
             "request": "launch",
             "type": "chrome",
