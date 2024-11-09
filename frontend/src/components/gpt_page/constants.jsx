@@ -8,4 +8,6 @@ export const GPT_PAGE_CONSTANTS = {
     QUERY_SECTION_TEXT: "What can I help with?",
     // The text to display in the user icon
     USER_ICON_TEXT: "N",
+
+    QUERY_PLACEHOLDER: "Show them how to use the internet to ask questions",
 };

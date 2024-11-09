@@ -23,8 +23,8 @@ const ShareButtons = () => {
     };
 
     const shareOnWhatsApp = () => {
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(textToShare)}%20${encodeURIComponent(urlToShare)}`;
-        window.open(whatsappUrl, '_blank');
+        const whatsappUrl = `https://www.addtoany.com/add_to/whatsapp?linkurl=${urlToShare}&linkname=${textToShare}`;
+		window.open(whatsappUrl, '_blank');
     };
 
     return (

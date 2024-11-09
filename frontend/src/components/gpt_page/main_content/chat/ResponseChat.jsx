@@ -20,7 +20,11 @@ function ResponseChat({ query, response, setResponse, onSendMessage }) {
         <ChatMessage message={query} isUser={true} />
         <ChatMessage message={response} isUser={false} />
       </div>
-      <ChatInputPane onSubmit={handleSend} isAnimating={false} animatingTextValue="" />
+      <ChatInputPane 
+        onSubmit={handleSend}
+        isAnimating={false} 
+        animatingTextValue=""
+        placeholder={"Ask something else (Sorry, we don't support chat!)"} />
     </div>
   );
 }

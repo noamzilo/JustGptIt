@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import useTypingAnimation from './hooks/useTypingAnimation'; // Import the useTypingAnimation hook
 import styles from './ChatInputPane.module.css';
 
-function ChatInputPane({ onSubmit, isAnimating, animatingTextValue, onAnimationComplete }) {
+function ChatInputPane({ onSubmit, isAnimating, animatingTextValue, onAnimationComplete, placeholder }) {
   const [inputValue, setInputValue] = useState('');
   const textareaRef = useRef(null);
 
@@ -46,7 +46,7 @@ function ChatInputPane({ onSubmit, isAnimating, animatingTextValue, onAnimationC
     <div className={styles.inputContainer}>
       <textarea
         ref={textareaRef}
-        placeholder="Message ChatGPT"
+        placeholder={placeholder}
         value={displayValue}
         onChange={handleChange}
         onKeyDown={handleKeyPress}

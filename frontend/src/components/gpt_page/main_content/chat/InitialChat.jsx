@@ -91,6 +91,7 @@ function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQue
         isAnimating={isAnimatingMouseMove || isAnimatingTyping}
         animatingTextValue={animatingTextValue}
         onAnimationComplete={handleTypingAnimationDone}
+        placeholder={GPT_PAGE_CONSTANTS.QUERY_PLACEHOLDER}
       />
       {/* {isAnimatingTyping && (
         <AnimatedText text={decodedQuery} onComplete={handleTypingAnimationDone} />
