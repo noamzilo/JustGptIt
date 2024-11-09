@@ -8,9 +8,9 @@
         "--ignore=node_modules"
     ],
     "python.defaultInterpreterPath": "/home/noams/src/personal_website/venv/bin/python",
-    "python.testing.cwd": "/home/noams/src/personal_website/Backend",
+    "python.testing.cwd": "/home/noams/src/personal_website/backend",
     "python.analysis.extraPaths": [
-        "/home/noams/src/personal_website/Backend"
+        "/home/noams/src/personal_website/backend"
     ],
     // The next line can be omitted, unless you've modified the global default
     "python.envFile": "/home/noams/src/personal_website/backend/.env",
