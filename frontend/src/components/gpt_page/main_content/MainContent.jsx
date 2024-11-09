@@ -5,6 +5,7 @@ import { GPT_PAGE_CONSTANTS } from '../constants';
 import ResponseChat from './chat/ResponseChat';
 import useLlmQuery from './chat/hooks/useLlmQuery';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import ShareButtons from '../../share_tile/ShareTile';
 
 const MainContent = () => {
   const [isInitialChatDoneAnimating, setIsInitialChatDoneAnimating] = useState(false);
@@ -76,7 +77,12 @@ const MainContent = () => {
         )}
       </section>
 
-      <footer className={styles.disclaimer}>{GPT_PAGE_CONSTANTS.DISCLAIMER}</footer>
+      <footer className={styles.disclaimer} >
+        <ShareButtons />
+        <div className={styles.disclaimer}>
+          {GPT_PAGE_CONSTANTS.DISCLAIMER}
+        </div>
+      </footer>
     </main>
   );
 };

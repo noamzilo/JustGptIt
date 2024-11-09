@@ -69,6 +69,16 @@
     text-align: center;
 }
 
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #212121;
+    color: #a0a0a0;
+    font-size: 12px;
+    padding: 10px 0;
+}
+
 /* Responsive Styles */
 @media (max-width: 1024px) {
     .mainContent {
