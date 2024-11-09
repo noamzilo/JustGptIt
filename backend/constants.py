@@ -2,11 +2,29 @@ import os
 import sys
 
 backend_version_name = "0.0.2"
+secret_file_path = ".secrets_backend"
 
+# read environment variable from the environment. If it isn't there, try to read it from .secrets file (relevant only for local development)
+# allow variables to look like "Value", and parse away the "".
 def read_env_variable(name, default=None):
-    value = os.environ.get(name, default)
+    value = os.environ.get(name)
+    if value is None:
+        if os.path.isfile(secret_file_path):
+            with open(secret_file_path, "r") as f: # yes, opening and iterating the file for every variable, whatever.
+                for line in f:
+                    if line.startswith(name):
+                        value = line.split("=", 1)[1].strip()
+                        value = value.replace('"', "").replace("'", "")
+                        break
+        else:
+            print(".secrets file not found", file=sys.stderr)
+
+    if value is None:
+        value = default
+
     print(f"Environment variable {name}: {'[SET]' if value is not None else '[NOT SET]'}", file=sys.stderr)
     return value
+
     
 # Environment variables
 PORT = int(read_env_variable("PORT", 8080))
@@ -41,5 +59,7 @@ except FileNotFoundError:
     BUILD_TIME = 'Build time not available'
 
 # Not supported yet
-GS_BUCKET_NAME = read_env_variable('GS_BUCKET_NAME', 'your-gcs-bucket-name')
+GS_BUCKET_NAME = read_env_variable('GS_BUCKET_NAME', 'GS_BUCKET_NAME NOT READ PROPERLY')
+URLDAY_API_KEY = read_env_variable('URLDAY_API_KEY', 'URLDAY_API_KEY NOT READ PROPERLY')
+
 
