@@ -11,13 +11,13 @@ const MainContent = () => {
   const [isInitialChatDoneAnimating, setIsInitialChatDoneAnimating] = useState(false);
   const [llmQuery, setLlmQuery] = useState('');
   const [llmResponse, setLlmResponse] = useState('');
+  const [clearInputTrigger, setClearInputTrigger] = useState(false); // New state for triggering input clear
 
   const queryLlm = useLlmQuery(setLlmResponse);
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryFromUrl = searchParams.get('query') || '';
 
-  // React to changes in URL path or query parameters
   useEffect(() => {
     if (location.pathname === '/gpt') {
       console.log(`MainContent: Query from URL: ${queryFromUrl}`);
@@ -58,16 +58,18 @@ const MainContent = () => {
     setLlmResponse('');
     searchParams.delete('query');
     setIsInitialChatDoneAnimating(false);
-    setSearchParams(searchParams); 
-  });
+    setSearchParams(searchParams);
+    setClearInputTrigger((prev) => !prev); // Toggle the trigger to notify child components
+  }, [searchParams, setSearchParams]);
 
   return (
     <main className={styles.mainContent}>
       <header className={styles.header}>
-        <button className={styles.backButton} onClick={
-          () => {
-            onNewQuestionClicked()
-          }}>{GPT_PAGE_CONSTANTS.BACK_BUTTON_TEXT}
+        <button
+          className={styles.backButton}
+          onClick={onNewQuestionClicked}
+        >
+          {GPT_PAGE_CONSTANTS.BACK_BUTTON_TEXT}
         </button>
         <h1>{GPT_PAGE_CONSTANTS.TITLE}</h1>
         <div className={styles.userIcon}>{GPT_PAGE_CONSTANTS.USER_ICON_TEXT}</div>
@@ -80,6 +82,7 @@ const MainContent = () => {
             onTypingAnimationDone={handleTypingAnimationDone}
             onLlmResponse={setLlmResponse}
             onQueryChange={onQueryChange}
+            clearInputTrigger={clearInputTrigger} // Pass the trigger state
           />
         ) : (
           <ResponseChat
@@ -95,7 +98,7 @@ const MainContent = () => {
         )}
       </section>
 
-      <footer className={styles.footer} >
+      <footer className={styles.footer}>
         <ShareButtons />
         <div className={styles.disclaimer}>
           {GPT_PAGE_CONSTANTS.DISCLAIMER}

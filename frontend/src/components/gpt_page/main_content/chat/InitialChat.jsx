@@ -6,7 +6,7 @@ import ChatInputPane from './ChatInputPane';
 import useMouseAnimation from './hooks/useMouseAnimation';
 import { GPT_PAGE_CONSTANTS } from '../../constants';
 
-function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQueryChange }) {
+function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQueryChange, clearInputTrigger }) {
   const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
   const emitter = useMemo(() => mitt(), []);
 
@@ -92,10 +92,8 @@ function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQue
         animatingTextValue={animatingTextValue}
         onAnimationComplete={handleTypingAnimationDone}
         placeholder={GPT_PAGE_CONSTANTS.QUERY_PLACEHOLDER}
+        clearInputTrigger={clearInputTrigger} // Pass down to ChatInputPane
       />
-      {/* {isAnimatingTyping && (
-        <AnimatedText text={decodedQuery} onComplete={handleTypingAnimationDone} />
-      )} */}
     </div>
   );
 }

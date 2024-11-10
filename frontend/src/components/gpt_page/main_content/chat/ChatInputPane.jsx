@@ -1,22 +1,24 @@
-import React, { useCallback, useRef, useState } from 'react';
-import useTypingAnimation from './hooks/useTypingAnimation'; // Import the useTypingAnimation hook
+import React, { useCallback, useRef, useState, useEffect } from 'react';
+import useTypingAnimation from './hooks/useTypingAnimation';
 import styles from './ChatInputPane.module.css';
 
-function ChatInputPane({ onSubmit, isAnimating, animatingTextValue, onAnimationComplete, placeholder }) {
+function ChatInputPane({ onSubmit, isAnimating, animatingTextValue, onAnimationComplete, placeholder, clearInputTrigger }) {
   const [inputValue, setInputValue] = useState('');
   const textareaRef = useRef(null);
 
   // Integrate useTypingAnimation
   const animatedText = useTypingAnimation(animatingTextValue, isAnimating, async () => {
-    // Animation completion callback to clear animation or handle state change
     if (!isAnimating) {
-		setInputValue(''); 
-	}
-	//wait for a second before calling onAnimationComplete
-	await new Promise(r => setTimeout(r, 300));
-
-	onAnimationComplete();
+      setInputValue('');
+    }
+    await new Promise(r => setTimeout(r, 300));
+    onAnimationComplete();
   });
+
+  // Listen for changes in clearInputTrigger to clear the input
+  useEffect(() => {
+    setInputValue(''); // Clear input when clearInputTrigger changes
+  }, [clearInputTrigger]);
 
   const handleSendClick = useCallback(() => {
     if (inputValue.trim()) {
@@ -39,7 +41,6 @@ function ChatInputPane({ onSubmit, isAnimating, animatingTextValue, onAnimationC
     setInputValue(e.target.value);
   }, []);
 
-  // Display animated text when animating, otherwise show the regular input
   const displayValue = isAnimating ? animatedText : inputValue;
 
   return (
@@ -51,7 +52,7 @@ function ChatInputPane({ onSubmit, isAnimating, animatingTextValue, onAnimationC
         onChange={handleChange}
         onKeyDown={handleKeyPress}
         className={isAnimating ? styles.typingAnimation : ''}
-        readOnly={isAnimating} // Disable editing while animating
+        readOnly={isAnimating}
         aria-label="Message input"
       />
       <button
