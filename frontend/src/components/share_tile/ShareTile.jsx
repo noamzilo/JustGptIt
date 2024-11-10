@@ -1,12 +1,10 @@
 "use client";
 
 import React from "react";
-import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp, FaLink } from "react-icons/fa";
 import styles from "./ShareTile.module.css";
 
-
 const ShareButtons = () => {
-//   const currentUrl = encodeURIComponent(window.location.href);
   const currentUrl = encodeURIComponent("https://tinyurl.com/mfeabcr7");
   const message = encodeURIComponent("Here, I asked that for you:");
 
@@ -34,6 +32,12 @@ const ShareButtons = () => {
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   };
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText("https://tinyurl.com/mfeabcr7").then(() => {
+      alert("Link copied to clipboard!");
+    });
+  };
+
   return (
     <div className="share-buttons">
       <button className={styles.shareButton} onClick={shareOnFacebook} aria-label="Share on Facebook">
@@ -47,6 +51,9 @@ const ShareButtons = () => {
       </button>
       <button className={styles.shareButton} onClick={shareOnWhatsApp} aria-label="Share on WhatsApp">
         <FaWhatsapp size={iconSize} />
+      </button>
+      <button className={styles.shareButton} onClick={copyToClipboard} aria-label="Copy link to clipboard">
+        <FaLink size={iconSize} />
       </button>
     </div>
   );
