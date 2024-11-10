@@ -22,6 +22,19 @@
     margin: 0;
 }
 
+.backButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #b4b4b4;
+    font-size: 12px;
+    margin: 0;
+    background: transparent;
+
+    border-color: wheat;
+    padding: 5px;
+}
+
 .userIcon {
     width: 35px;
     height: 35px;

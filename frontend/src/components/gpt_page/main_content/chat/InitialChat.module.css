@@ -9,3 +9,8 @@
     margin: 0 auto;
     flex-direction: column;
 }
+
+.querySectionText {
+    font-size: 22px;
+    margin-bottom: 20px;
+}

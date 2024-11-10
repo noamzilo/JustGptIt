@@ -55,6 +55,11 @@ const MainContent = () => {
   return (
     <main className={styles.mainContent}>
       <header className={styles.header}>
+        <button className={styles.backButton} onClick={() => {
+          setSearchParams('')
+          setLlmQuery('');
+          setIsInitialChatDoneAnimating(false);
+        }}>{GPT_PAGE_CONSTANTS.BACK_BUTTON_TEXT}</button>
         <h1>{GPT_PAGE_CONSTANTS.TITLE}</h1>
         <div className={styles.userIcon}>{GPT_PAGE_CONSTANTS.USER_ICON_TEXT}</div>
       </header>
@@ -73,6 +78,10 @@ const MainContent = () => {
             response={llmResponse}
             setResponse={setLlmResponse}
             onSendMessage={handleSendMessage}
+            onBackClicked={() => {
+              setSearchParams('');
+              setIsInitialChatDoneAnimating(false);
+            }}
           />
         )}
       </section>

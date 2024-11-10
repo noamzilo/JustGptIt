@@ -70,7 +70,7 @@ function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQue
 
   return (
     <div className={styles.inputContainer}>
-      <h2>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT}</h2>
+      <h2 className={styles.querySectionText}>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT}</h2>
       <motion.img
         src={mouse_cursor}
         alt="Animated Mouse Cursor"

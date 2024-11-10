@@ -20,7 +20,7 @@ function Sidebar() {
                     <div className={styles.sidebarRecentChat}></div>
                 </div>
             </div>
-            <div className={styles.footer}>Upgrade plan</div>
+            <div className={styles.footer}></div>
         </aside>
     );
 }
