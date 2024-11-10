@@ -52,14 +52,23 @@ const MainContent = () => {
     [queryLlm, searchParams, setSearchParams]
   );
 
+  const onNewQuestionClicked = useCallback(() => {
+    console.log(`MainContent: User clicked ${GPT_PAGE_CONSTANTS.NEW_QUESTION_BUTTON_TEXT}`);
+    setLlmQuery('');
+    setLlmResponse('');
+    searchParams.delete('query');
+    setIsInitialChatDoneAnimating(false);
+    setSearchParams(searchParams); 
+  });
+
   return (
     <main className={styles.mainContent}>
       <header className={styles.header}>
-        <button className={styles.backButton} onClick={() => {
-          setSearchParams('')
-          setLlmQuery('');
-          setIsInitialChatDoneAnimating(false);
-        }}>{GPT_PAGE_CONSTANTS.BACK_BUTTON_TEXT}</button>
+        <button className={styles.backButton} onClick={
+          () => {
+            onNewQuestionClicked()
+          }}>{GPT_PAGE_CONSTANTS.BACK_BUTTON_TEXT}
+        </button>
         <h1>{GPT_PAGE_CONSTANTS.TITLE}</h1>
         <div className={styles.userIcon}>{GPT_PAGE_CONSTANTS.USER_ICON_TEXT}</div>
       </header>

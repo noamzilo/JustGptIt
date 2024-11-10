@@ -3,6 +3,7 @@
 .inputContainer {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     position: relative;
     max-width: 600px;
     width: 90%;
