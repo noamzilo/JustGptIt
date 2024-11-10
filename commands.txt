@@ -9,7 +9,13 @@ npm run start:local
 npm run start:local-staging
 npm run start:local-production
 
- backend
+cd ~/src/personal_website/
+act -j build-and-deploy \
+ -W .github/workflows/deploy_frontend.yml \
+ --secret-file /home/noams/src/personal_website/frontend/.secrets_frontend
+
+
+backend
 act --secret-file /home/noams/src/personal_website/backend/.secrets_backend --job deploy -W ~/src/personal_website/.github/workflows/deploy_backend.yml --bind /var/run/docker.sock
 
 cd ~/src/personal_website/backend
@@ -42,10 +48,6 @@ docker run -it \
 Debug:
 ctrl+shift+p
 Remote-Containers: Attach to Running Container
-
-Run as deploy:
-npm run build
-npx serve -s build
 
 
 POST
