@@ -15,9 +15,10 @@ function ChatInputPane({ onSubmit, isAnimating, animatingTextValue, onAnimationC
     onAnimationComplete();
   });
 
-  // Listen for changes in clearInputTrigger to clear the input
+
   useEffect(() => {
     setInputValue(''); // Clear input when clearInputTrigger changes
+    textareaRef.current?.focus();
   }, [clearInputTrigger]);
 
   const handleSendClick = useCallback(() => {
