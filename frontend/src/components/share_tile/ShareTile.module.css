@@ -3,7 +3,13 @@
 	gap: 10px;
 }
 
-.share-buttons button {
+.share-buttons {
+	display: flex;
+	gap: 10px;
+}
+
+.share-button {
+	/* Updated class name */
 	display: flex;
 	align-items: center;
 	gap: 5px;
@@ -13,7 +19,14 @@
 	cursor: pointer;
 	border-radius: 5px;
 	font-size: 16px;
+	margin: 20px;
+	/* margin here for individual buttons */
 }
+
+.share-buttons button:hover {
+	background-color: #e0e0e0;
+}
+
 
 .share-buttons button:hover {
 	background-color: #e0e0e0;

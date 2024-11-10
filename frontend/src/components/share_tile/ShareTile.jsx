@@ -2,6 +2,8 @@
 
 import React from "react";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import styles from "./ShareTile.module.css";
+
 
 const ShareButtons = () => {
 //   const currentUrl = encodeURIComponent(window.location.href);
@@ -34,16 +36,16 @@ const ShareButtons = () => {
 
   return (
     <div className="share-buttons">
-      <button onClick={shareOnFacebook} aria-label="Share on Facebook">
-        <FaFacebook size={iconSize} />
+      <button className={styles.shareButton} onClick={shareOnFacebook} aria-label="Share on Facebook">
+        <FaFacebook size={iconSize}/>
       </button>
-      <button onClick={shareOnTwitter} aria-label="Share on Twitter">
+      <button className={styles.shareButton} onClick={shareOnTwitter} aria-label="Share on Twitter">
         <FaTwitter size={iconSize} />
       </button>
-      <button onClick={shareOnLinkedIn} aria-label="Share on LinkedIn">
+      <button className={styles.shareButton} onClick={shareOnLinkedIn} aria-label="Share on LinkedIn">
         <FaLinkedin size={iconSize} />
       </button>
-      <button onClick={shareOnWhatsApp} aria-label="Share on WhatsApp">
+      <button className={styles.shareButton} onClick={shareOnWhatsApp} aria-label="Share on WhatsApp">
         <FaWhatsapp size={iconSize} />
       </button>
     </div>
