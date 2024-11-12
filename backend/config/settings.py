@@ -8,7 +8,7 @@ import dj_database_url
 from urllib.parse import urlparse
 from constants import LOG_LEVEL, \
 GCP_PROJECT_ID, USE_GCS, DJANGO_SECRET_KEY, CORS_ALLOWED_ORIGINS, \
-SUPABASE_PROJECT_URL, SUPABASE_API_KEY
+SUPABASE_PROJECT_URL, SUPABASE_API_KEY, SUPABASE_POSTGRESQL_CONNECTION_STRING
 SECRET_KEY = DJANGO_SECRET_KEY
 if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set for Django application")

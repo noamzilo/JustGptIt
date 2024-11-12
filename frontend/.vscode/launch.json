@@ -14,11 +14,12 @@
             "variablePresentation": {
                 // https://stackoverflow.com/questions/62346091/how-can-i-disable-hide-the-grouping-of-variables-in-vscode-python
                 "all": "inline",
-                "class": "group",
+                "class": "hide",
                 "function": "hide",
                 "protected": "hide",
                 "special": "hide",
-            }
+            },
+            "showGlobalVariables": false
         },
         {
             "name": "Launch Chrome",
