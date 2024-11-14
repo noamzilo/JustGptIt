@@ -75,3 +75,4 @@ backend/creds/
 
 !.vscode/
 /backend/response.html
+/backend/certificates/
