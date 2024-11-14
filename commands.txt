@@ -62,3 +62,4 @@ https://supabase.com/docs/guides/database/pgadmin
 
 start postgres server
 sudo service postgresql start
+sudo service postgresql restart

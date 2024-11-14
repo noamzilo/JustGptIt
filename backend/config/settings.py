@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 from constants import LOG_LEVEL, \
 GCP_PROJECT_ID, USE_GCS, DJANGO_SECRET_KEY, CORS_ALLOWED_ORIGINS, \
 SUPABASE_PROJECT_URL, SUPABASE_API_KEY, SUPABASE_POSTGRESQL_CONNECTION_STRING
+
 SECRET_KEY = DJANGO_SECRET_KEY
 if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set for Django application")
@@ -118,27 +119,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-if SUPABASE_POSTGRESQL_CONNECTION_STRING:
-    print("SUPABASE_POSTGRESQL_CONNECTION_STRING is set. Using Supabase PostgreSQL database.", file=sys.stdout)
-    db_config = dj_database_url.parse(
-            SUPABASE_POSTGRESQL_CONNECTION_STRING,
-                conn_max_age=600,
-                ssl_require=True
-            )
-    DATABASES = {
-        'default': db_config,
-    }
-else:
-    print("SUPABASE_POSTGRESQL_CONNECTION_STRING is not set. Using default SQLite database.", file=sys.stderr)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-
-
-
+if not SUPABASE_POSTGRESQL_CONNECTION_STRING:
+    raise ValueError("SUPABASE_POSTGRESQL_CONNECTION_STRING is not set. Cannot connect to database.")
+print("SUPABASE_POSTGRESQL_CONNECTION_STRING is set. Using Supabase PostgreSQL database.", file=sys.stdout)
+db_config = dj_database_url.parse(
+        SUPABASE_POSTGRESQL_CONNECTION_STRING,
+            conn_max_age=600,
+            ssl_require=True
+        )
+DATABASES = {
+    'default': db_config,
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
