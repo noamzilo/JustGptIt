@@ -6,3 +6,4 @@ def test_django_settings():
     """Test that Django settings are properly configured."""
     from django.conf import settings
     assert settings.configured
+
