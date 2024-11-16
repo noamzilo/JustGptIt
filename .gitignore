@@ -76,3 +76,4 @@ backend/creds/
 !.vscode/
 /backend/response.html
 /backend/certificates/
+/backend/llm/tests/playground.py
