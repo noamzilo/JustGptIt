@@ -1,43 +1,51 @@
 {
-    "folders": [
-        {
-            "name": "Root",
-            "path": ".."
-        },
-        {
-            "name": "Frontend",
-            "path": "../frontend"
-        },
-        {
-            "name": "Backend",
-            "path": "../backend"
-        }
-    ],
-    "settings": {
-        // Global settings
-        "files.exclude": {
-            "**/__pycache__": true,
-            "**/*.pyc": true,
-            "**/node_modules": true
-        },
-        // Python settings
-        "python.testing.pytestEnabled": true,
-        "python.testing.unittestEnabled": false,
-        "python.testing.nosetestsEnabled": false,
-        "python.testing.pytestArgs": [],
-        "python.defaultInterpreterPath": "/home/noams/src/personal_website/venv/bin/python",
-        "python.testing.cwd": "/home/noams/src/personal_website/backend",
-        "python.analysis.extraPaths": [
-            "/home/noams/src/personal_website/backend"
-        ],
-        // JavaScript settings
-        "[javascript]": {
-            "editor.defaultFormatter": "vscode.typescript-language-features",
-            "editor.formatOnSave": true
-        },
-        "[javascriptreact]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode",
-            "editor.formatOnSave": true
-        }
-    }
+	"folders": [
+		{
+			"name": "Root",
+			"path": ".."
+		},
+		{
+			"name": "Frontend",
+			"path": "../frontend"
+		},
+		{
+			"name": "Backend",
+			"path": "../backend"
+		}
+	],
+	"settings": {
+		// Global settings
+		"files.exclude": {
+			"**/__pycache__": true,
+			"**/*.pyc": true,
+			"**/node_modules": true
+		},
+		// Python settings
+		"python.testing.pytestEnabled": true,
+		"python.testing.unittestEnabled": false,
+		"python.testing.nosetestsEnabled": false,
+		"python.testing.pytestArgs": [],
+		"python.defaultInterpreterPath": "/home/noams/src/personal_website/venv/bin/python",
+		"python.testing.cwd": "/home/noams/src/personal_website/backend",
+		"python.analysis.extraPaths": [
+			"/home/noams/src/personal_website/backend"
+		],
+		// Enforce tabs and configure formatting for Python
+		"[python]": {
+			"editor.insertSpaces": false,
+			"editor.tabSize": 4,
+			"editor.formatOnSave": true,
+			"editor.defaultFormatter": "ms-python.yapf" // Use yapf for formatting
+		},
+		"python.formatting.provider": "yapf", // Specify yapf as the formatter
+		// JavaScript settings
+		"[javascript]": {
+			"editor.defaultFormatter": "vscode.typescript-language-features",
+			"editor.formatOnSave": true
+		},
+		"[javascriptreact]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode",
+			"editor.formatOnSave": true
+		}
+	}
 }
