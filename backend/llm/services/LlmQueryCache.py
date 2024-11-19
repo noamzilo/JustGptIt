@@ -1,13 +1,17 @@
 from models import Queries
-from services.let_me_gpt import fetch_text_from_url
+from typing import Callable
 
 class LlmQueryCache:
-    @staticmethod
-    def get_response(query):
-        try:
-            cached_query = Queries.objects.get(llm_query=query)
-            return cached_query.llm_response
-        except Queries.DoesNotExist:
-            response = fetch_text_from_url(query)
-            Queries.objects.create(llm_query=query, llm_response=response)
-            return response
+	@staticmethod
+	def llm_response(
+		query,
+		query_llm_callback: Callable[[str], str],
+	) -> str:
+		try:
+			cached_response = Queries.objects.get(llm_query=query)
+			response = cached_response.llm_response
+		except Queries.DoesNotExist:
+			response = query_llm_callback(query)
+			Queries.objects.create(llm_query=query, llm_response=response)
+		return response
+			

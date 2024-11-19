@@ -1,8 +1,8 @@
 import json
 from django.http import JsonResponse
-from django.shortcuts import render
 from rest_framework.decorators import api_view
-from .services.let_me_gpt import fetch_text_from_url
+from services.let_me_gpt import fetch_text_from_url
+from services.LlmQueryCache import LlmQueryCache
 
 @api_view(['POST'])
 def query(request):
@@ -11,7 +11,10 @@ def query(request):
             query = request.data.get('query')
             if not query:
                 return JsonResponse({'error': 'No query provided'}, status=400)
-            llm_response = fetch_text_from_url(query)
+            llm_response = LlmQueryCache.llm_response(
+                query=query,
+                query_llm_callback=fetch_text_from_url,
+			)
    
             response = {'message': f'Received query: {query}', "llm_response": llm_response}
             return JsonResponse(response)
