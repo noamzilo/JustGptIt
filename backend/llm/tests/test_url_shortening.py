@@ -57,10 +57,10 @@ def test_redirect_non_existent_short_url():
 	client = APIClient()
 	non_existent_hash = 'abcd1234'
 
-	response = client.get(f'/redirect/{non_existent_hash}')
+	response = client.get(f'/llm/redirect/{non_existent_hash}')
 	assert response.status_code == 404
 	data = response.json()
-	assert 'error' in data
+	assert 'error' in data.lower()
 
 @pytest.mark.django_db
 def test_shorten_url_api_invalid_input():
