@@ -1,8 +1,8 @@
 import json
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from services.let_me_gpt import fetch_text_from_url
-from services.LlmQueryCache import LlmQueryCache
+from llm.services.let_me_gpt import fetch_text_from_url
+from llm.services.LlmQueryCache import LlmQueryCache
 
 @api_view(['POST'])
 def query(request):

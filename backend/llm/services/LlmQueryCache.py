@@ -1,4 +1,4 @@
-from models import Queries
+from llm.models import Queries
 from typing import Callable
 
 class LlmQueryCache:
