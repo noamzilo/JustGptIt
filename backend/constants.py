@@ -1,7 +1,7 @@
 import os
 import sys
 
-backend_version_name = "0.0.2"
+backend_version_name = "0.1.0"
 
 # Taking care of .env and .secret files for local development regardless of program arguments
 secret_file_path = os.path.expanduser("~/src/personal_website/backend/.secrets_backend")
@@ -25,6 +25,8 @@ def read_env_variable(name, default=None):
         if os.path.isfile(secret_file_path):
             with open(secret_file_path, "r") as f: # yes, opening and iterating the file for every variable, whatever.
                 for line in f:
+                    if line.startswith("#"):
+                        continue
                     if line.startswith(name):
                         value = line.split("=", 1)[1].strip()
                         value = value.replace('"', "").replace("'", "")
