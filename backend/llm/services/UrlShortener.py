@@ -20,23 +20,24 @@ class UrlShortener:
 		return ''.join(reversed(base62[:length]))  
 
 	@staticmethod
-	def shorten(long_url):
+	def hash(long_url):
 		"""
 		Create a short URL for the given long URL. Insert into the database and
 		do nothing if the record already exists (no duplicates allowed).
 		"""
-		short_url = UrlShortener.hash_url(long_url)
+		url_hash = UrlShortener.hash_url(long_url)
 		try:
 			# Try to create the new mapping
-			ShortUrls.objects.create(long_url=long_url, short_url=short_url)
-			return short_url
+			ShortUrls.objects.create(long_url=long_url, short_url=url_hash)
 		except IntegrityError:
 			# If the IntegrityError occurs, check if it already exists
 			existing_entry = ShortUrls.objects.filter(long_url=long_url).first()
 			if existing_entry:
-				return existing_entry.short_url
-
-
+				url_hash = existing_entry.url_hash
+			else:
+				raise ValueError(f"Error creating short URL for {long_url}")
+		return url_hash
+	
 	@staticmethod
 	def expand(short_url):
 		"""
