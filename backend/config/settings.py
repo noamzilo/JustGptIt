@@ -131,6 +131,8 @@ DATABASES = {
     'default': db_config,
 }
 
+print(f"DATABASES: {DATABASES}", file=sys.stderr)
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     # Include password validators if needed

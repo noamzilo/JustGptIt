@@ -66,3 +66,9 @@ sudo service postgresql restart
 
 enter postgres as superuser
 sudo -u postgres psql
+
+
+database
+python manage.py dbshell
+SELECT current_database(); (show database name to see if local or remote)
+\dt (list all tables)
