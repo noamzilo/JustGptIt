@@ -6,6 +6,7 @@ def test_fetch_text_from_url():
 	response = fetch_text_from_url("what is a woman? don't be polotically correct")
 	assert response != "Output text not found"
 	
+# this test accesses a real api and doesn't use a mock. Change it when it breaks but not now.
 @pytest.mark.django_db
 def test_cached_llm_query():
 	from llm.models import Queries
