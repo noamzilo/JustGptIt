@@ -4,8 +4,8 @@ import sys
 backend_version_name = "0.1.0"
 
 # Paths to secret and env files
-secret_file_path = os.path.expanduser("~/src/personal_website/backend/.secrets_backend")
-env_file_path = os.path.expanduser("~/src/personal_website/backend/.env")
+SECRET_FILE_PATH = os.path.expanduser("~/src/personal_website/backend/.secrets_backend")
+ENV_FILE_PATH = os.path.expanduser("~/src/personal_website/backend/.env")
 
 def parse_env_file(file_path):
     """
@@ -21,7 +21,7 @@ def parse_env_file(file_path):
                     continue
                 if "=" in line:
                     key, value = line.split("=", 1)
-                    env_vars[key.strip()] = clean_value(value.strip())
+                    env_vars[key.strip()] = value.strip()
     except FileNotFoundError:
         print(f"{file_path} not found.", file=sys.stderr)
     return env_vars
@@ -32,37 +32,32 @@ def clean_value(value):
     """
     return value.replace('"', "").replace("'", "")
 
-# Load environment variables from .env file into os.environ
-if os.path.isfile(env_file_path):
-    print(f"Reading environment variables from {env_file_path}", file=sys.stderr)
-    env_vars = parse_env_file(env_file_path)
-    os.environ.update(env_vars)
+# Step 1: Parse all sources
+env_file_vars = parse_env_file(ENV_FILE_PATH)
+secret_file_vars = parse_env_file(SECRET_FILE_PATH)
+os_env_vars = dict(os.environ)  # Capture current environment variables
 
-# Load secrets from .secrets_backend file into a dictionary
-secrets = {}
-if os.path.isfile(secret_file_path):
-    secrets = parse_env_file(secret_file_path)
-else:
-    print(".secrets file not found", file=sys.stderr)  # Production environment
+# Step 2: Merge variables with correct priority
+# Priority: os.environ > env_file_vars > secret_file_vars
+merged_vars = {**secret_file_vars, **env_file_vars, **os_env_vars}
+
+# Step 3: Clean all values
+cleaned_vars = {key: clean_value(value) for key, value in merged_vars.items()}
+
+# Step 4: Update os.environ with cleaned variables
+os.environ.update(cleaned_vars)
 
 def read_env_variable(name, default=None):
     """
-    Reads an environment variable with the following priority:
-    1. os.environ
-    2. secrets dictionary
+    Reads an environment variable from os.environ.
     If not found, returns the default value.
-    Cleans the value by removing quotes.
     """
-    value = os.environ.get(name)
-    source = "os.environ"
-    if value is None:
-        value = secrets.get(name)
-        source = ".secrets_backend" if value is not None else None
+    value = os.environ.get(name, default)
     if value is not None:
-        print(f"Environment variable {name}: [SET] (from {source})", file=sys.stderr)
+        print(f"Environment variable {name}: [SET]", file=sys.stderr)
     else:
         print(f"Environment variable {name}: [NOT SET]", file=sys.stderr)
-    return value if value is not None else default
+    return value
 
 # Environment variables
 PORT = int(read_env_variable("PORT", 8080))
@@ -100,8 +95,8 @@ except FileNotFoundError:
 GS_BUCKET_NAME = read_env_variable('GS_BUCKET_NAME', 'GS_BUCKET_NAME NOT READ PROPERLY')
 URLDAY_API_KEY = read_env_variable('URLDAY_API_KEY', 'URLDAY_API_KEY NOT READ PROPERLY')
 
-SUPABASE_API_KEY = read_env_variable('SUPABASE_API_KEY', 'SUPABASE_API_KEY NOT READ PROPERLY')
-SUPABASE_PROJECT_URL = read_env_variable('SUPABASE_PROJECT_URL', 'SUPABASE_PROJECT_URL NOT READ PROPERLY')
+SUPABASE_API_KEY = read_env_variable('SUPABASE_API_KEY', 'SUPABASE_API_KEY NOT READ_PROPERLY')
+SUPABASE_PROJECT_URL = read_env_variable('SUPABASE_PROJECT_URL', 'SUPABASE_PROJECT_URL NOT READ_PROPERLY')
 SUPABASE_POSTGRESQL_CONNECTION_STRING = read_env_variable(
     'SUPABASE_POSTGRESQL_CONNECTION_STRING', 
     'SUPABASE_POSTGRESQL_CONNECTION_STRING NOT READ PROPERLY'
