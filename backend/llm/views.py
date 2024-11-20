@@ -24,7 +24,7 @@ def shorten_url(request):
     if not long_url:
         return JsonResponse({'error': 'No long_url provided'}, status=400)
     url_hash = UrlShortener.create_hash(long_url)
-    full_short_url = request.build_absolute_uri(f'/redirect/{url_hash}')
+    full_short_url = request.build_absolute_uri(f'/llm/redirect/{url_hash}')
     response = {
         'long_url': long_url,
         'short_url': full_short_url

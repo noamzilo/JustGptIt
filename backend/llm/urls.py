@@ -16,6 +16,8 @@ curl -X POST \
 	-H "Content-Type: application/json" \
 	-d '{"long_url": "https://example.com/some/very/long/url"}'
 
+http://localhost:8080/llm/redirect/O95EWPK8
+
 curl -X POST \
 	localhost:8080/llm/query \
 	-H "Content-Type: application/json" \
