@@ -16,13 +16,13 @@ act -j build-and-deploy \
 
 
 backend
+cd ~/src/personal_website
 act \
 	--secret-file /home/noams/src/personal_website/backend/.secrets_backend \
 	--job deploy \
 	-W ~/src/personal_website/.github/workflows/deploy_backend.yml \
 	--bind /var/run/docker.sock
 
-cd ~/src/personal_website/backend
 
 // prod image:
 //docker build -t personal-website-backend .
