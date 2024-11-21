@@ -16,7 +16,11 @@ act -j build-and-deploy \
 
 
 backend
-act --secret-file /home/noams/src/personal_website/backend/.secrets_backend --job deploy -W ~/src/personal_website/.github/workflows/deploy_backend.yml --bind /var/run/docker.sock
+act \
+	--secret-file /home/noams/src/personal_website/backend/.secrets_backend \
+	--job deploy \
+	-W ~/src/personal_website/.github/workflows/deploy_backend.yml \
+	--bind /var/run/docker.sock
 
 cd ~/src/personal_website/backend
 
