@@ -206,21 +206,22 @@ jobs:
         # cd backend
         REGION="us-central1"
         SERVICE_NAME="personal-website-backend"
-        GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
+        GCP_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
         SERVICE_ACCOUNT="${CLOUD_RUN_SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"  # Use runtime service account
         
         export DEPLOY_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
         echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_temp.yaml
-        echo "DEBUG: \"${DEBUG}\"" >> env_temp.yaml
+        #echo "DEBUG: \"${DEBUG}\"" >> env_temp.yaml
         echo "DEPLOY_TIME: \"${DEPLOY_TIME}\"" >> env_temp.yaml
 
         EXTRA_VARS="--env-vars-file env_temp.yaml"
         echo -e "\e[32 EXTRA_VARS=${EXTRA_VARS}\e[0m"
+        echo -e "\e[32 PROJECT_ID=${PROJECT_ID}\e[0m"
         echo env_temp.yaml contentes:
         cat env_temp.yaml
 
         gcloud run deploy $SERVICE_NAME \
-          --image ${GCR_IMAGE_NAME}:latest \
+          --image ${GCP_IMAGE_NAME}:latest \
           --project $PROJECT_ID \
           --region $REGION \
           --platform managed \

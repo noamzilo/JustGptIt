@@ -20,7 +20,7 @@ cd ~/src/personal_website
 act \
 	--secret-file /home/noams/src/personal_website/backend/.secrets_backend \
 	--job deploy \
-	-W ~/src/personal_website/.github/workflows/deploy_backend.yml \
+	-W ~/src/personal_website/.github\/workflows/deploy_backend.yml \
 	--bind /var/run/docker.sock
 
 
@@ -42,7 +42,7 @@ docker run -it \
     -p 8080:8080 \
 	--network=host \
     -p 5678:5678 \
-    -v $(pwd):/app \
+    --volume $(pwd):/app \
     -e GCP_PROJECT_ID=academic-veld-436919-g0 \
     --env-file /home/noams/src/personal_website/backend/.secrets_backend \
     --env-file /home/noams/src/personal_website/backend/.env \
