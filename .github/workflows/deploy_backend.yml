@@ -34,17 +34,17 @@ jobs:
 
 
         export DEPLOY_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
-        echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_temp.yaml
-        echo "DEBUG: \"${DEBUG}\"" >> env_temp.yaml
+        echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_debug.yaml
+        echo "DEBUG: \"${DEBUG}\"" >> env_debug.yaml
         echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: ${SUPABASE_POSTGRESQL_CONNECTION_STRING}" >> env_temp.yaml
-        echo "DEPLOY_TIME: \"${DEPLOY_TIME}\"" >> env_temp.yaml
+        echo "DEPLOY_TIME: \"${DEPLOY_TIME}\"" >> env_debug.yaml
 
-        EXTRA_VARS="--env-vars-file env_temp.yaml"
+        EXTRA_VARS="--env-vars-file env_debug.yaml"
         echo -e "\e[32 EXTRA_VARS=${EXTRA_VARS}\e[0m"
 
-        echo -e "\e[32menv_temp.yaml contentes:\e[0m"
-        cat env_temp.yaml
-        rm -f env_temp.yaml
+        echo -e "\e[32menv_debug.yaml contentes:\e[0m"
+        cat env_debug.yaml
+        #rm -f env_debug.yaml
 
     # # 1. Checkout the repository
     # - name: Checkout Repository
