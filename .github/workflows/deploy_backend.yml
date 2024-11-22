@@ -217,7 +217,8 @@ jobs:
         EXTRA_VARS="--env-vars-file env_debug.yaml"
         echo -e "\e[32 EXTRA_VARS=${EXTRA_VARS}\e[0m"
         echo env_temp.yaml contentes:
-        cat env_temp.yaml
+        # cat env_temp.yaml
+        cat env_debug.yaml
 
         gcloud run deploy $SERVICE_NAME \
           --image ${GCR_IMAGE_NAME}:latest \
