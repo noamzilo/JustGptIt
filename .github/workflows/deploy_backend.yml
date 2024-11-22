@@ -40,7 +40,7 @@ jobs:
                   EXTRA_VARS="--env-vars-file env_debug.yaml"
                   echo -e "\e[32 EXTRA_VARS=${EXTRA_VARS}\e[0m"
 
-                  echo -e "\e[32menv_debug.yaml contentes:\e[0m"
+                  echo -e "\e[32menv_debug.yaml contents:\e[0m"
                   cat env_debug.yaml
                   rm -f env_debug.yaml
 
@@ -213,7 +213,7 @@ jobs:
                   EXTRA_VARS="--env-vars-file env_temp.yaml"
                   # EXTRA_VARS="--env-vars-file env_debug.yaml"
                   echo -e "\e[32 EXTRA_VARS=${EXTRA_VARS}\e[0m"
-                  echo env_temp.yaml contentes:
+                  echo "env_temp.yaml contents:"
                   # cat env_temp.yaml
                   # cat env_debug.yaml
 
@@ -247,3 +247,4 @@ jobs:
                       echo -e "\033[0;32mDeployment succeeded! All steps completed successfully.\033[0m"
                   else
                       echo -e "\033[0;31mDeployment failed! Check the logs for the step that caused the failure.\033[0m"
+                  fi
