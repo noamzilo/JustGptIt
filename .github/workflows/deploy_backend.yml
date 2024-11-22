@@ -208,10 +208,10 @@ jobs:
         SERVICE_ACCOUNT="${CLOUD_RUN_SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"  # Use runtime service account
         
         export DEPLOY_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
-        echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_temp.yaml
-        echo "DEBUG: \"${DEBUG}\"" >> env_temp.yaml
-        echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: \"${SUPABASE_POSTGRESQL_CONNECTION_STRING}\"" >> env_temp.yaml
-        echo "DEPLOY_TIME: \"${DEPLOY_TIME}\"" >> env_temp.yaml
+        echo "CORS_ALLOWED_ORIGINS: '${CORS_ALLOWED_ORIGINS}'" > env_temp.yaml
+        echo "DEBUG: '${DEBUG}'" >> env_temp.yaml
+        echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: '${SUPABASE_POSTGRESQL_CONNECTION_STRING}'" >> env_temp.yaml
+        echo "DEPLOY_TIME: '${DEPLOY_TIME}'" >> env_temp.yaml
 
         EXTRA_VARS="--env-vars-file env_temp.yaml"
         # EXTRA_VARS="--env-vars-file env_debug.yaml"
@@ -229,7 +229,7 @@ jobs:
           --service-account=$SERVICE_ACCOUNT \
           ${EXTRA_VARS}
         
-        rm -f env_temp.yaml
+        # rm -f env_temp.yaml
         # rm -f env_debug.yaml
 
         echo -e "\033[0;32mStep succeeded: Deployed to Cloud Run.\033[0m"
