@@ -2,11 +2,24 @@ import os
 import sys
 
 backend_version_name = "0.0.2"
-secret_file_path = ".secrets_backend"
+
+# Taking care of .env and .secret files for local development regardless of program arguments
+secret_file_path = os.path.expanduser("~/src/personal_website/backend/.secrets_backend")
+env_file_path = os.path.expanduser("~/src/personal_website/backend/.env")
+if os.path.isfile(env_file_path):
+    print(f"Reading environment variables from {env_file_path}", file=sys.stderr)
+    with open(env_file_path, "r") as f:
+        for line in f:
+            if line.startswith("#"):
+                continue
+            if line.strip() == "":
+                continue
+            key, value = line.split("=", 1)
+            os.environ[key] = value.strip()
 
 # read environment variable from the environment. If it isn't there, try to read it from .secrets file (relevant only for local development)
 # allow variables to look like "Value", and parse away the "".
-def read_env_variable(name, default=None):
+def read_env_variable(name, default=None):    
     value = os.environ.get(name)
     if value is None:
         if os.path.isfile(secret_file_path):
@@ -15,9 +28,11 @@ def read_env_variable(name, default=None):
                     if line.startswith(name):
                         value = line.split("=", 1)[1].strip()
                         value = value.replace('"', "").replace("'", "")
+                        if "CORS_ALLOWED_ORIGINS" == name:
+                            raise ValueError('wtf')
                         break
         else:
-            print(".secrets file not found", file=sys.stderr)
+            print(".secrets file not found", file=sys.stderr) # production environment
 
     if value is None:
         value = default
@@ -33,7 +48,9 @@ DEBUG = read_env_variable('DEBUG', 'False') == 'True'
 LOG_LEVEL = 'DEBUG' if DEBUG else 'INFO'
 USE_GCS = read_env_variable('USE_GCS', 'True') == 'True'
 
-CORS_ALLOWED_ORIGINS_ORIG = read_env_variable('CORS_ALLOWED_ORIGINS', 'ERROR: CORS_ALLOWED_ORIGINS is undefined')
+CORS_ALLOWED_ORIGINS_ORIG = read_env_variable('CORS_ALLOWED_ORIGINS', None)
+if not CORS_ALLOWED_ORIGINS_ORIG:
+    raise ValueError(f"CORS_ALLOWED_ORIGINS environment variable is not set. {CORS_ALLOWED_ORIGINS_ORIG}")
 CORS_ALLOWED_ORIGINS_ORIG = CORS_ALLOWED_ORIGINS_ORIG.replace('"', "").replace("'", "")
 CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS_ORIG.split(',')
 if not CORS_ALLOWED_ORIGINS:
@@ -62,4 +79,5 @@ except FileNotFoundError:
 GS_BUCKET_NAME = read_env_variable('GS_BUCKET_NAME', 'GS_BUCKET_NAME NOT READ PROPERLY')
 URLDAY_API_KEY = read_env_variable('URLDAY_API_KEY', 'URLDAY_API_KEY NOT READ PROPERLY')
 
-
+SUPABASE_API_KEY = read_env_variable('SUPABASE_API_KEY', 'SUPABASE_API_KEY NOT READ PROPERLY')
+SUPABASE_PROJECT_URL = read_env_variable('SUPABASE_PROJECT_URL', 'SUPABASE_PROJECT_URL NOT READ PROPERLY')

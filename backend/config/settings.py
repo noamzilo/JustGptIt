@@ -4,7 +4,11 @@ import os
 from pathlib import Path
 import logging
 import sys
-from constants import LOG_LEVEL, GCP_PROJECT_ID, USE_GCS, DJANGO_SECRET_KEY, CORS_ALLOWED_ORIGINS
+import dj_database_url
+from urllib.parse import urlparse
+from constants import LOG_LEVEL, \
+GCP_PROJECT_ID, USE_GCS, DJANGO_SECRET_KEY, CORS_ALLOWED_ORIGINS, \
+SUPABASE_PROJECT_URL, SUPABASE_API_KEY
 SECRET_KEY = DJANGO_SECRET_KEY
 if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set for Django application")
@@ -28,6 +32,8 @@ CORS_ALLOW_ALL_ORIGINS = False
 # CORS_ALLOW_ALL_ORIGINS = True  # For development only. In production, specify exact origins.
 # CORS settings
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS # NOT REDUNDANT! Django requires this to be explicitely defined in settings.py
+print(f"CORS_ALLOWED_ORIGINS in settings: {CORS_ALLOWED_ORIGINS}")
 
 LOGGING = {
     'version': 1,
@@ -112,13 +118,40 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Update this if you use a different database
-        'NAME': BASE_DIR / 'db.sqlite3',
+
+
+
+# Parse Supabase URL to get database connection details
+if SUPABASE_PROJECT_URL:
+    parsed_url = urlparse(SUPABASE_PROJECT_URL)
+    db_host = parsed_url.hostname
+    db_port = '5432'  # Default Postgres port
+    db_name = parsed_url.path.lstrip('/')
+    # Fallback to SQLite for local development if needed
+    # Update database configuration
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': db_name,
+            'USER': 'postgres',  # Supabase default user
+            'PASSWORD': SUPABASE_API_KEY,  # Using API key as password
+            'HOST': db_host,
+            'PORT': db_port,
+            'OPTIONS': {
+                'sslmode': 'require',  # Supabase requires SSL
+            },
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
