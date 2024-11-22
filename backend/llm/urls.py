@@ -16,10 +16,22 @@ curl -X POST \
 	-H "Content-Type: application/json" \
 	-d '{"long_url": "https://example.com/some/very/long/url"}'
 
+
+curl -X POST \
+	https://personal-website-backend-839353010571.us-central1.run.app/llm/shorten_url \
+	-H "Content-Type: application/json" \
+	-d '{"long_url": "https://example.com/some/very/long/url"}'
+
 http://localhost:8080/llm/redirect/O95EWPK8
 
 curl -X POST \
 	localhost:8080/llm/query \
+	-H "Content-Type: application/json" \
+	-d '{"query": "abcd"}'
+
+
+	curl -X POST \
+	https://personal-website-backend-839353010571.us-central1.run.app/llm/query \
 	-H "Content-Type: application/json" \
 	-d '{"query": "abcd"}'
 """
