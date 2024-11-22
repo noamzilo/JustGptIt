@@ -5,4 +5,33 @@ app_name = 'llm'
 
 urlpatterns = [
     path('query', views.query, name='query'),
+    path('shorten_url', views.shorten_url, name='shorten_url'),
+    path('redirect/<url_hash>', views.redirect, name='redirect'),
 ]
+
+
+"""
+curl -X POST \
+	localhost:8080/llm/shorten_url \
+	-H "Content-Type: application/json" \
+	-d '{"long_url": "https://example.com/some/very/long/url"}'
+
+
+curl -X POST \
+	https://personal-website-backend-839353010571.us-central1.run.app/llm/shorten_url \
+	-H "Content-Type: application/json" \
+	-d '{"long_url": "https://example.com/some/very/long/url"}'
+
+http://localhost:8080/llm/redirect/O95EWPK8
+
+curl -X POST \
+	localhost:8080/llm/query \
+	-H "Content-Type: application/json" \
+	-d '{"query": "abcd"}'
+
+
+	curl -X POST \
+	https://personal-website-backend-839353010571.us-central1.run.app/llm/query \
+	-H "Content-Type: application/json" \
+	-d '{"query": "abcd"}'
+"""

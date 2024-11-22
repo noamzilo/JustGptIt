@@ -4,7 +4,15 @@ import os
 from pathlib import Path
 import logging
 import sys
-from constants import LOG_LEVEL, GCP_PROJECT_ID, USE_GCS, DJANGO_SECRET_KEY, CORS_ALLOWED_ORIGINS
+import dj_database_url
+from urllib.parse import urlparse
+from constants import LOG_LEVEL, \
+GCP_PROJECT_ID, USE_GCS, DJANGO_SECRET_KEY, CORS_ALLOWED_ORIGINS, \
+SUPABASE_PROJECT_URL, SUPABASE_API_KEY, SUPABASE_POSTGRESQL_CONNECTION_STRING, \
+DEBUG
+
+DEBUG = DEBUG
+
 SECRET_KEY = DJANGO_SECRET_KEY
 if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set for Django application")
@@ -28,6 +36,8 @@ CORS_ALLOW_ALL_ORIGINS = False
 # CORS_ALLOW_ALL_ORIGINS = True  # For development only. In production, specify exact origins.
 # CORS settings
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS # NOT REDUNDANT! Django requires this to be explicitely defined in settings.py
+print(f"CORS_ALLOWED_ORIGINS in settings: {CORS_ALLOWED_ORIGINS}")
 
 LOGGING = {
     'version': 1,
@@ -112,13 +122,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Database
+if not SUPABASE_POSTGRESQL_CONNECTION_STRING:
+    raise ValueError("SUPABASE_POSTGRESQL_CONNECTION_STRING is not set. Cannot connect to database.")
+print("SUPABASE_POSTGRESQL_CONNECTION_STRING is set. Using Supabase PostgreSQL database.", file=sys.stdout)
+db_config = dj_database_url.parse(
+        SUPABASE_POSTGRESQL_CONNECTION_STRING,
+            conn_max_age=600,
+            ssl_require=True
+        )
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Update this if you use a different database
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': db_config,
 }
+
+print(f"DATABASES: {DATABASES}", file=sys.stderr)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

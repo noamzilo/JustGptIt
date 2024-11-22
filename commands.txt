@@ -16,14 +16,19 @@ act -j build-and-deploy \
 
 
 backend
-act --secret-file /home/noams/src/personal_website/backend/.secrets_backend --job deploy -W ~/src/personal_website/.github/workflows/deploy_backend.yml --bind /var/run/docker.sock
+cd ~/src/personal_website
+act \
+	--secret-file /home/noams/src/personal_website/backend/.secrets_backend \
+	--job deploy \
+	-W ~/src/personal_website/.github\/workflows/deploy_backend.yml \
+	--bind /var/run/docker.sock
 
-cd ~/src/personal_website/backend
 
 // prod image:
 //docker build -t personal-website-backend .
 dockebuild -f Dockerfile -t personal-website-backend .
 docker run -it \
+	--network=host \
     -p 8080:8080 \
     -e GCP_PROJECT_ID=academic-veld-436919-g0 \
     --env-file /home/noams/src/personal_website/backend/.secrets_backend \
@@ -35,8 +40,9 @@ docker run -it \
 docker build -f Dockerfile.dev -t personal-website-backend_dev .
 docker run -it \
     -p 8080:8080 \
+	--network=host \
     -p 5678:5678 \
-    -v $(pwd):/app \
+    --volume $(pwd):/app \
     -e GCP_PROJECT_ID=academic-veld-436919-g0 \
     --env-file /home/noams/src/personal_website/backend/.secrets_backend \
     --env-file /home/noams/src/personal_website/backend/.env \
@@ -52,3 +58,23 @@ Remote-Containers: Attach to Running Container
 
 POST
 curl -X POST localhost:8080/llm/query -H "Content-Type: application/json" -d '{"query": "abcd"}'
+
+
+Supabase
+database config
+https://supabase.com/dashboard/project/jionkbttbrdwyispctfm/settings/database
+pgadmin
+https://supabase.com/docs/guides/database/pgadmin
+
+start postgres server
+sudo service postgresql start
+sudo service postgresql restart
+
+enter postgres as superuser
+sudo -u postgres psql
+
+
+database
+python manage.py dbshell
+SELECT current_database(); (show database name to see if local or remote)
+\dt (list all tables)
