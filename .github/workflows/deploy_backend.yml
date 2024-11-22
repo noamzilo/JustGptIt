@@ -1,253 +1,249 @@
 name: Deploy Backend to GCP
 
 on:
-  push:
-    branches:
-      - main
-      - backend
-    paths:
-      - 'backend/**'
-      - '.github/workflows/deploy_backend.yml'
-  workflow_dispatch:  # Allows manual trigger
+    push:
+        branches:
+            - main
+            - backend
+        paths:
+            - 'backend/**'
+            - '.github/workflows/deploy_backend.yml'
+    workflow_dispatch:  # Allows manual trigger
 
 env:
-  DEBUG: ${{ vars.DEBUG }}
-  CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
-  SUPABASE_POSTGRESQL_CONNECTION_STRING: ${{ secrets.SUPABASE_POSTGRESQL_CONNECTION_STRING }}
-
+    DEBUG: ${{ vars.DEBUG }}
+    CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
+    SUPABASE_POSTGRESQL_CONNECTION_STRING: ${{ secrets.SUPABASE_POSTGRESQL_CONNECTION_STRING }}
 
 jobs:
-  deploy:
-    runs-on: ubuntu-20.04
-    environment:
-      # name: 'gh-pages'
-      name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'staging' }}
-    # defaults:
-    #   run:
-    #     working-directory: './backend'
+    deploy:
+        runs-on: ubuntu-20.04
+        environment:
+            # name: 'gh-pages'
+            name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'staging' }}
+        # defaults:
+        #     run:
+        #         working-directory: './backend'
 
-    steps:
-    - name: DEBUG VARS
-      run: |
-        echo -e "\e[32mCORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}\e[0m"
-        echo -e "\e[32mDEBUG=${DEBUG}.\e[0m"
+        steps:
+            - name: DEBUG VARS
+              run: |
+                  echo -e "\e[32mCORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}\e[0m"
+                  echo -e "\e[32mDEBUG=${DEBUG}.\e[0m"
 
+                  export DEPLOY_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
+                  echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_debug.yaml
+                  echo "DEBUG: \"${DEBUG}\"" >> env_debug.yaml
+                  echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: \"${SUPABASE_POSTGRESQL_CONNECTION_STRING}\"" >> env_debug.yaml
+                  echo "DEPLOY_TIME: \"${DEPLOY_TIME}\"" >> env_debug.yaml
 
-        export DEPLOY_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
-        echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_debug.yaml
-        echo "DEBUG: \"${DEBUG}\"" >> env_debug.yaml
-        echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: \"${SUPABASE_POSTGRESQL_CONNECTION_STRING}\"" >> env_debug.yaml
-        echo "DEPLOY_TIME: \"${DEPLOY_TIME}\"" >> env_debug.yaml
+                  EXTRA_VARS="--env-vars-file env_debug.yaml"
+                  echo -e "\e[32 EXTRA_VARS=${EXTRA_VARS}\e[0m"
 
-        EXTRA_VARS="--env-vars-file env_debug.yaml"
-        echo -e "\e[32 EXTRA_VARS=${EXTRA_VARS}\e[0m"
+                  echo -e "\e[32menv_debug.yaml contentes:\e[0m"
+                  cat env_debug.yaml
+                  rm -f env_debug.yaml
 
-        echo -e "\e[32menv_debug.yaml contentes:\e[0m"
-        cat env_debug.yaml
-        rm -f env_debug.yaml
+            # 1. Checkout the repository
+            - name: Checkout Repository
+              uses: actions/checkout@v2
 
-    # 1. Checkout the repository
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+            - name: Echo Checkout Success
+              run: |
+                  echo -e "\033[0;32mStep succeeded: Checkout Repository\033[0m"
 
-    - name: Echo Checkout Success
-      run: |
-        echo -e "\033[0;32mStep succeeded: Checkout Repository\033[0m"
+            # 2. Install Node.js (if needed)
+            - name: Install Node.js
+              run: |
+                  set -e  # Exit on any error
+                  # set -x  # Enable verbose logging
 
-    # 2. Install Node.js (if needed)
-    - name: Install Node.js
-      run: |
-        set -e  # Exit on any error
-        # set -x  # Enable verbose logging
+                  # Install Node.js (LTS version)
+                  echo "Installing Node.js..."
+                  curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+                  sudo apt-get install -y nodejs
+                  echo -e "\033[0;32mStep succeeded: Node.js installed.\033[0m"
 
-        # Install Node.js (LTS version)
-        echo "Installing Node.js..."
-        curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-        sudo apt-get install -y nodejs
-        echo -e "\033[0;32mStep succeeded: Node.js installed.\033[0m"
+                  # Verify installations
+                  echo "Checking Node.js version..."
+                  if ! node -v; then
+                      echo -e "\033[0;31mERROR: Node.js is not installed or not available.\033[0m"
+                      exit 1
+                  else
+                      echo -e "\033[0;32mNode.js version: $(node -v)\033[0m"
+                  fi
 
-        # Verify installations
-        echo "Checking Node.js version..."
-        if ! node -v; then
-          echo -e "\033[0;31mERROR: Node.js is not installed or not available.\033[0m"
-          exit 1
-        else
-          echo -e "\033[0;32mNode.js version: $(node -v)\033[0m"
-        fi
+                  echo "Checking npm version..."
+                  if ! npm -v; then
+                      echo -e "\033[0;31mERROR: npm is not installed or not available.\033[0m"
+                      exit 1
+                  else
+                      echo -e "\033[0;32mNPM version: $(npm -v)\033[0m"
+                  fi
+              shell: bash
+              timeout-minutes: 10
 
-        echo "Checking npm version..."
-        if ! npm -v; then
-          echo -e "\033[0;31mERROR: npm is not installed or not available.\033[0m"
-          exit 1
-        else
-          echo -e "\033[0;32mNPM version: $(npm -v)\033[0m"
-        fi
-      shell: bash
-      timeout-minutes: 10
+            # 3. Install Google Cloud SDK and kubectl with liveness prints
+            - name: Install Google Cloud SDK and kubectl
+              run: |
+                  set -e  # Exit on any error
+                  set -x  # Enable verbose logging
 
-    # 3. Install Google Cloud SDK and kubectl with liveness prints
-    - name: Install Google Cloud SDK and kubectl
-      run: |
-        set -e  # Exit on any error
-        set -x  # Enable verbose logging
+                  echo "Installing Google Cloud SDK and kubectl..."
 
-        echo "Installing Google Cloud SDK and kubectl..."
+                  # Install required packages
+                  sudo apt-get update
+                  sudo apt-get install -y apt-transport-https ca-certificates gnupg curl
 
-        # Install required packages
-        sudo apt-get update
-        sudo apt-get install -y apt-transport-https ca-certificates gnupg curl
+                  # Import the Google Cloud public key
+                  sudo mkdir -p /usr/share/keyrings
+                  curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | \
+                      sudo gpg --dearmor -o /usr/share/keyrings/google-cloud-sdk.gpg
 
-        # Import the Google Cloud public key
-        sudo mkdir -p /usr/share/keyrings
-        curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | \
-          sudo gpg --dearmor -o /usr/share/keyrings/google-cloud-sdk.gpg
+                  # Add the Cloud SDK distribution URI as a package source
+                  echo "deb [signed-by=/usr/share/keyrings/google-cloud-sdk.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | \
+                      sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
 
-        # Add the Cloud SDK distribution URI as a package source
-        echo "deb [signed-by=/usr/share/keyrings/google-cloud-sdk.gpg] \
-        https://packages.cloud.google.com/apt cloud-sdk main" | \
-        sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+                  # Update package listings
+                  sudo apt-get update -qq
 
-        # Update package listings
-        sudo apt-get update -qq
+                  # Install Google Cloud SDK and kubectl
+                  sudo apt-get install -y google-cloud-sdk kubectl
 
-        # Install Google Cloud SDK and kubectl
-        sudo apt-get install -y google-cloud-sdk kubectl
+                  echo -e "\033[0;32mStep succeeded: Google Cloud SDK and kubectl installed.\033[0m"
 
-        echo -e "\033[0;32mStep succeeded: Google Cloud SDK and kubectl installed.\033[0m"
+                  # Verify installations
+                  echo "Checking Google Cloud SDK version..."
+                  if ! gcloud --version; then
+                      echo -e "\033[0;31mERROR: Google Cloud SDK is not installed or not available.\033[0m"
+                      exit 1
+                  else
+                      gcloud --version
+                  fi
 
-        # Verify installations
-        echo "Checking Google Cloud SDK version..."
-        if ! gcloud --version; then
-          echo -e "\033[0;31mERROR: Google Cloud SDK is not installed or not available.\033[0m"
-          exit 1
-        else
-          gcloud --version
-        fi
+                  echo "Checking kubectl version..."
+                  if ! kubectl version --client; then
+                      echo -e "\033[0;31mERROR: kubectl is not installed or not available.\033[0m"
+                      exit 1
+                  else
+                      kubectl version --client
+                  fi
+              shell: bash
+              timeout-minutes: 10
 
-        echo "Checking kubectl version..."
-        if ! kubectl version --client; then
-          echo -e "\033[0;31mERROR: kubectl is not installed or not available.\033[0m"
-          exit 1
-        else
-          kubectl version --client
-        fi
-      shell: bash
-      timeout-minutes: 10
+            # 4. Cache Docker layers to speed up builds
+            - name: Cache Docker layers
+              uses: actions/cache@v2
+              with:
+                  path: /tmp/.buildx-cache
+                  key: ${{ runner.os }}-buildx-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-buildx-
 
-    # 4. Cache Docker layers to speed up builds
-    - name: Cache Docker layers
-      uses: actions/cache@v2
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
+            - name: Echo Docker Cache Success
+              run: |
+                  echo -e "\033[0;32mStep succeeded: Docker layers cached.\033[0m"
 
-    - name: Echo Docker Cache Success
-      run: |
-        echo -e "\033[0;32mStep succeeded: Docker layers cached.\033[0m"
+            # 5. Set up Docker Buildx (replaces manual Docker installation)
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
 
-    # 5. Set up Docker Buildx (replaces manual Docker installation)
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+            - name: Echo Docker Buildx Setup Success
+              run: |
+                  echo -e "\033[0;32mStep succeeded: Docker Buildx setup.\033[0m"
 
-    - name: Echo Docker Buildx Setup Success
-      run: |
-        echo -e "\033[0;32mStep succeeded: Docker Buildx setup.\033[0m"
+            # 6. Authenticate with Google Cloud using service account credentials
+            - name: Set up GCP Credentials
+              env:
+                  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}  # Deployment service account key
+                  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+              run: |
+                  echo "Setting up GCP credentials..."
+                  echo "$GCP_SA_KEY" | base64 --decode > /tmp/gcp-key-temp.json
+                  gcloud auth activate-service-account --key-file=/tmp/gcp-key-temp.json
+                  gcloud config set project $GCP_PROJECT_ID
+                  echo -e "\033[0;32mStep succeeded: GCP credentials setup.\033[0m"
 
-    # 6. Authenticate with Google Cloud using service account credentials
-    - name: Set up GCP Credentials
-      env:
-        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}  # Deployment service account key
-        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      run: |
-        echo "Setting up GCP credentials..."
-        echo "$GCP_SA_KEY" | base64 --decode > /tmp/gcp-key-temp.json
-        gcloud auth activate-service-account --key-file=/tmp/gcp-key-temp.json
-        gcloud config set project $GCP_PROJECT_ID
-        echo -e "\033[0;32mStep succeeded: GCP credentials setup.\033[0m"
+            # 7. Configure Docker to use GCloud credentials for pushing images
+            - name: Configure Docker to use GCloud credentials
+              run: |
+                  gcloud auth configure-docker gcr.io --quiet
+                  echo -e "\033[0;32mStep succeeded: Docker configured with GCloud credentials.\033[0m"
 
-    # 7. Configure Docker to use GCloud credentials for pushing images
-    - name: Configure Docker to use GCloud credentials
-      run: |
-        gcloud auth configure-docker gcr.io --quiet
-        echo -e "\033[0;32mStep succeeded: Docker configured with GCloud credentials.\033[0m"
+            # 8. Build and push the Docker image to Google Container Registry (GCR)
+            - name: Build and push Docker Image
+              uses: docker/build-push-action@v2
+              with:
+                  context: ./backend
+                  push: true
+                  tags: gcr.io/${{ secrets.GCP_PROJECT_ID }}/personal-website-backend:latest
+                  cache-from: type=local,src=/tmp/.buildx-cache
+                  cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-    # 8. Build and push the Docker image to Google Container Registry (GCR)
-    - name: Build and push Docker Image
-      uses: docker/build-push-action@v2
-      with:
-        context: ./backend
-        push: true
-        tags: gcr.io/${{ secrets.GCP_PROJECT_ID }}/personal-website-backend:latest
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache-new
+            - name: Echo Docker Build and Push Success
+              run: |
+                  echo -e "\033[0;32mStep succeeded: Docker image built and pushed.\033[0m"
 
-    - name: Echo Docker Build and Push Success
-      run: |
-        echo -e "\033[0;32mStep succeeded: Docker image built and pushed.\033[0m"
+            # 9. Update the Docker cache for future builds
+            - name: Move cache
+              run: |
+                  rm -rf /tmp/.buildx-cache
+                  mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+                  echo -e "\033[0;32mStep succeeded: Docker cache updated.\033[0m"
 
-    # 9. Update the Docker cache for future builds
-    - name: Move cache
-      run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-        echo -e "\033[0;32mStep succeeded: Docker cache updated.\033[0m"
+            # 10. Deploy the Docker image to Google Cloud Run
+            - name: Deploy to Cloud Run
+              env: 
+                  #CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
+                  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+                  CLOUD_RUN_SERVICE_ACCOUNT_NAME: ${{ secrets.GCP_CLOUD_RUN_SERVICE_ACCOUNT_NAME }}
+              run: |
+                  # cd backend
+                  REGION="us-central1"
+                  SERVICE_NAME="personal-website-backend"
+                  GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
+                  SERVICE_ACCOUNT="${CLOUD_RUN_SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"  # Use runtime service account
+                  
+                  export DEPLOY_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
+                  echo "CORS_ALLOWED_ORIGINS: '${CORS_ALLOWED_ORIGINS}'" > env_temp.yaml
+                  echo "DEBUG: '${DEBUG}'" >> env_temp.yaml
+                  echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: '${SUPABASE_POSTGRESQL_CONNECTION_STRING}'" >> env_temp.yaml
+                  echo "DEPLOY_TIME: '${DEPLOY_TIME}'" >> env_temp.yaml
 
-    # 10. Deploy the Docker image to Google Cloud Run
-    - name: Deploy to Cloud Run
-      env: 
-        #CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
-        PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-        CLOUD_RUN_SERVICE_ACCOUNT_NAME: ${{ secrets.GCP_CLOUD_RUN_SERVICE_ACCOUNT_NAME }}
-      run: |
-        # cd backend
-        REGION="us-central1"
-        SERVICE_NAME="personal-website-backend"
-        GCR_IMAGE_NAME="gcr.io/${PROJECT_ID}/personal-website-backend"
-        SERVICE_ACCOUNT="${CLOUD_RUN_SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"  # Use runtime service account
-        
-        export DEPLOY_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
-        echo "CORS_ALLOWED_ORIGINS: '${CORS_ALLOWED_ORIGINS}'" > env_temp.yaml
-        echo "DEBUG: '${DEBUG}'" >> env_temp.yaml
-        echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: '${SUPABASE_POSTGRESQL_CONNECTION_STRING}'" >> env_temp.yaml
-        echo "DEPLOY_TIME: '${DEPLOY_TIME}'" >> env_temp.yaml
+                  EXTRA_VARS="--env-vars-file env_temp.yaml"
+                  # EXTRA_VARS="--env-vars-file env_debug.yaml"
+                  echo -e "\e[32 EXTRA_VARS=${EXTRA_VARS}\e[0m"
+                  echo env_temp.yaml contentes:
+                  # cat env_temp.yaml
+                  # cat env_debug.yaml
 
-        EXTRA_VARS="--env-vars-file env_temp.yaml"
-        # EXTRA_VARS="--env-vars-file env_debug.yaml"
-        echo -e "\e[32 EXTRA_VARS=${EXTRA_VARS}\e[0m"
-        echo env_temp.yaml contentes:
-        # cat env_temp.yaml
-        # cat env_debug.yaml
+                  gcloud run deploy $SERVICE_NAME \
+                      --image ${GCR_IMAGE_NAME}:latest \
+                      --project $PROJECT_ID \
+                      --region $REGION \
+                      --platform managed \
+                      --allow-unauthenticated \
+                      --service-account=$SERVICE_ACCOUNT \
+                      ${EXTRA_VARS}
+                  
+                  # rm -f env_temp.yaml
+                  # rm -f env_debug.yaml
 
-        gcloud run deploy $SERVICE_NAME \
-          --image ${GCR_IMAGE_NAME}:latest \
-          --project $PROJECT_ID \
-          --region $REGION \
-          --platform managed \
-          --allow-unauthenticated \
-          --service-account=$SERVICE_ACCOUNT \
-          ${EXTRA_VARS}
-        
-        # rm -f env_temp.yaml
-        # rm -f env_debug.yaml
+                  echo -e "\033[0;32mStep succeeded: Deployed to Cloud Run.\033[0m"
 
-        echo -e "\033[0;32mStep succeeded: Deployed to Cloud Run.\033[0m"
+            # 11. Print the deployed service URL
+            - name: Print Service URL
+              run: |
+                  SERVICE_NAME="personal-website-backend"
+                  echo "Service URL:"
+                  gcloud run services describe $SERVICE_NAME --region us-central1 --format='value(status.url)'
+                  echo -e "\033[0;32mStep succeeded: Printed service URL.\033[0m"
 
-    # 11. Print the deployed service URL
-    - name: Print Service URL
-      run: |
-        SERVICE_NAME="personal-website-backend"
-        echo "Service URL:"
-        gcloud run services describe $SERVICE_NAME --region us-central1 --format='value(status.url)'
-        echo -e "\033[0;32mStep succeeded: Printed service URL.\033[0m"
-
-    # 12. Clean step: Print success or failure message
-    - name: Job Success or Failure
-      if: always()  # This ensures the step runs regardless of previous job status
-      run: |
-        if [ "${{ job.status }}" == "success" ]; then
-          echo -e "\033[0;32mDeployment succeeded! All steps completed successfully.\033[0m"
-        else
-          echo -e "\033[0;31mDeployment failed! Check the logs for the step that caused the failure.\033[0m"
-        fi
+            # 12. Clean step: Print success or failure message
+            - name: Job Success or Failure
+              if: always()  # This ensures the step runs regardless of previous job status
+              run: |
+                  if [ "${{ job.status }}" == "success" ]; then
+                      echo -e "\033[0;32mDeployment succeeded! All steps completed successfully.\033[0m"
+                  else
+                      echo -e "\033[0;31mDeployment failed! Check the logs for the step that caused the failure.\033[0m"
