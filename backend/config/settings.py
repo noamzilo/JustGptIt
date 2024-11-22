@@ -118,31 +118,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
-
-
-# Parse Supabase URL to get database connection details
-if SUPABASE_PROJECT_URL:
-    parsed_url = urlparse(SUPABASE_PROJECT_URL)
-    db_host = parsed_url.hostname
-    db_port = '5432'  # Default Postgres port
-    db_name = parsed_url.path.lstrip('/')
-    # Fallback to SQLite for local development if needed
-    # Update database configuration
+if SUPABASE_POSTGRESQL_CONNECTION_STRING:
+    print("SUPABASE_POSTGRESQL_CONNECTION_STRING is set. Using Supabase PostgreSQL database.", file=sys.stdout)
+    db_config = dj_database_url.parse(
+            SUPABASE_POSTGRESQL_CONNECTION_STRING,
+                conn_max_age=600,
+                ssl_require=True
+            )
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': db_name,
-            'USER': 'postgres',  # Supabase default user
-            'PASSWORD': SUPABASE_API_KEY,  # Using API key as password
-            'HOST': db_host,
-            'PORT': db_port,
-            'OPTIONS': {
-                'sslmode': 'require',  # Supabase requires SSL
-            },
-        }
+        'default': db_config,
     }
 else:
+    print("SUPABASE_POSTGRESQL_CONNECTION_STRING is not set. Using default SQLite database.", file=sys.stderr)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

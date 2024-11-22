@@ -52,3 +52,10 @@ Remote-Containers: Attach to Running Container
 
 POST
 curl -X POST localhost:8080/llm/query -H "Content-Type: application/json" -d '{"query": "abcd"}'
+
+
+Supabase
+database config
+https://supabase.com/dashboard/project/jionkbttbrdwyispctfm/settings/database
+pgadmin
+https://supabase.com/docs/guides/database/pgadmin
