@@ -26,23 +26,24 @@ jobs:
     #     working-directory: './backend'
 
     steps:
-    - name: DEBUG VARS
+    - name: DEBUG VARS (does nothing but print!)
       run: |
         echo -e "\e[32mCORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}\e[0m"
         echo -e "\e[32mDEBUG=${DEBUG}.\e[0m"
 
 
         export DEPLOY_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
-        echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_temp.yaml
-        echo "DEBUG: \"${DEBUG}\"" >> env_temp.yaml
-        echo "DEPLOY_TIME: \"${DEPLOY_TIME}\"" >> env_temp.yaml
+        echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_deubg.yaml
+        echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: ${SUPABASE_POSTGRESQL_CONNECTION_STRING}" > env_temp.yaml
+        echo "DEBUG: \"${DEBUG}\"" >> env_deubg.yaml
+        echo "DEPLOY_TIME: \"${DEPLOY_TIME}\"" >> env_deubg.yaml
 
-        EXTRA_VARS="--env-vars-file env_temp.yaml"
+        EXTRA_VARS="--env-vars-file env_deubg.yaml"
         echo -e "\e[32 EXTRA_VARS=${EXTRA_VARS}\e[0m"
 
-        echo -e "\e[32menv_temp.yaml contentes:\e[0m"
-        cat env_temp.yaml
-        rm -f env_temp.yaml
+        echo -e "\e[32menv_deubg.yaml contentes (mimics env_temp.yaml):\e[0m"
+        cat env_deubg.yaml
+        rm -f env_deubg.yaml
 
     # 1. Checkout the repository
     - name: Checkout Repository
@@ -207,9 +208,11 @@ jobs:
         
         export DEPLOY_TIME=$(TZ=America/Argentina/Buenos_Aires date +"%Y-%m-%d %H:%M:%S")
         echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_temp.yaml
+        echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: ${SUPABASE_POSTGRESQL_CONNECTION_STRING}" > env_temp.yaml
         echo "DEBUG: \"${DEBUG}\"" >> env_temp.yaml
         echo "DEPLOY_TIME: \"${DEPLOY_TIME}\"" >> env_temp.yaml
 
+        # EXTRA VARS are the environment variables passed to docker entrypoint
         EXTRA_VARS="--env-vars-file env_temp.yaml"
         echo -e "\e[32 EXTRA_VARS=${EXTRA_VARS}\e[0m"
         echo env_temp.yaml contentes:
