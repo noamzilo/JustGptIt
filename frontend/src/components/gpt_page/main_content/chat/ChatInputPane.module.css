@@ -20,16 +20,21 @@ textarea {
 	font-size: 16px;
 	line-height: 1.5;
 	resize: none;
+	/* Prevent manual resizing */
 	outline: none;
-	padding: 5px;
-	min-height: calc(1.5em * 1 + 20px);
-	max-height: calc(1.5em * (2 - 1) + 20px);
-	overflow-y: auto;
-	box-sizing: border-box;
-	transition: height 0.2s ease;
-	width: 300px;
-	/* height: 100px; */
 	padding: 10px;
+	/* Unified padding */
+	min-height: calc(1.5em + 20px);
+	/* 1 line + padding */
+	max-height: calc(1.5em * 4 + 20px);
+	/* 4 lines + padding */
+	overflow-y: auto;
+	/* Enable scrollbar when needed */
+	box-sizing: border-box;
+	/* Include padding in height calculations */
+	transition: height 0.2s ease;
+	/* Smooth height transition */
+	width: 300px;
 }
 
 .sendButton {

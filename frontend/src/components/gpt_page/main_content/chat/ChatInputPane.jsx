@@ -30,10 +30,27 @@ function ChatInputPane({
     onAnimationComplete();
   });
 
+  // Clear input when clearInputTrigger changes and focus the textarea
   useEffect(() => {
-    setInputValue(''); // Clear input when clearInputTrigger changes
-    textareaRef.current?.focus();
+    setInputValue(''); // Clear input
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
   }, [clearInputTrigger]);
+
+  // Adjust textarea height based on content
+  const adjustTextareaHeight = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto'; // Reset height to calculate the new height
+      const newHeight = Math.min(textarea.scrollHeight, parseFloat(getComputedStyle(textarea).maxHeight));
+      textarea.style.height = `${newHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [inputValue]);
 
   const handleSendClick = useCallback(() => {
     if (inputValue.trim()) {
@@ -66,7 +83,6 @@ function ChatInputPane({
         value={displayValue}
         onChange={handleChange}
         onKeyDown={handleKeyPress}
-        className={isAnimating ? styles.typingAnimation : ''}
         readOnly={isAnimating}
         aria-label="Message input"
       />
