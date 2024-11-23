@@ -35,13 +35,14 @@ const ShareButtons = ({ shortUrl }) => {
 		window.open(twitterUrl, "_blank", "noopener,noreferrer");
 	};
 
-	const shareOnLinkedIn = () => {
-		if (!shortUrl) return;
-		const linkedInUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${currentUrl}&title=${message}&summary=${message}&source=${encodeURIComponent(
-			"LetMeAskForYou"
-		)}`;
-		window.open(linkedInUrl, "_blank", "noopener,noreferrer");
-	};
+	// doesn't work. 
+	// const shareOnLinkedIn = () => {
+	// 	if (!shortUrl) return;
+	// 	const linkedInUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${currentUrl}&title=${message}&summary=${message}&source=${encodeURIComponent(
+	// 		"LetMeAskForYou"
+	// 	)}`;
+	// 	window.open(linkedInUrl, "_blank", "noopener,noreferrer");
+	// };
 
 	const shareOnWhatsApp = () => {
 		if (!shortUrl) return;
@@ -72,13 +73,13 @@ const ShareButtons = ({ shortUrl }) => {
 			>
 				<FaTwitter size={iconSize} />
 			</button>
-			<button
+			{/* <button
 				className={styles.shareButton}
 				onClick={shareOnLinkedIn}
 				aria-label="Share on LinkedIn"
 			>
 				<FaLinkedin size={iconSize} />
-			</button>
+			</button> */}
 			<button
 				className={styles.shareButton}
 				onClick={shareOnWhatsApp}
