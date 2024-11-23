@@ -4,6 +4,7 @@ import React, { useCallback } from 'react';
 import styles from './ResponseChat.module.css';
 import ChatMessage from './ChatMessage';
 import ChatInputPane from './ChatInputPane';
+import { GPT_PAGE_CONSTANTS } from '../../constants';
 
 function ResponseChat({ query, response, setResponse, onSendMessage }) {
   const handleSend = useCallback(
@@ -24,7 +25,7 @@ function ResponseChat({ query, response, setResponse, onSendMessage }) {
         onSubmit={handleSend}
         isAnimating={false} 
         animatingTextValue=""
-        placeholder={"Ask something else (Sorry, we don't support chat!)"} />
+        placeholder={GPT_PAGE_CONSTANTS.QUERY_PLACEHOLDER_CHAT} />
     </div>
   );
 }
