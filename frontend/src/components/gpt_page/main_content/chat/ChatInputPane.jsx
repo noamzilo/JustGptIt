@@ -30,6 +30,9 @@ function ChatInputPane({
     onAnimationComplete();
   });
 
+  // Determine the display value based on whether it's animating
+  const displayValue = isAnimating ? animatedText : inputValue;
+
   // Clear input when clearInputTrigger changes and focus the textarea
   useEffect(() => {
     setInputValue(''); // Clear input
@@ -39,18 +42,32 @@ function ChatInputPane({
   }, [clearInputTrigger]);
 
   // Adjust textarea height based on content
-  const adjustTextareaHeight = () => {
+  const adjustTextareaHeight = useCallback(() => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = 'auto'; // Reset height to calculate the new height
-      const newHeight = Math.min(textarea.scrollHeight, parseFloat(getComputedStyle(textarea).maxHeight));
+      const computedStyle = window.getComputedStyle(textarea);
+      const maxHeight = parseFloat(computedStyle.maxHeight);
+      const newHeight = Math.min(textarea.scrollHeight, maxHeight);
       textarea.style.height = `${newHeight}px`;
     }
-  };
+  }, []);
 
+  // Scroll textarea to the bottom
+  const scrollToBottom = useCallback(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.scrollTop = textarea.scrollHeight;
+    }
+  }, []);
+
+  // Effect to adjust height and scroll when displayValue changes
   useEffect(() => {
     adjustTextareaHeight();
-  }, [inputValue]);
+    if (isAnimating) {
+      scrollToBottom();
+    }
+  }, [displayValue, adjustTextareaHeight, scrollToBottom, isAnimating]);
 
   const handleSendClick = useCallback(() => {
     if (inputValue.trim()) {
@@ -72,8 +89,6 @@ function ChatInputPane({
   const handleChange = useCallback((e) => {
     setInputValue(e.target.value);
   }, []);
-
-  const displayValue = isAnimating ? animatedText : inputValue;
 
   return (
     <div className={styles.inputContainer}>
