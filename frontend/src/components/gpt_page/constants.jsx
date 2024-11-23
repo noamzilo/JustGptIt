@@ -9,7 +9,7 @@ export const GPT_PAGE_CONSTANTS = {
     // The text to display in the user icon
     USER_ICON_TEXT: "N",
 
-    QUERY_PLACEHOLDER: "Show them how ",
+    QUERY_PLACEHOLDER: "Show them how to ask",
     QUERY_PLACEHOLDER_CHAT: "We don't support chat! Ask something else",
     // QUERY_PLACEHOLDER: "Show them how to use the internet to ask questions",
 

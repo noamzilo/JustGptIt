@@ -13,7 +13,7 @@ function GPTInterface() {
 
   return (
     <div className={styles.pageContainer}>
-      <Sidebar />
+      {/* <Sidebar /> */}
       <MainContent />
     </div>
   );
