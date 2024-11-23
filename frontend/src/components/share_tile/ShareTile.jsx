@@ -13,7 +13,7 @@ import styles from "./ShareTile.module.css";
 const ShareButtons = ({ shortUrl }) => {
   const iconSize = 25;
   const message = encodeURIComponent("Here, I asked that for you:");
-  const currentUrl = "";
+  let currentUrl = "";
   if (!shortUrl){
 	currentUrl = encodeURIComponent(shortUrl);
   }

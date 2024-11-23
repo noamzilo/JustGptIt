@@ -70,7 +70,7 @@ const MainContent = () => {
     const generateShortUrl = async () => {
       const query = searchParams.get('query');
       if (query) {
-        const fullUrl = `${window.location.origin}${window.location.pathname}?${searchParams.toString()}`;
+		const fullUrl = window.location.href;
         try {
           const shortenedUrl = await UrlShorteningService.shorten_url(fullUrl);
           setShortUrl(shortenedUrl);
