@@ -4,7 +4,7 @@ import React from "react";
 import {
 	FaFacebook,
 	FaTwitter,
-	FaLinkedin,
+	// FaLinkedin,
 	FaWhatsapp,
 	FaLink,
 } from "react-icons/fa";
