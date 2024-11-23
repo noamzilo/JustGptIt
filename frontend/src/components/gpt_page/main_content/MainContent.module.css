@@ -1,157 +1,152 @@
 /* MainContent.module.css */
 
 .mainContent {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    color: #e7e7e7;
-    background-color: #212121;
-    min-height: 100vh;
-    overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+	color: #e7e7e7;
+	background-color: #212121;
+	min-height: 100vh;
+	overflow-y: auto;
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: #b4b4b4;
-    font-size: 8px;
-    margin: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: #b4b4b4;
+	font-size: 8px;
+	margin: 0;
 }
 
 .backButton {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: #b4b4b4;
-    font-size: 12px;
-    margin: 0;
-    background: transparent;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: #b4b4b4;
+	font-size: 12px;
+	margin: 0;
+	background: transparent;
 
-    border-color: wheat;
-    padding: 5px;
+	border-color: wheat;
+	padding: 5px;
 }
 
 .userIcon {
-    width: 35px;
-    height: 35px;
-    background-color: #4caf50;
-    color: #ffffff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
+	width: 35px;
+	height: 35px;
+	background-color: #4caf50;
+	color: #ffffff;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
 }
 
 .querySection {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    margin: 20px 0;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	margin: 20px 0;
 }
 
 .centeredQuerySection {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 20px 0;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 20px 0;
 }
 
 .querySection h2 {
-    font-size: 28px;
-    margin-bottom: 20px;
+	font-size: 28px;
+	margin-bottom: 20px;
 }
 
 /* Disclaimer */
 .disclaimer {
-    margin-top: auto;
-    position: sticky;
-    bottom: 0;
-    background-color: #212121;
-    width: 100%;
-    padding: 10px 0;
-    font-size: 12px;
-    color: #a0a0a0;
-    text-align: center;
+	margin-top: auto;
+	position: sticky;
+	bottom: 0;
+	background-color: #212121;
+	width: 100%;
+	padding: 10px 0;
+	font-size: 12px;
+	color: #a0a0a0;
+	text-align: center;
 }
 
 .footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #212121;
-    color: #a0a0a0;
-    font-size: 12px;
-    padding: 10px 0;
-    flex-direction: column;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #212121;
+	color: #a0a0a0;
+	font-size: 12px;
+	padding: 10px 0;
+	flex-direction: column;
 }
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
-    .mainContent {
-        max-width: 600px;
-        padding: 15px 20px;
-    }
+	.mainContent {
+		max-width: 600px;
+		padding: 15px 20px;
+	}
 
-    .querySection h2,
-    .centeredQuerySection h2 {
-        font-size: 24px;
-    }
+	.querySection h2,
+	.centeredQuerySection h2 {
+		font-size: 24px;
+	}
 }
 
 @media (max-width: 768px) {
-    .mainContent {
-        width: 100%;
-        max-width: 100%;
-        padding: 15px;
-        order: 1;
-    }
+	.mainContent {
+		width: 100%;
+		max-width: 100%;
+		padding: 15px;
+		order: 1;
+	}
 
-    .menu,
-    .footer {
-        display: none;
-    }
+	.userIcon {
+		width: 30px;
+		height: 30px;
+		font-size: 16px;
+	}
 
-    .userIcon {
-        width: 30px;
-        height: 30px;
-        font-size: 16px;
-    }
+	.querySection h2,
+	.centeredQuerySection h2 {
+		font-size: 22px;
+	}
 
-    .querySection h2,
-    .centeredQuerySection h2 {
-        font-size: 22px;
-    }
-
-    .inputContainer {
-        padding: 8px 12px;
-    }
+	.inputContainer {
+		padding: 8px 12px;
+	}
 }
 
 @media (max-width: 480px) {
-    .mainContent {
-        padding: 10px;
-    }
+	.mainContent {
+		padding: 10px;
+	}
 
-    .querySection h2,
-    .centeredQuerySection h2 {
-        font-size: 20px;
-    }
+	.querySection h2,
+	.centeredQuerySection h2 {
+		font-size: 20px;
+	}
 
-    .inputContainer input {
-        font-size: 14px;
-    }
+	.inputContainer input {
+		font-size: 14px;
+	}
 
-    .inputContainer .sendButton {
-        width: 30px;
-        height: 30px;
-        font-size: 18px;
-    }
+	.inputContainer .sendButton {
+		width: 30px;
+		height: 30px;
+		font-size: 18px;
+	}
 }
