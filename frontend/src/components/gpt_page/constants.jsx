@@ -14,4 +14,6 @@ export const GPT_PAGE_CONSTANTS = {
 
     // The text to display on the back button
     BACK_BUTTON_TEXT: "New Question",
+
+	SHORT_URL_DEFAULT: "",
 };
