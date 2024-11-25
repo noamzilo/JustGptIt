@@ -1,0 +1,28 @@
+.sendButton {
+	background-color: #ffffff;
+	border: none;
+	color: #101010;
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	margin-left: auto;
+	transition: background-color 0.2s ease;
+}
+
+.sendButton:hover {
+	background-color: #c1c1c1;
+}
+
+.sendButtonActive {
+	/* Optional: Styles when the send button is active */
+}
+
+.sendButton svg {
+	width: 16px;
+	height: 16px;
+	fill: currentColor;
+}
