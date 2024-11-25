@@ -26,13 +26,12 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	color: #b4b4b4;
-	font-size: 12px;
+	color: #222222;
+	font-size: 10px;
 	margin: 0;
-	background: transparent;
-
-	border-color: wheat;
+	background: #C1C1C1;
 	padding: 5px;
+	border-radius: 10px;
 }
 
 .userIcon {
