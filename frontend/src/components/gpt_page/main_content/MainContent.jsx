@@ -93,7 +93,7 @@ const MainContent = () => {
           {GPT_PAGE_CONSTANTS.BACK_BUTTON_TEXT}
         </button>
         <h1>{GPT_PAGE_CONSTANTS.TITLE}</h1>
-        <div className={styles.userIcon}>{GPT_PAGE_CONSTANTS.USER_ICON_TEXT}</div>
+        {/* <div className={styles.userIcon}>{GPT_PAGE_CONSTANTS.USER_ICON_TEXT}</div> */}
       </header>
 
       <section
