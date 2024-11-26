@@ -17,3 +17,8 @@
     - Service Account Key File, encoded as base64: is saved in the backend/.secrets as GCP_SA_KEY
   - personal-website-cloud-run - For running the container itself without needing permissions to reside in docker images or be passed in, using Application Default Credentials (ADC).
   - personal-website-deployer is configured to impersonate personal-website-cloud-run at build time for permissions. 
+
+
+  - A reverse proxy exists on CloudFlare. 
+  	- mydomain.com/redirect/hashhash --> http://personal-website-backend-839353010571.us-central1.run.app/llm/redirect/hashhash
+	- mydomain.com/any/path --> https://noamzilo.github.io/personal_website/#/gpt/any/path
