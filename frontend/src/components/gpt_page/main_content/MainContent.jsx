@@ -6,12 +6,14 @@ import ResponseChat from './chat/ResponseChat';
 import useLlmQuery from './chat/hooks/useLlmQuery';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import ShareButtons from '../../share_tile/ShareTile';
+import UrlShorteningService from '../../../services/UrlShorteningService';
 
 const MainContent = () => {
   const [isInitialChatDoneAnimating, setIsInitialChatDoneAnimating] = useState(false);
   const [llmQuery, setLlmQuery] = useState('');
   const [llmResponse, setLlmResponse] = useState('');
-  const [clearInputTrigger, setClearInputTrigger] = useState(false); // New state for triggering input clear
+  const [clearInputTrigger, setClearInputTrigger] = useState(false);
+  const [shortUrl, setShortUrl] = useState(''); // New state for the shortened URL
 
   const queryLlm = useLlmQuery(setLlmResponse);
   const location = useLocation();
@@ -19,7 +21,7 @@ const MainContent = () => {
   const queryFromUrl = searchParams.get('query') || '';
 
   useEffect(() => {
-    if (location.pathname === '/gpt') {
+	if (!location.pathname.startsWith('/r/')) {
       console.log(`MainContent: Query from URL: ${queryFromUrl}`);
       queryLlm(queryFromUrl);
       setLlmQuery(queryFromUrl);
@@ -34,20 +36,20 @@ const MainContent = () => {
   const handleTypingAnimationDone = useCallback(() => {
     console.log('MainContent: Typing animation done');
     if (llmQuery.trim()) {
-        queryLlm(llmQuery); // Fetch response based on user input
-        searchParams.set('query', llmQuery);
-        setSearchParams(searchParams); // Update URL with query parameter
+      queryLlm(llmQuery);
+      searchParams.set('query', llmQuery);
+      setSearchParams(searchParams);
     }
-    setIsInitialChatDoneAnimating(true); // Indicate animation is complete
+    setIsInitialChatDoneAnimating(true);
   }, [llmQuery, queryLlm, searchParams, setSearchParams]);
 
   const handleSendMessage = useCallback(
     (message) => {
       console.log(`MainContent: User sent message: ${message}`);
       setLlmQuery(message);
-      queryLlm(message); // Fetch response for sent message
+      queryLlm(message);
       searchParams.set('query', message);
-      setSearchParams(searchParams); // Update URL with new query parameter
+      setSearchParams(searchParams);
     },
     [queryLlm, searchParams, setSearchParams]
   );
@@ -57,32 +59,55 @@ const MainContent = () => {
     setLlmQuery('');
     setLlmResponse('');
     searchParams.delete('query');
-    setIsInitialChatDoneAnimating(false);
     setSearchParams(searchParams);
-    setClearInputTrigger((prev) => !prev); // Toggle the trigger to notify child components
+    setIsInitialChatDoneAnimating(false);
+    setClearInputTrigger((prev) => !prev);
+    setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT); // Reset the short URL
   }, [searchParams, setSearchParams]);
+
+  // Generate short URL whenever the query changes
+  useEffect(() => {
+    const generateShortUrl = async () => {
+      const query = searchParams.get('query');
+      if (query) {
+		const fullUrl = window.location.href;
+        try {
+          const shortenedUrl = await UrlShorteningService.shorten_url(fullUrl);
+          setShortUrl(shortenedUrl);
+        } catch (error) {
+          console.error('Failed to generate short URL:', error);
+          setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
+        }
+      } else {
+        setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
+      }
+    };
+
+    generateShortUrl();
+  }, [searchParams]);
 
   return (
     <main className={styles.mainContent}>
       <header className={styles.header}>
-        <button
-          className={styles.backButton}
-          onClick={onNewQuestionClicked}
-        >
+        <button className={styles.backButton} onClick={onNewQuestionClicked}>
           {GPT_PAGE_CONSTANTS.BACK_BUTTON_TEXT}
         </button>
         <h1>{GPT_PAGE_CONSTANTS.TITLE}</h1>
-        <div className={styles.userIcon}>{GPT_PAGE_CONSTANTS.USER_ICON_TEXT}</div>
+        {/* <div className={styles.userIcon}>{GPT_PAGE_CONSTANTS.USER_ICON_TEXT}</div> */}
       </header>
 
-      <section className={isInitialChatDoneAnimating ? styles.querySection : styles.centeredQuerySection}>
+      <section
+        className={
+          isInitialChatDoneAnimating ? styles.querySection : styles.centeredQuerySection
+        }
+      >
         {!isInitialChatDoneAnimating ? (
           <InitialChat
             initialQuery={llmQuery}
             onTypingAnimationDone={handleTypingAnimationDone}
             onLlmResponse={setLlmResponse}
             onQueryChange={onQueryChange}
-            clearInputTrigger={clearInputTrigger} // Pass the trigger state
+            clearInputTrigger={clearInputTrigger}
           />
         ) : (
           <ResponseChat
@@ -93,16 +118,15 @@ const MainContent = () => {
             onBackClicked={() => {
               setSearchParams('');
               setIsInitialChatDoneAnimating(false);
+              setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT); // Reset the short URL
             }}
           />
         )}
       </section>
 
       <footer className={styles.footer}>
-        <ShareButtons />
-        <div className={styles.disclaimer}>
-          {GPT_PAGE_CONSTANTS.DISCLAIMER}
-        </div>
+        <ShareButtons shortUrl={shortUrl} />
+        <div className={styles.disclaimer}>{GPT_PAGE_CONSTANTS.DISCLAIMER}</div>
       </footer>
     </main>
   );

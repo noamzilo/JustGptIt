@@ -1,46 +1,46 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Python Debugger: Current File",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
-            "cwd": "/home/noams/src/personal_website/backend",
-            "env": {
-                "PYTHONPATH": "/home/noams/src/personal_website/backend"
-            },
-            "variablePresentation": {
-                // https://stackoverflow.com/questions/62346091/how-can-i-disable-hide-the-grouping-of-variables-in-vscode-python
-                "all": "inline",
-                "class": "hide",
-                "function": "hide",
-                "protected": "hide",
-                "special": "hide",
-            },
-            "showGlobalVariables": false
-        },
-        {
-            "name": "Launch Chrome",
-            "request": "launch",
-            "type": "chrome",
-            "url": "http://localhost:3000/#/gpt?query=sadssssssss",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "name": "Attach to Chrome",
-            "port": 9222,
-            "request": "attach",
-            "type": "chrome",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:3000#/gpt?query=sadssssssss",
-            "webRoot": "${workspaceFolder}"
-        }
-    ]
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Python Debugger: Current File",
+			"type": "debugpy",
+			"request": "launch",
+			"program": "${file}",
+			"console": "integratedTerminal",
+			"cwd": "/home/noams/src/personal_website/backend",
+			"env": {
+				"PYTHONPATH": "/home/noams/src/personal_website/backend"
+			},
+			"variablePresentation": {
+				// https://stackoverflow.com/questions/62346091/how-can-i-disable-hide-the-grouping-of-variables-in-vscode-python
+				"all": "inline",
+				"class": "hide",
+				"function": "hide",
+				"protected": "hide",
+				"special": "hide",
+			},
+			"showGlobalVariables": false
+		},
+		{
+			"name": "Launch Chrome",
+			"request": "launch",
+			"type": "chrome",
+			"url": "http://localhost:3000/?query=abcde",
+			"webRoot": "${workspaceFolder}"
+		},
+		{
+			"name": "Attach to Chrome",
+			"port": 9222,
+			"request": "attach",
+			"type": "chrome",
+			"webRoot": "${workspaceFolder}"
+		},
+		{
+			"type": "chrome",
+			"request": "launch",
+			"name": "Launch Chrome against localhost",
+			"url": "http://localhost:3000/?query=abcde",
+			"webRoot": "${workspaceFolder}"
+		}
+	]
 }

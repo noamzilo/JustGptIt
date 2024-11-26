@@ -6,16 +6,40 @@ import ChatInputPane from './ChatInputPane';
 import useMouseAnimation from './hooks/useMouseAnimation';
 import { GPT_PAGE_CONSTANTS } from '../../constants';
 
-function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQueryChange, clearInputTrigger }) {
+function InitialChat({
+  initialQuery,
+  onTypingAnimationDone,
+  onLlmResponse,
+  onQueryChange,
+  clearInputTrigger,
+}) {
   const mouse_cursor = `${process.env.PUBLIC_URL}/assets/mouse_cursor.svg`;
   const emitter = useMemo(() => mitt(), []);
+  const [textareaElement, setTextareaElement] = useState(null);
+  const [mouseTarget, setMouseTarget] = useState({
+    top: window.innerHeight / 2,
+    left: window.innerWidth / 2,
+  });
 
   const decodedQuery = initialQuery || '';
 
-  const { isAnimatingMouseMove, startMouseAnimation, controls } = useMouseAnimation(emitter);
-  const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
-  const [readyForTypingAnimation, setReadyForTypingAnimation] = useState(false);
-  const [animatingTextValue, setAnimatingTextValue] = useState('');
+  // Call useMouseAnimation before using startMouseAnimation in useEffect
+  const { isAnimatingMouseMove, startMouseAnimation, controls } = useMouseAnimation(
+    emitter,
+    mouseTarget.top,
+    mouseTarget.left
+  );
+
+  // Update mouseTarget when textareaElement is available
+  useEffect(() => {
+    if (textareaElement) {
+      const rect = textareaElement.getBoundingClientRect();
+      setMouseTarget({
+        top: rect.top + rect.height / 2 + window.scrollY,
+        left: rect.left + rect.width / 2 + window.scrollX,
+      });
+    }
+  }, [textareaElement]);
 
   useEffect(() => {
     if (decodedQuery.trim()) {
@@ -23,6 +47,11 @@ function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQue
       startMouseAnimation();
     }
   }, [decodedQuery, onQueryChange, startMouseAnimation]);
+
+  // Correctly initialize isAnimatingTyping with useState
+  const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
+  const [readyForTypingAnimation, setReadyForTypingAnimation] = useState(false);
+  const [animatingTextValue, setAnimatingTextValue] = useState('');
 
   useEffect(() => {
     const handleMouseAnimationDone = () => {
@@ -93,6 +122,7 @@ function InitialChat({ initialQuery, onTypingAnimationDone, onLlmResponse, onQue
         onAnimationComplete={handleTypingAnimationDone}
         placeholder={GPT_PAGE_CONSTANTS.QUERY_PLACEHOLDER}
         clearInputTrigger={clearInputTrigger} // Pass down to ChatInputPane
+        onTextareaRef={setTextareaElement} // Ensure this is passed as a function
       />
     </div>
   );

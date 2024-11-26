@@ -77,3 +77,4 @@ backend/creds/
 /backend/response.html
 /backend/certificates/
 /backend/llm/tests/playground.py
+/.wrangler

@@ -1,7 +1,7 @@
 import os
 import sys
 
-backend_version_name = "0.1.0"
+backend_version_name = "1.0.0"
 
 # Paths to secret and env files
 SECRET_FILE_PATH = os.path.expanduser("~/src/personal_website/backend/.secrets_backend")
@@ -91,7 +91,7 @@ try:
 except FileNotFoundError:
     BUILD_TIME = 'Build time not available'
 
-# Not supported yet
+# Not supporte yet
 GS_BUCKET_NAME = read_env_variable('GS_BUCKET_NAME', 'GS_BUCKET_NAME NOT READ PROPERLY')
 URLDAY_API_KEY = read_env_variable('URLDAY_API_KEY', 'URLDAY_API_KEY NOT READ PROPERLY')
 
