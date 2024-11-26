@@ -21,7 +21,7 @@ const MainContent = () => {
   const queryFromUrl = searchParams.get('query') || '';
 
   useEffect(() => {
-    if (location.pathname === '/gpt') {
+	if (!location.pathname.startsWith('/r/')) {
       console.log(`MainContent: Query from URL: ${queryFromUrl}`);
       queryLlm(queryFromUrl);
       setLlmQuery(queryFromUrl);

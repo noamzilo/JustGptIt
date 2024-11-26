@@ -21,4 +21,4 @@
 
   - A reverse proxy exists on CloudFlare. 
   	- mydomain.com/redirect/hashhash --> http://personal-website-backend-839353010571.us-central1.run.app/llm/redirect/hashhash
-	- mydomain.com/any/path --> https://noamzilo.github.io/personal_website/#/gpt/any/path
+	- mydomain.com/any/path --> https://noamzilo.github.io/personal_website/any/path

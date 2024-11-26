@@ -5,7 +5,7 @@ export const GPT_PAGE_CONSTANTS = {
     // The text to display in the disclaimer
     DISCLAIMER: "ChatGPT can make mistakes. Check important info.",
     // The text to display in the query section
-    QUERY_SECTION_TEXT: "Let Me Ask For You",//"What can I help with?",
+    QUERY_SECTION_TEXT: "Just GPT It",
     // The text to display in the user icon
     USER_ICON_TEXT: "N",
 
