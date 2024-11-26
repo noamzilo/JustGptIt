@@ -13,25 +13,25 @@ import styles from "./ShareTile.module.css";
 const ShareButtons = ({ shortUrl }) => {
 	const iconSize = 25;
 	const message = encodeURIComponent("Here, I asked that for you:");
-	const [currentUrl, setCurrentUrl] = React.useState("");
+	const [sharedUrl, setSharedUrl] = React.useState("");
 
 	React.useEffect(() => {
 		if (shortUrl) {
-			setCurrentUrl(encodeURIComponent(shortUrl));
+			setSharedUrl(shortUrl);
+			console.log(`Shared URL changed to: ${sharedUrl}`);
 		} else {
-			setCurrentUrl(encodeURIComponent(window.location.href));
+			setSharedUrl(window.location.href);
+			console.log(`Shared URL changed to: ${sharedUrl}`);
 		}
 	}, [shortUrl]);
 
 	const shareOnFacebook = () => {
-		if (!shortUrl) return;
-		const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`;
+		const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${sharedUrl}`;
 		window.open(fbUrl, "_blank", "noopener,noreferrer");
 	};
 
 	const shareOnTwitter = () => {
-		if (!shortUrl) return;
-		const twitterUrl = `https://twitter.com/intent/tweet?url=${currentUrl}&text=${message}`;
+		const twitterUrl = `https://twitter.com/intent/tweet?url=${sharedUrl}&text=${message}`;
 		window.open(twitterUrl, "_blank", "noopener,noreferrer");
 	};
 
@@ -45,14 +45,12 @@ const ShareButtons = ({ shortUrl }) => {
 	// };
 
 	const shareOnWhatsApp = () => {
-		if (!shortUrl) return;
-		const whatsappUrl = `https://wa.me/?text=${message}%20${currentUrl}`;
+		const whatsappUrl = `https://wa.me/?text=${message}%20${sharedUrl}`;
 		window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 	};
 
 	const copyToClipboard = () => {
-		if (!shortUrl) return;
-		navigator.clipboard.writeText(shortUrl).then(() => {
+		navigator.clipboard.writeText(sharedUrl).then(() => {
 			alert("Link copied to clipboard!");
 		});
 	};
