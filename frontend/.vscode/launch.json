@@ -25,7 +25,7 @@
 			"name": "Launch Chrome",
 			"request": "launch",
 			"type": "chrome",
-			"url": "http://localhost:3000/?query=sadssssssss",
+			"url": "http://localhost:3000/?query=abcde",
 			"webRoot": "${workspaceFolder}"
 		},
 		{
@@ -39,7 +39,7 @@
 			"type": "chrome",
 			"request": "launch",
 			"name": "Launch Chrome against localhost",
-			"url": "http://localhost:3000#/?query=sadssssssss",
+			"url": "http://localhost:3000/?query=abcde",
 			"webRoot": "${workspaceFolder}"
 		}
 	]
