@@ -21,12 +21,13 @@ def query(request):
 @api_view(['POST'])
 def shorten_url(request):
 	long_url = request.data.get('long_url')
+	client_host_name = request.data.get('client_host_name')
 	if not long_url:
 		return JsonResponse({'error': 'No long_url provided'}, status=400)
 	url_hash = UrlShortener.create_hash(long_url)
 	# full_short_url = request.build_absolute_uri(f'/llm/redirect/{url_hash}')
 	scheme = request.scheme
-	host = request.get_host()
+	host = client_host_name
 	base_url = f'{scheme}://{host}/r/'
 	full_short_url = f'{base_url}{url_hash}'
 	response = {

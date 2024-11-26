@@ -6,7 +6,12 @@ const UrlShorteningService = {
 	shorten_url: async (long_url) => {
 		try {
 			console.log(`UrlShorteningService: shortening URL ${long_url}`);
-			const response = await apiService.post('/llm/shorten_url', { long_url });
+			const response = await apiService.post('/llm/shorten_url',
+				{
+					"long_url": long_url,
+					"client_host_name": window.location.hostname,
+				});
+
 			if (response.status !== 200) {
 				throw new Error(`URL Shortening failed: ${response.data}`);
 			}

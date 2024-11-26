@@ -12,10 +12,10 @@ urlpatterns = [
 
 
 """
-curl -X POST \
-	localhost:8080/llm/shorten_url \
-	-H "Content-Type: application/json" \
-	-d '{"long_url": "https://example.com/some/very/long/url"}'
+ curl -X POST      \
+ 	localhost:8080/llm/shorten_url \
+	-H "Content-Type: application/json"\
+    -d '{"long_url": "https://example.com/some/very/long/url",	 "client_host_name": "localhost:3111"}'
 
 
 curl -X POST \
