@@ -7,11 +7,12 @@ from django.db.utils import IntegrityError
 from rest_framework.test import APIClient
 from django.urls import reverse
 
-
+@pytest.mark.parametrize("long_url", [
+	'http://localhost:8787/?query=asdf',
+	'http://justgptit.com/?query=asdf'
+])
 @pytest.mark.django_db
-def test_url_shortener_create_and_expand():
-	long_url = 'https://www.example.com/some/very/long/url'
-	
+def test_url_shortener_create_and_expand(long_url):
 	# Test create_hash
 	url_hash = UrlShortener.create_hash(long_url)
 	assert len(url_hash) == 8, "URL hash should be 8 characters long"

@@ -6,45 +6,49 @@ from llm.services.UrlShortener import UrlShortener
 
 @api_view(['POST'])
 def query(request):
-    query = request.data.get('query')
-    if not query:
-        return JsonResponse({'error': 'No query provided'}, status=400)
+	query = request.data.get('query')
+	if not query:
+		return JsonResponse({'error': 'No query provided'}, status=400)
 
-    llm_response = LlmQueryCache.llm_response(
-        query=query,
-        query_llm_callback=fetch_text_from_url,
-    )
-    response = {'message': f'Received query: {query}', 'llm_response': llm_response}
-    return JsonResponse(response)
+	llm_response = LlmQueryCache.llm_response(
+		query=query,
+		query_llm_callback=fetch_text_from_url,
+	)
+	response = {'message': f'Received query: {query}', 'llm_response': llm_response}
+	return JsonResponse(response)
 
 # Return the short URL as data. For actually using the short URL, there is a different view.
 @api_view(['POST'])
 def shorten_url(request):
-    long_url = request.data.get('long_url')
-    if not long_url:
-        return JsonResponse({'error': 'No long_url provided'}, status=400)
-    url_hash = UrlShortener.create_hash(long_url)
-    full_short_url = request.build_absolute_uri(f'/llm/redirect/{url_hash}')
-    response = {
-        'long_url': long_url,
-        'short_url': full_short_url
-    }
-    return JsonResponse(response)
+	long_url = request.data.get('long_url')
+	if not long_url:
+		return JsonResponse({'error': 'No long_url provided'}, status=400)
+	url_hash = UrlShortener.create_hash(long_url)
+	# full_short_url = request.build_absolute_uri(f'/llm/redirect/{url_hash}')
+	scheme = request.scheme
+	host = request.get_host()
+	base_url = f'{scheme}://{host}/r/'
+	full_short_url = f'{base_url}{url_hash}'
+	response = {
+		'long_url': long_url,
+		'short_url': full_short_url
+	}
+	return JsonResponse(response)
 
 # View to handle redirection when the short URL is accessed.
-def redirect(request, url_hash):
-    try:
-        long_url = UrlShortener.expand(url_hash)
-        return HttpResponseRedirect(long_url)
-    except ValueError as e:
-        return JsonResponse({'error': str(e)}, status=404)
+# def redirect(request, url_hash):
+#     try:
+#         long_url = UrlShortener.expand(url_hash)
+#         return HttpResponseRedirect(long_url)
+#     except ValueError as e:
+#         return JsonResponse({'error': str(e)}, status=404)
 
 
 def expand_hash(request, url_hash):
-    try:
-        long_url = UrlShortener.expand(url_hash)
-        return JsonResponse({"long_url": long_url})
-    except ValueError as e:
-        return JsonResponse({'error': str(e)}, status=404)
+	try:
+		long_url = UrlShortener.expand(url_hash)
+		return JsonResponse({"long_url": long_url})
+	except ValueError as e:
+		return JsonResponse({'error': str(e)}, status=404)
 
 

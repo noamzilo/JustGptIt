@@ -47,7 +47,6 @@ async function handleRequest(request) {
 				headers: { 'Content-Type': 'text/plain' },
 			});
 		}
-		throw new Error('XXXXXXXXXXXXXXXXXXXXXXXXXxx');
 	}
 
 	// Handle static file requests
