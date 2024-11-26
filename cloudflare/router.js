@@ -8,29 +8,38 @@ async function handleRequest(request) {
 	console.log(`Url: ${url} Path: ${path}`);
 
 	// Construct GitHub URL to proxy
-	const githubUrl = `https://noamzilo.github.io/personal_website/${path}`;
+	const githubUrl = `https://noamzilo.github.io/personal_website${path}`;
 
 	try {
-		// Follow all redirects from GitHub Pages
+		// Fetch the resource from GitHub Pages
 		let response = await fetch(githubUrl, {
 			method: request.method,
 			headers: request.headers,
 			body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : null,
-			redirect: 'follow',  // Follow redirects automatically
+			redirect: 'follow', // Follow redirects automatically
 		});
 
-		// Clone the response to modify headers if needed
-		response = new Response(response.body, {
+		// If the response is 404, serve index.html for client-side routing
+		if (response.status === 404) {
+			const indexUrl = `https://noamzilo.github.io/personal_website/index.html`;
+			response = await fetch(indexUrl, {
+				method: 'GET',
+				redirect: 'follow',
+			});
+		}
+
+		// Clone the response to modify headers
+		let newHeaders = new Headers(response.headers);
+
+		// Add CORS header
+		newHeaders.set('Access-Control-Allow-Origin', '*');
+		newHeaders.delete('location'); // Remove the location header if any
+
+		return new Response(response.body, {
 			status: response.status,
 			statusText: response.statusText,
-			headers: response.headers,
+			headers: newHeaders,
 		});
-
-		// Add necessary headers to prevent any further redirects or unwanted behavior
-		response.headers.set('Access-Control-Allow-Origin', '*');
-		response.headers.delete('location');  // Remove the location header if any
-
-		return response;
 
 	} catch (error) {
 		// If there's an error, return a 502 response
