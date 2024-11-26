@@ -23,7 +23,7 @@ const ShareButtons = ({ shortUrl }) => {
 			setSharedUrl(window.location.href);
 			console.log(`Shared URL changed to: ${sharedUrl}`);
 		}
-	}, [shortUrl]);
+	}, [shortUrl, setSharedUrl, sharedUrl]);
 
 	const shareOnFacebook = () => {
 		const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${sharedUrl}`;

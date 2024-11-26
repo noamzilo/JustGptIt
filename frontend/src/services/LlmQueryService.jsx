@@ -2,6 +2,9 @@ import apiService from './apiService';
 
 const LlmQueryService = {
     queryLLMService: async (query) => {
+		if (!query) {
+			return '';
+		}
         try {
             console.log(`LlmQueryService asked ${query} and awaiting response`)
             const response = await apiService.post('/llm/query', { "query": query });
