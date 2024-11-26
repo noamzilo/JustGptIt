@@ -1,7 +1,7 @@
 import os
 import sys
 
-backend_version_name = "1.0.0"
+backend_version_name = "1.0.1"
 
 # Paths to secret and env files
 SECRET_FILE_PATH = os.path.expanduser("~/src/personal_website/backend/.secrets_backend")
