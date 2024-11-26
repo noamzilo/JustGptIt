@@ -7,7 +7,7 @@ urlpatterns = [
     path('query', views.query, name='query'),
     path('shorten_url', views.shorten_url, name='shorten_url'),
     path('redirect/<url_hash>', views.redirect, name='redirect'),
-    path('expand_short_url/<url_hash>', views.redirect, name='expand_short_url'),
+    path('expand_hash/<url_hash>', views.expand_hash, name='expand_hash'),
 ]
 
 

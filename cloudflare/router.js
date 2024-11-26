@@ -5,59 +5,76 @@ addEventListener('fetch', event => {
 async function handleRequest(request) {
 	const url = new URL(request.url);
 	const path = url.pathname;
-	console.log(`Url: ${url} Path: ${path}`);
 
-	// Handle static files (e.g., /r/static/js/... or /r/static/css/...)
-	if (path.startsWith('/r/static/')) {
-		// Rewrite to fetch from GitHub Pages (or another static host)
-		const staticUrl = `https://noamzilo.github.io/personal_website${path.replace('/r', '')}`;
+	console.log(`Incoming request URL: ${url}, Path: ${path}`);
+
+	// Handle /r/{somehash} redirects
+	if (path.startsWith('/r/')) {
+		const hash = path.substring(3); // Extract "somehash" from "/r/{somehash}"
+		// const backendUrl = `http://personal-website-backend-839353010571.us-central1.run.app/llm/redirect/${hash}`;
+		const backendUrl = `http://localhost:8080/llm/expand_hash/${hash}`;
+
+		try {
+			console.log(`Fetching URL from backend: ${backendUrl}`);
+
+			// Fetch the URL from the backend
+			const response = await fetch(backendUrl, {
+				method: 'GET',
+				headers: request.headers,
+			});
+
+			if (!response.ok) {
+				throw new Error(`Backend responded with status ${response.status}`);
+			}
+
+			console.log(response);
+
+			// Assume backend returns JSON with { "long_url": "http://localhost:8787/?query=asd1" }
+			const data = await response.json();
+			const resolvedUrl = data.long_url;
+
+			if (!resolvedUrl) {
+				throw new Error('No URL found in backend response');
+			}
+
+			console.log(`Resolved URL from backend: ${resolvedUrl}`);
+
+			return Response.redirect(resolvedUrl, 302);
+		} catch (error) {
+			console.error(`Error resolving /r/{somehash}: ${error.message}`);
+			return new Response(`Error resolving the redirect: ${error.message}`, {
+				status: 502,
+				headers: { 'Content-Type': 'text/plain' },
+			});
+		}
+		throw new Error('XXXXXXXXXXXXXXXXXXXXXXXXXxx');
+	}
+
+	// Handle static file requests
+	if (path.startsWith('/static/') || path.startsWith('/assets/')) {
+		const staticUrl = `https://noamzilo.github.io/personal_website${path}`;
 		try {
 			const staticResponse = await fetch(staticUrl, {
-				method: request.method,
+				method: 'GET',
 				headers: request.headers,
 				redirect: 'follow',
 			});
+
+			if (!staticResponse.ok && staticResponse.status !== 404) {
+				throw new Error(`Static file fetch failed with status ${staticResponse.status}`);
+			}
+
 			return staticResponse;
 		} catch (error) {
-			return new Response('Error fetching static file: ' + error.message, {
+			console.error(`Error fetching static file: ${error.message}`);
+			return new Response(`Error fetching static file: ${error.message}`, {
 				status: 502,
-				headers: {
-					'Content-Type': 'text/plain',
-				},
+				headers: { 'Content-Type': 'text/plain' },
 			});
 		}
 	}
 
-	// Handle `/r/{somehash}` logic
-	if (path.startsWith('/r/')) {
-		const hash = path.substring(3); // Removes "/r/"
-		const backendUrl = `http://personal-website-backend-839353010571.us-central1.run.app/llm/redirect/${hash}`;
-
-		try {
-			const response = await fetch(backendUrl, {
-				method: request.method,
-				headers: request.headers,
-				body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : null,
-				redirect: 'follow',
-			});
-			let newHeaders = new Headers(response.headers);
-			newHeaders.set('Access-Control-Allow-Origin', '*');
-			return new Response(response.body, {
-				status: response.status,
-				statusText: response.statusText,
-				headers: newHeaders,
-			});
-		} catch (error) {
-			return new Response('Error fetching from backend: ' + error.message, {
-				status: 502,
-				headers: {
-					'Content-Type': 'text/plain',
-				},
-			});
-		}
-	}
-
-	// Default behavior (proxy to GitHub Pages)
+	// Default behavior: Proxy other requests to GitHub Pages
 	const githubUrl = `https://noamzilo.github.io/personal_website${path}`;
 	try {
 		let response = await fetch(githubUrl, {
@@ -68,6 +85,7 @@ async function handleRequest(request) {
 		});
 
 		if (response.status === 404) {
+			// Serve index.html for client-side routing
 			const indexUrl = `https://noamzilo.github.io/personal_website/index.html`;
 			response = await fetch(indexUrl, {
 				method: 'GET',
@@ -75,20 +93,20 @@ async function handleRequest(request) {
 			});
 		}
 
+		// Clone and modify headers
 		let newHeaders = new Headers(response.headers);
 		newHeaders.set('Access-Control-Allow-Origin', '*');
-		newHeaders.delete('location');
+
 		return new Response(response.body, {
 			status: response.status,
 			statusText: response.statusText,
 			headers: newHeaders,
 		});
 	} catch (error) {
-		return new Response('Error fetching from GitHub: ' + error.message, {
+		console.error(`Error fetching GitHub Pages: ${error.message}`);
+		return new Response(`Error fetching GitHub Pages: ${error.message}`, {
 			status: 502,
-			headers: {
-				'Content-Type': 'text/plain',
-			},
+			headers: { 'Content-Type': 'text/plain' },
 		});
 	}
 }

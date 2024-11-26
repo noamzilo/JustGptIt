@@ -39,13 +39,12 @@ def redirect(request, url_hash):
     except ValueError as e:
         return JsonResponse({'error': str(e)}, status=404)
 
-from django.http import JsonResponse
 
-# View to handle redirection when the short URL is accessed.
-def expand_short_url(request, url_hash):
+def expand_hash(request, url_hash):
     try:
         long_url = UrlShortener.expand(url_hash)
-        return JsonResponse({'long_url': long_url})
+        return JsonResponse({"long_url": long_url})
     except ValueError as e:
         return JsonResponse({'error': str(e)}, status=404)
+
 
