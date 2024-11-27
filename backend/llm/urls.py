@@ -35,4 +35,6 @@ curl -X POST \
 	https://personal-website-backend-839353010571.us-central1.run.app/llm/query \
 	-H "Content-Type: application/json" \
 	-d '{"query": "abcd"}'
+
+	curl https://personal-website-backend-839353010571.us-central1.run.app/llm/expand_hash/PYodeOdC
 """
