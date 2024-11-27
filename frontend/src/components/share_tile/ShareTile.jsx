@@ -18,10 +18,10 @@ const ShareButtons = ({ shortUrl }) => {
 	React.useEffect(() => {
 		if (shortUrl) {
 			setSharedUrl(shortUrl);
-			console.log(`Shared URL changed to: ${sharedUrl}`);
+			console.log(`Shared URL changed1 to: ${sharedUrl}`);
 		} else {
 			setSharedUrl(window.location.href);
-			console.log(`Shared URL changed to: ${sharedUrl}`);
+			console.log(`Shared URL changed2 to: ${sharedUrl}`);
 		}
 
 	}, [shortUrl, setSharedUrl, sharedUrl]);

@@ -11,8 +11,9 @@ async function handleRequest(request) {
 	// Handle /r/{somehash} redirects
 	if (path.startsWith('/r/')) {
 		const hash = path.substring(3); // Extract "somehash" from "/r/{somehash}"
-		// const backendUrl = `http://personal-website-backend-839353010571.us-central1.run.app/llm/redirect/${hash}`;
-		const backendUrl = `http://localhost:8080/llm/expand_hash/${hash}`;
+		// const backendUrl = `http://personal-website-backend-839353010571.us-central1.run.app/llm/expand_hash/${hash}`;
+		const backendUrl = `https://personal-website-backend-839353010571.us-central1.run.app/llm/expand_hash/${hash}`;
+		// const backendUrl = `http://localhost:8080/llm/expand_hash/${hash}`;
 
 		try {
 			console.log(`Fetching URL from backend: ${backendUrl}`);

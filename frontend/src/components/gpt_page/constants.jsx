@@ -1,5 +1,7 @@
 // class to define constants for the entire GPT page
 export const GPT_PAGE_CONSTANTS = {
+	// The version of the GPT page
+	VERSION: "1.0.0",
     // The title of the GPT page
     TITLE: "",//"Let Me Ask For You",
     // The text to display in the disclaimer
