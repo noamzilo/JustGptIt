@@ -7,7 +7,8 @@ const LlmQueryService = {
 		}
         try {
             console.log(`LlmQueryService asked ${query} and awaiting response`)
-            const response = await apiService.post('/llm/query', { "query": query });
+			const edited_query = "Use a maximum of 100 words to reply to: " + query;
+            const response = await apiService.post('/llm/query', { "query": edited_query });
             if (response.status !== 200) {
                 throw new Error(`Llm Query with query ${query} got error: ${response.data}`);
             }
