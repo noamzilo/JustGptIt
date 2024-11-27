@@ -78,3 +78,8 @@ database
 python manage.py dbshell
 SELECT current_database(); (show database name to see if local or remote)
 \dt (list all tables)
+
+
+reverse proxy:
+http://localhost:8787/r/VDG7D39B
+http://personal-website-backend-839353010571.us-central1.run.app/llm/redirect/VDG7D39B
