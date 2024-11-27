@@ -14,37 +14,19 @@ const MainContent = () => {
   const [llmResponse, setLlmResponse] = useState('');
   const [clearInputTrigger, setClearInputTrigger] = useState(false);
   const [shortUrl, setShortUrl] = useState(''); // New state for the shortened URL
-  const [isPageLoaded, setIsPageLoaded] = useState(false); // New state to track page load
 
   const queryLlm = useLlmQuery(setLlmResponse);
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryFromUrl = searchParams.get('query') || '';
 
-  // New useEffect to track page load state
   useEffect(() => {
-    const handleLoad = () => {
-      setIsPageLoaded(true);
-    };
-
-    if (document.readyState === 'complete') {
-      setIsPageLoaded(true);
-    } else {
-      window.addEventListener('load', handleLoad);
-      return () => {
-        window.removeEventListener('load', handleLoad);
-      };
-    }
-  }, []);
-
-  // Modified useEffect to wait for page load before triggering the query
-  useEffect(() => {
-    if (isPageLoaded && !location.pathname.startsWith('/r/')) {
+	if (!location.pathname.startsWith('/r/')) {
       console.log(`MainContent: Query from URL: ${queryFromUrl}`);
       queryLlm(queryFromUrl);
       setLlmQuery(queryFromUrl);
     }
-  }, [isPageLoaded, location.pathname, queryFromUrl, queryLlm]);
+  }, [location.pathname, queryFromUrl, queryLlm]);
 
   const onQueryChange = useCallback((query) => {
     console.log(`MainContent: Query changed to: ${query}`);
@@ -88,7 +70,7 @@ const MainContent = () => {
     const generateShortUrl = async () => {
       const query = searchParams.get('query');
       if (query) {
-        const fullUrl = window.location.href;
+		const fullUrl = window.location.href;
         try {
           const shortenedUrl = await UrlShorteningService.shorten_url(fullUrl);
           setShortUrl(shortenedUrl);
