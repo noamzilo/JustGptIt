@@ -20,7 +20,8 @@ function InitialChat({
     top: window.innerHeight / 2,
     left: window.innerWidth / 2,
   });
-
+  // Add state to track if the page has loaded
+  const [isPageLoaded, setIsPageLoaded] = useState(document.readyState === 'complete');
   const decodedQuery = initialQuery || '';
 
   // Call useMouseAnimation before using startMouseAnimation in useEffect
@@ -41,8 +42,7 @@ function InitialChat({
     }
   }, [textareaElement]);
 
-  // Add state to track if the page has loaded
-  const [isPageLoaded, setIsPageLoaded] = useState(document.readyState === 'complete');
+
 
   // Effect to update isPageLoaded when the page has fully loaded
   useEffect(() => {
@@ -122,7 +122,6 @@ function InitialChat({
         alt="Animated Mouse Cursor"
         initial={{ top: 0, left: 0 }}
         animate={controls}
-        transition={{ duration: 1.5, ease: 'easeOut' }}
         style={{
           position: 'fixed',
           width: '20px',
