@@ -41,12 +41,29 @@ function InitialChat({
     }
   }, [textareaElement]);
 
+  // Add state to track if the page has loaded
+  const [isPageLoaded, setIsPageLoaded] = useState(document.readyState === 'complete');
+
+  // Effect to update isPageLoaded when the page has fully loaded
+  useEffect(() => {
+    if (!isPageLoaded) {
+      const handleLoad = () => setIsPageLoaded(true);
+      window.addEventListener('load', handleLoad);
+      return () => {
+        window.removeEventListener('load', handleLoad);
+      };
+    }
+  }, [isPageLoaded]);
+
   useEffect(() => {
     if (decodedQuery.trim()) {
       onQueryChange(decodedQuery);
+    }
+
+    if (isPageLoaded && decodedQuery.trim()) {
       startMouseAnimation();
     }
-  }, [decodedQuery, onQueryChange, startMouseAnimation]);
+  }, [decodedQuery, onQueryChange, startMouseAnimation, isPageLoaded]);
 
   // Correctly initialize isAnimatingTyping with useState
   const [isAnimatingTyping, setIsAnimatingTyping] = useState(false);
