@@ -41,7 +41,7 @@ async function handleRequest(request) {
 
 			return Response.redirect(resolvedUrl, 302);
 		} catch (error) {
-			console.error(`Error resolving /r/{somehash}: ${error.message}`);
+			console.error(`Error resolving /r/${hash}: ${error.message}`);
 			return new Response(`Error resolving the redirect: ${error.message}`, {
 				status: 502,
 				headers: { 'Content-Type': 'text/plain' },

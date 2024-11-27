@@ -32,7 +32,8 @@ def shorten_url(request):
 	full_short_url = f'{base_url}{url_hash}'
 	response = {
 		'long_url': long_url,
-		'short_url': full_short_url
+		'short_url': full_short_url,
+		'hash': url_hash
 	}
 	return JsonResponse(response)
 

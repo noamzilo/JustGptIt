@@ -15,7 +15,8 @@ const UrlShorteningService = {
 			if (response.status !== 200) {
 				throw new Error(`URL Shortening failed: ${response.data}`);
 			}
-			const short_url = response.data.short_url;
+			const url_hash = response.data.url_hash;
+			const short_url = window.location.hostname + '/r/' + url_hash;
 			console.log(`UrlShorteningService: received short URL ${short_url}`);
 			return short_url;
 		} catch (error) {
