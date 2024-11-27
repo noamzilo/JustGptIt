@@ -12,29 +12,37 @@ function useMouseAnimation(emitter, targetPositionTop, targetPositionLeft) {
 		setIsMouseAnimating(true);
 		console.log('Mouse move effect started');
 
-		// Initialize position and make it invisible
-		await controls.set({ top: 0, left: 0, opacity: 0 });
+		try {
+			// Initialize position and make it invisible
+			controls.set({ top: 0, left: 0, opacity: 0 });
 
-		// Make the element visible instantly
-		await controls.set({ opacity: 1 });
+			// Make the element visible instantly
+			controls.set({ opacity: 1 });
 
-		// Animate to target position
-		await controls.start(
-			{
-				top: targetPositionTop,
-				left: targetPositionLeft,
-			},
-			{ duration: 1.5, ease: 'easeOut' }
-		);
+			// Animate to target position
+			const duration_sec = 1.5;
+			controls.start(
+				{
+					top: targetPositionTop,
+					left: targetPositionLeft,
+				},
+				{ duration: duration_sec, ease: 'easeOut' }
+			);
 
-		// Wait for 100ms before making it disappear
-		timeoutRef.current = setTimeout(async () => {
+			const static_wait_sec = 0.1;
+			// Wait for 100ms after the animation finishes
+			await new Promise(resolve => {
+				timeoutRef.current = setTimeout(resolve, 1000 * (duration_sec + static_wait_sec));
+			});
+
 			// Immediately hide the element without animation
-			await controls.set({ opacity: 0 });
+			controls.set({ opacity: 0 });
 
-			setIsMouseAnimating(false);
+			// Notify the emitter and update state
 			emitter.emit('mouseAnimationDone');
-		}, 150);
+		} finally {
+			setIsMouseAnimating(false);
+		}
 	}, [controls, emitter, targetPositionTop, targetPositionLeft]);
 
 	// Cleanup the timeout if the component unmounts before timeout completes
