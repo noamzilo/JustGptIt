@@ -117,6 +117,7 @@ function InitialChat({
   return (
     <div className={styles.inputContainer}>
       <h2 className={styles.querySectionText}>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT}</h2>
+      <h3 className={styles.querySectionText_2}>{GPT_PAGE_CONSTANTS.QUERY_SECTION_TEXT_2}</h3>
       <motion.img
         src={mouse_cursor}
         alt="Animated Mouse Cursor"

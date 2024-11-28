@@ -5,9 +5,10 @@ export const GPT_PAGE_CONSTANTS = {
     // The title of the GPT page
     TITLE: "",//"Let Me Ask For You",
     // The text to display in the disclaimer
-    DISCLAIMER: "ChatGPT can make mistakes. Check important info.",
+    DISCLAIMER: "ChatGPT can make mistakes. Check important info.\r\nThis is a parodic website and is not affiliated with OpenAI.",
     // The text to display in the query section
     QUERY_SECTION_TEXT: "Just GPT It",
+    QUERY_SECTION_TEXT_2: "Show others how to use ChatGPT",
     // The text to display in the user icon
     USER_ICON_TEXT: "N",
 
