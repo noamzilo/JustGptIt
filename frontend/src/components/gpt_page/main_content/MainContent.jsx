@@ -65,6 +65,11 @@ const MainContent = () => {
     setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT); // Reset the short URL
   }, [searchParams, setSearchParams]);
 
+  const onOpenGptClicked = useCallback(() => {
+	console.log(`MainContent: User clicked ${GPT_PAGE_CONSTANTS.OPEN_GPT_BUTTON_TEXT}`);
+	window.open('https://www.openai.com/chatgpt', '_blank');
+  }, []);
+
   // Generate short URL whenever the query changes
   useEffect(() => {
     const generateShortUrl = async () => {
@@ -89,9 +94,14 @@ const MainContent = () => {
   return (
     <main className={styles.mainContent}>
       <header className={styles.header}>
-        <button className={styles.backButton} onClick={onNewQuestionClicked}>
-          {GPT_PAGE_CONSTANTS.BACK_BUTTON_TEXT}
-        </button>
+		<div className={styles.headerButtonsContainer}>
+			<button className={styles.backButton} onClick={onNewQuestionClicked}>
+				{GPT_PAGE_CONSTANTS.BACK_BUTTON_TEXT}
+			</button>
+			<button className={styles.openGptButton} onClick={onOpenGptClicked}>
+				{GPT_PAGE_CONSTANTS.OPEN_GPT_BUTTON_TEXT}
+			</button>
+		</div>
         <h1>{GPT_PAGE_CONSTANTS.TITLE}</h1>
         {/* <div className={styles.userIcon}>{GPT_PAGE_CONSTANTS.USER_ICON_TEXT}</div> */}
       </header>

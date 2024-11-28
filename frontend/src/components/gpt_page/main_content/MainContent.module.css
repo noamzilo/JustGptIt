@@ -22,13 +22,20 @@
 	margin: 0;
 }
 
-.backButton {
+.headerButtonsContainer {
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+}
+
+
+.headerButtonsContainer button {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	color: #222222;
 	font-size: 10px;
-	margin: 0;
+	margin-right: 10px;
 	background: #C1C1C1;
 	padding: 5px;
 	border-radius: 10px;
