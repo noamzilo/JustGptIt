@@ -9,17 +9,20 @@ import ShareButtons from '../../share_tile/ShareTile';
 import UrlShorteningService from '../../../services/UrlShorteningService';
 
 const MainContent = () => {
+	// State variables
 	const [isInitialChatDoneAnimating, setIsInitialChatDoneAnimating] = useState(false);
 	const [llmQuery, setLlmQuery] = useState('');
 	const [llmResponse, setLlmResponse] = useState('');
 	const [clearInputTrigger, setClearInputTrigger] = useState(false);
 	const [shortUrl, setShortUrl] = useState(''); // New state for the shortened URL
 
+	// Hooks and variables
 	const queryLlm = useLlmQuery(setLlmResponse);
 	const location = useLocation();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryFromUrl = searchParams.get('query') || '';
 
+	// Effects
 	useEffect(() => {
 		if (!location.pathname.startsWith('/r/')) {
 			console.log(`MainContent: Query from URL: ${queryFromUrl}`);
@@ -28,6 +31,7 @@ const MainContent = () => {
 		}
 	}, [location.pathname, queryFromUrl, queryLlm]);
 
+	// Callbacks
 	const onQueryChange = useCallback((query) => {
 		console.log(`MainContent: Query changed to: ${query}`);
 		setLlmQuery(query);
@@ -48,7 +52,6 @@ const MainContent = () => {
 			console.log(`MainContent: User sent message: ${message}`);
 			setLlmQuery(message);
 			queryLlm(message);
-
 			searchParams.set('query', message);
 			setSearchParams(searchParams);
 		},
@@ -126,11 +129,7 @@ const MainContent = () => {
 						response={llmResponse}
 						setResponse={setLlmResponse}
 						onSendMessage={handleSendMessage}
-						onBackClicked={() => {
-							setSearchParams('');
-							setIsInitialChatDoneAnimating(false);
-							setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT); // Reset the short URL
-						}}
+						onBackClicked={onNewQuestionClicked}
 					/>
 				)}
 			</section>
