@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import styles from './MainContent.module.css';
-import InitialChat from './chat/InitialChat';
+import CreatorChat from './chat/CreatorChat';
+import AnimationChat from './chat/AnimationChat';
 import { GPT_PAGE_CONSTANTS } from '../constants';
 import ResponseChat from './chat/ResponseChat';
 import useLlmQuery from './chat/hooks/useLlmQuery';
@@ -10,11 +11,11 @@ import UrlShorteningService from '../../../services/UrlShorteningService';
 
 const MainContent = () => {
 	// State variables
-	const [isInitialChatDoneAnimating, setIsInitialChatDoneAnimating] = useState(false);
+	const [isAnimationChatDoneAnimating, setIsAnimationChatDoneAnimating] = useState(false);
 	const [llmQuery, setLlmQuery] = useState('');
 	const [llmResponse, setLlmResponse] = useState('');
 	const [clearInputTrigger, setClearInputTrigger] = useState(false);
-	const [shortUrl, setShortUrl] = useState(''); // New state for the shortened URL
+	const [shortUrl, setShortUrl] = useState(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
 
 	// Hooks and variables
 	const queryLlm = useLlmQuery(setLlmResponse);
@@ -24,12 +25,11 @@ const MainContent = () => {
 
 	// Effects
 	useEffect(() => {
-		if (!location.pathname.startsWith('/r/')) {
+		if (queryFromUrl.trim()) {
 			console.log(`MainContent: Query from URL: ${queryFromUrl}`);
-			queryLlm(queryFromUrl);
 			setLlmQuery(queryFromUrl);
 		}
-	}, [location.pathname, queryFromUrl, queryLlm]);
+	}, [queryFromUrl]);
 
 	// Callbacks
 	const onQueryChange = useCallback((query) => {
@@ -41,11 +41,9 @@ const MainContent = () => {
 		console.log('MainContent: Typing animation done');
 		if (llmQuery.trim()) {
 			queryLlm(llmQuery);
-			searchParams.set('query', llmQuery);
-			setSearchParams(searchParams);
 		}
-		setIsInitialChatDoneAnimating(true);
-	}, [llmQuery, queryLlm, searchParams, setSearchParams]);
+		setIsAnimationChatDoneAnimating(true);
+	}, [llmQuery, queryLlm]);
 
 	const handleSendMessage = useCallback(
 		(message) => {
@@ -64,7 +62,7 @@ const MainContent = () => {
 		setLlmResponse('');
 		searchParams.delete('query');
 		setSearchParams(searchParams);
-		setIsInitialChatDoneAnimating(false);
+		setIsAnimationChatDoneAnimating(false);
 		setClearInputTrigger((prev) => !prev);
 		setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT); // Reset the short URL
 	}, [searchParams, setSearchParams]);
@@ -95,6 +93,41 @@ const MainContent = () => {
 		generateShortUrl();
 	}, [searchParams]);
 
+	// Decide which component to render based on whether query is present
+	let contentComponent;
+
+	if (queryFromUrl.trim()) {
+		// If query is present in URL, show AnimationChat or ResponseChat
+		contentComponent = !isAnimationChatDoneAnimating ? (
+			<AnimationChat
+				initialQuery={llmQuery}
+				onTypingAnimationDone={handleTypingAnimationDone}
+				onQueryChange={onQueryChange}
+				clearInputTrigger={clearInputTrigger} // Passed down as in your original code
+			/>
+		) : (
+			<ResponseChat
+				query={llmQuery}
+				response={llmResponse}
+				setResponse={setLlmResponse}
+				onSendMessage={handleSendMessage}
+				onBackClicked={onNewQuestionClicked}
+			/>
+		);
+	} else {
+		// No query in URL, show CreatorChat
+		contentComponent = (
+			<CreatorChat
+				onSubmit={(query) => {
+					setLlmQuery(query);
+					searchParams.set('query', query);
+					setSearchParams(searchParams);
+				}}
+				clearInputTrigger={clearInputTrigger} // Included as per your original code
+			/>
+		);
+	}
+
 	return (
 		<main className={styles.mainContent}>
 			<header className={styles.header}>
@@ -112,26 +145,10 @@ const MainContent = () => {
 
 			<section
 				className={
-					isInitialChatDoneAnimating ? styles.querySection : styles.centeredQuerySection
+					isAnimationChatDoneAnimating ? styles.querySection : styles.centeredQuerySection
 				}
 			>
-				{!isInitialChatDoneAnimating ? (
-					<InitialChat
-						initialQuery={llmQuery}
-						onTypingAnimationDone={handleTypingAnimationDone}
-						onLlmResponse={setLlmResponse}
-						onQueryChange={onQueryChange}
-						clearInputTrigger={clearInputTrigger}
-					/>
-				) : (
-					<ResponseChat
-						query={llmQuery}
-						response={llmResponse}
-						setResponse={setLlmResponse}
-						onSendMessage={handleSendMessage}
-						onBackClicked={onNewQuestionClicked}
-					/>
-				)}
+				{contentComponent}
 			</section>
 
 			<footer className={styles.footer}>
