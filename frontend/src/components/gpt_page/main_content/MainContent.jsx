@@ -4,7 +4,7 @@ import CreatorChat from './chat/CreatorChat';
 import AnimationChat from './chat/AnimationChat';
 import { GPT_PAGE_CONSTANTS } from '../constants';
 import ResponseChat from './chat/ResponseChat';
-import useLlmQuery from './chat/hooks/useLlmQuery';
+// Removed import of useLlmQuery
 import { useLocation, useSearchParams } from 'react-router-dom';
 import ShareButtons from '../../share_tile/ShareTile';
 import UrlShorteningService from '../../../services/UrlShorteningService';
@@ -24,7 +24,7 @@ const MainContent = () => {
 	const [isCountdownComplete, setIsCountdownComplete] = useState(false); // For tracking countdown completion
 
 	// Hooks and variables
-	const queryLlm = useLlmQuery(setLlmResponse);
+	// Removed useLlmQuery and queryLlm
 	const location = useLocation();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryFromUrl = searchParams.get('query') || '';
@@ -73,10 +73,17 @@ const MainContent = () => {
 		} else if (countdown === 0 && redirectUrl) {
 			setIsCountdownComplete(true); // Indicate that countdown is complete
 			// Attempt to open the URL in a new window
-			const newWindow = window.open(redirectUrl, '_blank');
+			let newWindow = window.open(redirectUrl, '_blank');
 			if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-				// Popup was blocked
-				setPopupBlocked(true); // Set state to show the prompt
+				// Popup was blocked, try opening in the same window
+				window.location.href = redirectUrl;
+				// Optionally, check if the redirect was successful
+				setTimeout(() => {
+					if (window.location.href !== redirectUrl && !document.hidden) {
+						// Redirect failed, show manual button
+						setPopupBlocked(true);
+					}
+				}, 1000);
 			}
 		}
 	}, [countdown, redirectUrl]);
