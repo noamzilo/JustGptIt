@@ -15,18 +15,18 @@ export const GPT_PAGE_CONSTANTS = {
 
 	CREATOR_STATIC_RESPONSE: "The share-link was copied to your clipboard! Redirecting to ChatGPT in <> ...",
 	CREATOR_STATIC_RESPONSE_NO_COUNTDOWN: "The share-link was copied to your clipboard!",
-	RECEIVER_STATIC_RESPONSE: "You see? This is how you ask questions! Redirecting to ChatGPT in <> ...",
+	RECEIVER_STATIC_RESPONSE: "That wasn't so hard, was it?\r\nRedirecting to ChatGPT in <> ...",
 
-	STATIC_RESPONSE_COUNTDOWN_START: 7,
+	STATIC_RESPONSE_COUNTDOWN_START: 10,
 
 	QUERY_PLACEHOLDER: "Show them how to ask, then share the link",
-	QUERY_PLACEHOLDER_CHAT: "That wasn't so hard, was it? Try one yourself!",
+	QUERY_PLACEHOLDER_CHAT: "Try one yourself!",
 	// QUERY_PLACEHOLDER: "Show them how to use the internet to ask questions",
 
 	// The text to display on the back button
 	BACK_BUTTON_TEXT: "New Question",
 	OPEN_GPT_BUTTON_TEXT: "Go to ChatGPT",
-	STOP_REDIRECTION_BUTTON_TEXT: "Stay on JustGPTIt.com",
+	STOP_REDIRECTION_BUTTON_TEXT: "Stay Here",
 
 	SHORT_URL_DEFAULT: "",
 
