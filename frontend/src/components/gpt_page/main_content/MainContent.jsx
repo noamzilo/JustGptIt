@@ -116,13 +116,14 @@ const MainContent = () => {
 		);
 	} else {
 		// No query in URL, show CreatorChat
+		function onCreatorChatSubmit(query){
+			setLlmQuery(query);
+			searchParams.set('query', query);
+			setSearchParams(searchParams);
+		}
 		contentComponent = (
 			<CreatorChat
-				onSubmit={(query) => {
-					setLlmQuery(query);
-					searchParams.set('query', query);
-					setSearchParams(searchParams);
-				}}
+				onSubmit={(query) => {onCreatorChatSubmit(query);}}
 				clearInputTrigger={clearInputTrigger} // Included as per your original code
 			/>
 		);
