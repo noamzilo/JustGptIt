@@ -12,6 +12,8 @@ export const GPT_PAGE_CONSTANTS = {
     // The text to display in the user icon
     USER_ICON_TEXT: "N",
 
+	CREATOR_STATIC_RESPONSE: "The share-link was copied to your clipboard! Redirecting to ChatGPT in <> ...",
+
     QUERY_PLACEHOLDER: "Show them how to ask, then share the link",
     QUERY_PLACEHOLDER_CHAT: "That wasn't so hard, was it? We don't support chat!",
     // QUERY_PLACEHOLDER: "Show them how to use the internet to ask questions",

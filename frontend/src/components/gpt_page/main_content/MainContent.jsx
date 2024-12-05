@@ -12,11 +12,11 @@ import UrlShorteningService from '../../../services/UrlShorteningService';
 const MainContent = () => {
 	// State variables
 	const [isAnimationChatDoneAnimating, setIsAnimationChatDoneAnimating] = useState(false);
+	const [isCreatorChatSubmitted, setIsCreatorChatSubmitted] = useState(false); // New state variable
 	const [llmQuery, setLlmQuery] = useState('');
 	const [llmResponse, setLlmResponse] = useState('');
 	const [clearInputTrigger, setClearInputTrigger] = useState(false);
 	const [shortUrl, setShortUrl] = useState(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
-	const [isShowCreatorChatResponse, setIsShowCreatorChatResponse] = useState(false); // Renamed variable
 
 	// Hooks and variables
 	const queryLlm = useLlmQuery(setLlmResponse);
@@ -66,8 +66,8 @@ const MainContent = () => {
 		let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
 		await generateShortUrl(fullUrl);
 		setLlmQuery(query); // Keep the same query
-		setLlmResponse("The share-link was copied to your clipboard!"); // Set the custom response
-		setIsShowCreatorChatResponse(true); // Show ResponseChat after submission
+		setLlmResponse(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE); // Set the custom response
+		setIsCreatorChatSubmitted(true); // Mark that CreatorChat has been submitted
 		// Do not update the URL's query parameter
 	}, [generateShortUrl]);
 
@@ -103,9 +103,9 @@ const MainContent = () => {
 		searchParams.delete('query');
 		setSearchParams(searchParams);
 		setIsAnimationChatDoneAnimating(false);
+		setIsCreatorChatSubmitted(false); // Reset the flag
 		setClearInputTrigger((prev) => !prev);
 		setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT); // Reset the short URL
-		setIsShowCreatorChatResponse(false); // Reset the flag
 	}, [searchParams, setSearchParams]);
 
 	const onOpenGptClicked = useCallback(() => {
@@ -116,25 +116,14 @@ const MainContent = () => {
 	// Decide which component to render based on the current state
 	let contentComponent;
 
-	if (isShowCreatorChatResponse) {
-		// Flow: CreatorChat --> ResponseChat with custom response
-		contentComponent = (
-			<ResponseChat
-				query={llmQuery}
-				response={llmResponse}
-				setResponse={setLlmResponse}
-				onSendMessage={handleSendMessage}
-				onBackClicked={onNewQuestionClicked}
-			/>
-		);
-	} else if (queryFromUrl.trim()) {
-		// Flow: AnimationChat --> ResponseChat
+	if (queryFromUrl.trim()) {
+		// Flow: AnimationChat -> ResponseChat with real response
 		contentComponent = !isAnimationChatDoneAnimating ? (
 			<AnimationChat
 				initialQuery={llmQuery}
 				onTypingAnimationDone={handleTypingAnimationDone}
 				onQueryChange={onQueryChange}
-				clearInputTrigger={clearInputTrigger} // Passed down as in your original code
+				clearInputTrigger={clearInputTrigger}
 			/>
 		) : (
 			<ResponseChat
@@ -146,13 +135,26 @@ const MainContent = () => {
 			/>
 		);
 	} else {
-		// Default flow: Show CreatorChat
-		contentComponent = (
-			<CreatorChat
-				onSubmit={onCreatorChatSubmit}
-				clearInputTrigger={clearInputTrigger} // Included as per your original code
-			/>
-		);
+		if (!isCreatorChatSubmitted) {
+			// Show CreatorChat
+			contentComponent = (
+				<CreatorChat
+					onSubmit={onCreatorChatSubmit}
+					clearInputTrigger={clearInputTrigger}
+				/>
+			);
+		} else {
+			// Flow: CreatorChat -> ResponseChat with static response
+			contentComponent = (
+				<ResponseChat
+					query={llmQuery}
+					response={llmResponse}
+					setResponse={setLlmResponse}
+					onSendMessage={handleSendMessage}
+					onBackClicked={onNewQuestionClicked}
+				/>
+			);
+		}
 	}
 
 	return (
