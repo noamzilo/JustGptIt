@@ -31,6 +31,43 @@ const MainContent = () => {
 		}
 	}, [queryFromUrl]);
 
+	// Function to generate short URL
+	const generateShortUrl = useCallback(async (url) => {
+		const query = new URL(url).searchParams.get('query');
+		if (query) {
+			try {
+				const shortenedUrl = await Promise.race([
+					UrlShorteningService.shorten_url(url),
+					new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
+				]);
+				setShortUrl(shortenedUrl);
+			} catch (error) {
+				console.error('Failed to generate short URL:', error);
+				setShortUrl(url);
+			}
+		} else {
+			setShortUrl(url);
+		}
+	}, []);
+
+	// Effect to copy short URL to clipboard when it changes
+	useEffect(() => {
+		if (shortUrl && shortUrl !== GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT) {
+			navigator.clipboard.writeText(shortUrl).then(() => {
+				alert("Link copied to clipboard!");
+			});
+		}
+	}, [shortUrl]);
+
+	// Function for CreatorChat submission
+	const onCreatorChatSubmit = useCallback(async (query) => {
+		let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
+		await generateShortUrl(fullUrl);
+		setLlmQuery(query);
+		searchParams.set('query', query);
+		setSearchParams(searchParams);
+	}, [generateShortUrl, searchParams, setSearchParams]);
+
 	// Callbacks
 	const onQueryChange = useCallback((query) => {
 		console.log(`MainContent: Query changed to: ${query}`);
@@ -72,27 +109,6 @@ const MainContent = () => {
 		window.open('https://www.openai.com/chatgpt', '_blank');
 	}, []);
 
-	// Generate short URL whenever the query changes
-	useEffect(() => {
-		const generateShortUrl = async () => {
-			const query = searchParams.get('query');
-			if (query) {
-				const fullUrl = window.location.href;
-				try {
-					const shortenedUrl = await UrlShorteningService.shorten_url(fullUrl);
-					setShortUrl(shortenedUrl);
-				} catch (error) {
-					console.error('Failed to generate short URL:', error);
-					setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
-				}
-			} else {
-				setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
-			}
-		};
-
-		generateShortUrl();
-	}, [searchParams]);
-
 	// Decide which component to render based on whether query is present
 	let contentComponent;
 
@@ -116,14 +132,9 @@ const MainContent = () => {
 		);
 	} else {
 		// No query in URL, show CreatorChat
-		function onCreatorChatSubmit(query){
-			setLlmQuery(query);
-			searchParams.set('query', query);
-			setSearchParams(searchParams);
-		}
 		contentComponent = (
 			<CreatorChat
-				onSubmit={(query) => {onCreatorChatSubmit(query);}}
+				onSubmit={onCreatorChatSubmit}
 				clearInputTrigger={clearInputTrigger} // Included as per your original code
 			/>
 		);
