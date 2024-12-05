@@ -17,6 +17,7 @@ const MainContent = () => {
 	const [llmResponse, setLlmResponse] = useState('');
 	const [clearInputTrigger, setClearInputTrigger] = useState(false);
 	const [shortUrl, setShortUrl] = useState(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
+	const [countdown, setCountdown] = useState(null); // New state variable for countdown
 
 	// Hooks and variables
 	const queryLlm = useLlmQuery(setLlmResponse);
@@ -61,13 +62,31 @@ const MainContent = () => {
 		}
 	}, [shortUrl]);
 
+	// Countdown effect
+	useEffect(() => {
+		if (countdown !== null && countdown > 0) {
+			const timer = setTimeout(() => {
+				setCountdown(countdown - 1);
+			}, 1000);
+			return () => clearTimeout(timer);
+		}
+	}, [countdown]);
+
+	// Update llmResponse when countdown changes
+	useEffect(() => {
+		if (countdown !== null) {
+			const newResponse = GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE.replace('<>', countdown);
+			setLlmResponse(newResponse);
+		}
+	}, [countdown]);
+
 	// Function for CreatorChat submission
 	const onCreatorChatSubmit = useCallback(async (query) => {
 		let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
 		await generateShortUrl(fullUrl);
 		setLlmQuery(query); // Keep the same query
-		setLlmResponse(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE); // Set the custom response
 		setIsCreatorChatSubmitted(true); // Mark that CreatorChat has been submitted
+		setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // Start the countdown
 		// Do not update the URL's query parameter
 	}, [generateShortUrl]);
 
@@ -106,6 +125,7 @@ const MainContent = () => {
 		setIsCreatorChatSubmitted(false); // Reset the flag
 		setClearInputTrigger((prev) => !prev);
 		setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT); // Reset the short URL
+		setCountdown(null); // Reset the countdown
 	}, [searchParams, setSearchParams]);
 
 	const onOpenGptClicked = useCallback(() => {
