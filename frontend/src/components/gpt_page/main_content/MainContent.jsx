@@ -16,7 +16,7 @@ const MainContent = () => {
 	const [llmResponse, setLlmResponse] = useState('');
 	const [clearInputTrigger, setClearInputTrigger] = useState(false);
 	const [shortUrl, setShortUrl] = useState(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
-	const [showResponseChat, setShowResponseChat] = useState(false); // New state variable
+	const [isShowCreatorChatResponse, setIsShowCreatorChatResponse] = useState(false); // Renamed variable
 
 	// Hooks and variables
 	const queryLlm = useLlmQuery(setLlmResponse);
@@ -65,8 +65,9 @@ const MainContent = () => {
 	const onCreatorChatSubmit = useCallback(async (query) => {
 		let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
 		await generateShortUrl(fullUrl);
-		setLlmQuery("The share-link was copied to your clipboard!");
-		setShowResponseChat(true); // Show ResponseChat after submission
+		setLlmQuery(query); // Keep the same query
+		setLlmResponse("The share-link was copied to your clipboard!"); // Set the custom response
+		setIsShowCreatorChatResponse(true); // Show ResponseChat after submission
 		// Do not update the URL's query parameter
 	}, [generateShortUrl]);
 
@@ -89,12 +90,10 @@ const MainContent = () => {
 			console.log(`MainContent: User sent message: ${message}`);
 			setLlmQuery(message);
 			queryLlm(message);
-			if (!showResponseChat) {
-				searchParams.set('query', message);
-				setSearchParams(searchParams);
-			}
+			searchParams.set('query', message);
+			setSearchParams(searchParams);
 		},
-		[queryLlm, searchParams, setSearchParams, showResponseChat]
+		[queryLlm, searchParams, setSearchParams]
 	);
 
 	const onNewQuestionClicked = useCallback(() => {
@@ -106,7 +105,7 @@ const MainContent = () => {
 		setIsAnimationChatDoneAnimating(false);
 		setClearInputTrigger((prev) => !prev);
 		setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT); // Reset the short URL
-		setShowResponseChat(false); // Reset showResponseChat
+		setIsShowCreatorChatResponse(false); // Reset the flag
 	}, [searchParams, setSearchParams]);
 
 	const onOpenGptClicked = useCallback(() => {
@@ -117,8 +116,8 @@ const MainContent = () => {
 	// Decide which component to render based on the current state
 	let contentComponent;
 
-	if (showResponseChat) {
-		// Show ResponseChat with the custom message
+	if (isShowCreatorChatResponse) {
+		// Flow: CreatorChat --> ResponseChat with custom response
 		contentComponent = (
 			<ResponseChat
 				query={llmQuery}
@@ -129,7 +128,7 @@ const MainContent = () => {
 			/>
 		);
 	} else if (queryFromUrl.trim()) {
-		// If query is present in URL, show AnimationChat or ResponseChat
+		// Flow: AnimationChat --> ResponseChat
 		contentComponent = !isAnimationChatDoneAnimating ? (
 			<AnimationChat
 				initialQuery={llmQuery}
@@ -147,7 +146,7 @@ const MainContent = () => {
 			/>
 		);
 	} else {
-		// No query in URL and not showing ResponseChat, show CreatorChat
+		// Default flow: Show CreatorChat
 		contentComponent = (
 			<CreatorChat
 				onSubmit={onCreatorChatSubmit}
