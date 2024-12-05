@@ -18,7 +18,7 @@ export const GPT_PAGE_CONSTANTS = {
 	STATIC_RESPONSE_COUNTDOWN_START: 5,
 
     QUERY_PLACEHOLDER: "Show them how to ask, then share the link",
-    QUERY_PLACEHOLDER_CHAT: "That wasn't so hard, was it? We don't support chat!",
+    QUERY_PLACEHOLDER_CHAT: "That wasn't so hard, was it? Try one yourself!",
     // QUERY_PLACEHOLDER: "Show them how to use the internet to ask questions",
 
     // The text to display on the back button
@@ -29,6 +29,6 @@ export const GPT_PAGE_CONSTANTS = {
 
 	POPUP_BLOCKED_MESSAGE: "",
 	POPUP_BLOCKED_BUTTON_TEXT: "Click here if you are not redirected automatically",
-	
+
 	GOOGLE_ANALYTICS_MEASURMENT_ID: "G-2H5M5DPLEE",
 };

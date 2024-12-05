@@ -106,7 +106,26 @@ const MainContent = () => {
 		[generateShortUrl]
 	);
 
-	// Callbacks
+	// Updated handleSendMessage function
+	const handleSendMessage = useCallback(
+		async (message) => {
+			console.log(`MainContent: User sent message: ${message}`);
+			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(message)}`;
+			await generateShortUrl(fullUrl);
+			setLlmQuery(message);
+			setLlmResponse('');
+			setIsAnimationChatDoneAnimating(true);
+			setIsCreatorChatSubmitted(true);
+			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 5
+			setResponseTemplate(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE); // Use the correct template
+			// Set the redirect URL to open ChatGPT
+			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(message)}&hints=search`;
+			setRedirectUrl(redirect);
+			// Do not update the URL's query parameter
+		},
+		[generateShortUrl]
+	);
+
 	const onQueryChange = useCallback((query) => {
 		console.log(`MainContent: Query changed to: ${query}`);
 		setLlmQuery(query);
@@ -123,17 +142,6 @@ const MainContent = () => {
 			setRedirectUrl(redirect);
 		}
 	}, [llmQuery]);
-
-	const handleSendMessage = useCallback(
-		(message) => {
-			console.log(`MainContent: User sent message: ${message}`);
-			setLlmQuery(message);
-			queryLlm(message);
-			searchParams.set('query', message);
-			setSearchParams(searchParams);
-		},
-		[queryLlm, searchParams, setSearchParams]
-	);
 
 	const onNewQuestionClicked = useCallback(() => {
 		console.log(`MainContent: User clicked ${GPT_PAGE_CONSTANTS.NEW_QUESTION_BUTTON_TEXT}`);
