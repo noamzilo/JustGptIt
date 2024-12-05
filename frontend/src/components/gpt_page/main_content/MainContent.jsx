@@ -101,8 +101,8 @@ const MainContent = () => {
 		(query) => {
 			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
 			generateShortUrl(fullUrl); // Call without awaiting
-			// wait for 0.5 sec, just to be a little safer
-			setTimeout(() => {}, 500);
+			// wait a bit, just to be a little safer
+			setTimeout(() => {}, 1200);
 			setLlmQuery(query);
 			setIsCreatorChatSubmitted(true);
 			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 5
