@@ -13,6 +13,8 @@ function ResponseChat({
 	isCountdownComplete,
 	popupBlocked,
 	onProceedClick,
+	onStayClicked,
+	countdown, // Receive countdown to control button visibility
 }) {
 	const handleSend = useCallback(
 		(inputValue) => {
@@ -27,6 +29,14 @@ function ResponseChat({
 			<div className={styles.messagesContainer}>
 				<ChatMessage message={query} isUser={true} />
 				<ChatMessage message={response} isUser={false} />
+				{/* Conditionally render the "Stay on justGptIt" button during countdown */}
+				{countdown > 0 && (
+					<div className={styles.stayButtonContainer}>
+						<button className={styles.stayButton} onClick={onStayClicked}>
+							{GPT_PAGE_CONSTANTS.STOP_REDIRECTION_BUTTON_TEXT}
+						</button>
+					</div>
+				)}
 				{/* Conditionally render the button when popup is blocked */}
 				{isCountdownComplete && popupBlocked && (
 					<div className={styles.popupBlockedContainer}>

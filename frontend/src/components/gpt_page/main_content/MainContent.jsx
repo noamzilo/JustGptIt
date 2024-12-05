@@ -4,7 +4,6 @@ import CreatorChat from './chat/CreatorChat';
 import AnimationChat from './chat/AnimationChat';
 import { GPT_PAGE_CONSTANTS } from '../constants';
 import ResponseChat from './chat/ResponseChat';
-// Removed import of useLlmQuery
 import { useSearchParams } from 'react-router-dom';
 import ShareButtons from '../../share_tile/ShareTile';
 import UrlShorteningService from '../../../services/UrlShorteningService';
@@ -22,6 +21,7 @@ const MainContent = () => {
 	const [responseTemplate, setResponseTemplate] = useState(null); // New state variable
 	const [popupBlocked, setPopupBlocked] = useState(false); // For detecting blocked popups
 	const [isCountdownComplete, setIsCountdownComplete] = useState(false); // For tracking countdown completion
+	const [stayOnJustGptIt, setStayOnJustGptIt] = useState(false); // New state variable to handle staying
 
 	// Hooks and variables
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -63,6 +63,12 @@ const MainContent = () => {
 
 	// Countdown effect with popup handling
 	useEffect(() => {
+		if (stayOnJustGptIt) {
+			// User chose to stay; stop countdown and redirection
+			setCountdown(null);
+			return;
+		}
+
 		if (countdown !== null && countdown > 0) {
 			const timer = setTimeout(() => {
 				setCountdown(countdown - 1);
@@ -84,7 +90,7 @@ const MainContent = () => {
 				}, 1000);
 			}
 		}
-	}, [countdown, redirectUrl]);
+	}, [countdown, redirectUrl, stayOnJustGptIt]);
 
 	// Update llmResponse when countdown changes
 	useEffect(() => {
@@ -96,11 +102,9 @@ const MainContent = () => {
 
 	// Function for CreatorChat submission
 	const onCreatorChatSubmit = useCallback(
-		async (query) => {
+		(query) => {
 			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
-			await generateShortUrl(fullUrl); // Call without awaiting
-			// wait a bit, just to be a little safer
-			// setTimeout(() => {}, 1200);
+			generateShortUrl(fullUrl); // Call without awaiting
 			setLlmQuery(query);
 			setIsCreatorChatSubmitted(true);
 			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 5
@@ -108,17 +112,18 @@ const MainContent = () => {
 			// Set the redirect URL to open ChatGPT
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(query)}&hints=search`;
 			setRedirectUrl(redirect);
-			// Do not update the URL's query parameter
+			// Reset stayOnJustGptIt in case it was previously set
+			setStayOnJustGptIt(false);
 		},
 		[generateShortUrl]
 	);
 
 	// Updated handleSendMessage function
 	const handleSendMessage = useCallback(
-		async (message) => {
+		(message) => {
 			console.log(`MainContent: User sent message: ${message}`);
 			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(message)}`;
-			await generateShortUrl(fullUrl); // Call without awaiting
+			generateShortUrl(fullUrl); // Call without awaiting
 			setLlmQuery(message);
 			setLlmResponse('');
 			setIsAnimationChatDoneAnimating(true);
@@ -128,7 +133,8 @@ const MainContent = () => {
 			// Set the redirect URL to open ChatGPT
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(message)}&hints=search`;
 			setRedirectUrl(redirect);
-			// Do not update the URL's query parameter
+			// Reset stayOnJustGptIt in case it was previously set
+			setStayOnJustGptIt(false);
 		},
 		[generateShortUrl]
 	);
@@ -147,6 +153,8 @@ const MainContent = () => {
 			setResponseTemplate(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE); // Use the correct template
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(llmQuery)}&hints=search`;
 			setRedirectUrl(redirect);
+			// Reset stayOnJustGptIt in case it was previously set
+			setStayOnJustGptIt(false);
 		}
 	}, [llmQuery]);
 
@@ -165,6 +173,7 @@ const MainContent = () => {
 		setResponseTemplate(null); // Reset the template
 		setPopupBlocked(false); // Reset popupBlocked state
 		setIsCountdownComplete(false); // Reset countdownComplete state
+		setStayOnJustGptIt(false); // Reset stayOnJustGptIt state
 	}, [searchParams, setSearchParams]);
 
 	// Updated onOpenGptClicked function
@@ -183,6 +192,12 @@ const MainContent = () => {
 	const handleProceedClick = useCallback(() => {
 		window.open(redirectUrl, '_blank');
 	}, [redirectUrl]);
+
+	// Handler for "Stay on justGptIt" button click
+	const handleStayOnJustGptIt = useCallback(() => {
+		setStayOnJustGptIt(true);
+		setCountdown(null); // Stop the countdown
+	}, []);
 
 	// Decide which component to render based on the current state
 	let contentComponent;
@@ -206,6 +221,8 @@ const MainContent = () => {
 				isCountdownComplete={isCountdownComplete}
 				popupBlocked={popupBlocked}
 				onProceedClick={handleProceedClick}
+				onStayClicked={handleStayOnJustGptIt} // Pass the handler
+				countdown={countdown} // Pass countdown to control button visibility
 			/>
 		);
 	} else {
@@ -226,6 +243,8 @@ const MainContent = () => {
 					isCountdownComplete={isCountdownComplete}
 					popupBlocked={popupBlocked}
 					onProceedClick={handleProceedClick}
+					onStayClicked={handleStayOnJustGptIt} // Pass the handler
+					countdown={countdown} // Pass countdown to control button visibility
 				/>
 			);
 		}
@@ -243,7 +262,6 @@ const MainContent = () => {
 					</button>
 				</div>
 				<h1>{GPT_PAGE_CONSTANTS.TITLE}</h1>
-				{/* <div className={styles.userIcon}>{GPT_PAGE_CONSTANTS.USER_ICON_TEXT}</div> */}
 			</header>
 
 			<section
