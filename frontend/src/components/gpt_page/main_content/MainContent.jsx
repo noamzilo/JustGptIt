@@ -96,11 +96,11 @@ const MainContent = () => {
 
 	// Function for CreatorChat submission
 	const onCreatorChatSubmit = useCallback(
-		(query) => {
+		async (query) => {
 			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
-			generateShortUrl(fullUrl); // Call without awaiting
+			await generateShortUrl(fullUrl); // Call without awaiting
 			// wait a bit, just to be a little safer
-			setTimeout(() => {}, 1200);
+			// setTimeout(() => {}, 1200);
 			setLlmQuery(query);
 			setIsCreatorChatSubmitted(true);
 			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 5
@@ -115,10 +115,10 @@ const MainContent = () => {
 
 	// Updated handleSendMessage function
 	const handleSendMessage = useCallback(
-		(message) => {
+		async (message) => {
 			console.log(`MainContent: User sent message: ${message}`);
 			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(message)}`;
-			generateShortUrl(fullUrl); // Call without awaiting
+			await generateShortUrl(fullUrl); // Call without awaiting
 			setLlmQuery(message);
 			setLlmResponse('');
 			setIsAnimationChatDoneAnimating(true);
