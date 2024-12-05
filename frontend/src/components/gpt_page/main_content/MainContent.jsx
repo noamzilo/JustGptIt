@@ -20,6 +20,8 @@ const MainContent = () => {
 	const [countdown, setCountdown] = useState(null);
 	const [redirectUrl, setRedirectUrl] = useState(null);
 	const [responseTemplate, setResponseTemplate] = useState(null); // New state variable
+	const [popupBlocked, setPopupBlocked] = useState(false); // For detecting blocked popups
+	const [isCountdownComplete, setIsCountdownComplete] = useState(false); // For tracking countdown completion
 
 	// Hooks and variables
 	const queryLlm = useLlmQuery(setLlmResponse);
@@ -57,14 +59,11 @@ const MainContent = () => {
 	// Effect to copy short URL to clipboard when it changes
 	useEffect(() => {
 		if (shortUrl && shortUrl !== GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT) {
-			navigator.clipboard.writeText(shortUrl)
-			// .then(() => {
-			// 	alert("Link copied to clipboard!");
-			// });
+			navigator.clipboard.writeText(shortUrl);
 		}
 	}, [shortUrl]);
 
-	// Countdown effect
+	// Countdown effect with popup handling
 	useEffect(() => {
 		if (countdown !== null && countdown > 0) {
 			const timer = setTimeout(() => {
@@ -72,8 +71,13 @@ const MainContent = () => {
 			}, 1000);
 			return () => clearTimeout(timer);
 		} else if (countdown === 0 && redirectUrl) {
-			// Open the URL in a new tab instead of redirecting
-			window.open(redirectUrl, '_blank');
+			setIsCountdownComplete(true); // Indicate that countdown is complete
+			// Attempt to open the URL in a new window
+			const newWindow = window.open(redirectUrl, '_blank');
+			if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+				// Popup was blocked
+				setPopupBlocked(true); // Set state to show the prompt
+			}
 		}
 	}, [countdown, redirectUrl]);
 
@@ -144,12 +148,26 @@ const MainContent = () => {
 		setCountdown(null);
 		setRedirectUrl(null);
 		setResponseTemplate(null); // Reset the template
+		setPopupBlocked(false); // Reset popupBlocked state
+		setIsCountdownComplete(false); // Reset countdownComplete state
 	}, [searchParams, setSearchParams]);
 
+	// Updated onOpenGptClicked function
 	const onOpenGptClicked = useCallback(() => {
 		console.log(`MainContent: User clicked ${GPT_PAGE_CONSTANTS.OPEN_GPT_BUTTON_TEXT}`);
-		window.open('https://www.openai.com/chatgpt', '_blank');
-	}, []);
+		let redirect;
+		if (llmQuery.trim()) {
+			redirect = `https://chatgpt.com/?q=${encodeURIComponent(llmQuery)}&hints=search`;
+		} else {
+			redirect = 'https://www.openai.com/chatgpt';
+		}
+		window.open(redirect, '_blank');
+	}, [llmQuery]);
+
+	// Handler for user-initiated click when popup is blocked
+	const handleProceedClick = useCallback(() => {
+		window.open(redirectUrl, '_blank');
+	}, [redirectUrl]);
 
 	// Decide which component to render based on the current state
 	let contentComponent;
@@ -170,6 +188,9 @@ const MainContent = () => {
 				setResponse={setLlmResponse}
 				onSendMessage={handleSendMessage}
 				onBackClicked={onNewQuestionClicked}
+				isCountdownComplete={isCountdownComplete}
+				popupBlocked={popupBlocked}
+				onProceedClick={handleProceedClick}
 			/>
 		);
 	} else {
@@ -187,6 +208,9 @@ const MainContent = () => {
 					setResponse={setLlmResponse}
 					onSendMessage={handleSendMessage}
 					onBackClicked={onNewQuestionClicked}
+					isCountdownComplete={isCountdownComplete}
+					popupBlocked={popupBlocked}
+					onProceedClick={handleProceedClick}
 				/>
 			);
 		}

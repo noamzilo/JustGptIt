@@ -4,7 +4,16 @@ import ChatMessage from './ChatMessage';
 import ChatInputPane from './ChatInputPane';
 import { GPT_PAGE_CONSTANTS } from '../../constants';
 
-function ResponseChat({ query, response, setResponse, onSendMessage, onBackClicked }) {
+function ResponseChat({
+	query,
+	response,
+	setResponse,
+	onSendMessage,
+	onBackClicked,
+	isCountdownComplete,
+	popupBlocked,
+	onProceedClick,
+}) {
 	const handleSend = useCallback(
 		(inputValue) => {
 			onSendMessage(inputValue);
@@ -18,6 +27,15 @@ function ResponseChat({ query, response, setResponse, onSendMessage, onBackClick
 			<div className={styles.messagesContainer}>
 				<ChatMessage message={query} isUser={true} />
 				<ChatMessage message={response} isUser={false} />
+				{/* Conditionally render the button when popup is blocked */}
+				{isCountdownComplete && popupBlocked && (
+					<div className={styles.popupBlockedMessage}>
+						<p>If you were not redirected automatically, please click the button below:</p>
+						<button className={styles.proceedButton} onClick={onProceedClick}>
+							Proceed to ChatGPT
+						</button>
+					</div>
+				)}
 			</div>
 			<ChatInputPane
 				onSubmit={handleSend}
