@@ -102,9 +102,9 @@ const MainContent = () => {
 
 	// Function for CreatorChat submission
 	const onCreatorChatSubmit = useCallback(
-		(query) => {
+		async (query) => {
 			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
-			generateShortUrl(fullUrl); // Call without awaiting
+			await generateShortUrl(fullUrl); 
 			setLlmQuery(query);
 			setIsCreatorChatSubmitted(true);
 			// Do not start countdown; set static response
@@ -120,10 +120,10 @@ const MainContent = () => {
 
 	// Updated handleSendMessage function
 	const handleSendMessage = useCallback(
-		(message) => {
+		async (message) => {
 			console.log(`MainContent: User sent message: ${message}`);
 			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(message)}`;
-			generateShortUrl(fullUrl); // Call without awaiting
+			await generateShortUrl(fullUrl);
 			setLlmQuery(message);
 			setLlmResponse('');
 			setIsAnimationChatDoneAnimating(true);
