@@ -12,12 +12,13 @@ import UrlShorteningService from '../../../services/UrlShorteningService';
 const MainContent = () => {
 	// State variables
 	const [isAnimationChatDoneAnimating, setIsAnimationChatDoneAnimating] = useState(false);
-	const [isCreatorChatSubmitted, setIsCreatorChatSubmitted] = useState(false); // New state variable
+	const [isCreatorChatSubmitted, setIsCreatorChatSubmitted] = useState(false);
 	const [llmQuery, setLlmQuery] = useState('');
 	const [llmResponse, setLlmResponse] = useState('');
 	const [clearInputTrigger, setClearInputTrigger] = useState(false);
 	const [shortUrl, setShortUrl] = useState(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
-	const [countdown, setCountdown] = useState(null); // New state variable for countdown
+	const [countdown, setCountdown] = useState(null);
+	const [redirectUrl, setRedirectUrl] = useState(null); // New state variable
 
 	// Hooks and variables
 	const queryLlm = useLlmQuery(setLlmResponse);
@@ -75,20 +76,34 @@ const MainContent = () => {
 	// Update llmResponse when countdown changes
 	useEffect(() => {
 		if (countdown !== null) {
-			const newResponse = GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE.replace('<>', countdown);
+			const responseTemplate = redirectUrl
+				? GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE
+				: GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE;
+			const newResponse = responseTemplate.replace('<>', countdown);
 			setLlmResponse(newResponse);
 		}
-	}, [countdown]);
+	}, [countdown, redirectUrl]);
+
+	// Redirect effect
+	useEffect(() => {
+		if (countdown === 0 && redirectUrl) {
+			window.location.href = redirectUrl;
+		}
+	}, [countdown, redirectUrl]);
 
 	// Function for CreatorChat submission
-	const onCreatorChatSubmit = useCallback(async (query) => {
-		let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
-		await generateShortUrl(fullUrl);
-		setLlmQuery(query); // Keep the same query
-		setIsCreatorChatSubmitted(true); // Mark that CreatorChat has been submitted
-		setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // Start the countdown
-		// Do not update the URL's query parameter
-	}, [generateShortUrl]);
+	const onCreatorChatSubmit = useCallback(
+		async (query) => {
+			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
+			await generateShortUrl(fullUrl);
+			setLlmQuery(query);
+			setIsCreatorChatSubmitted(true);
+			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 5
+			setRedirectUrl(null); // No redirection for creator flow
+			// Do not update the URL's query parameter
+		},
+		[generateShortUrl]
+	);
 
 	// Callbacks
 	const onQueryChange = useCallback((query) => {
@@ -99,10 +114,13 @@ const MainContent = () => {
 	const handleTypingAnimationDone = useCallback(() => {
 		console.log('MainContent: Typing animation done');
 		if (llmQuery.trim()) {
-			queryLlm(llmQuery);
+			// Instead of querying LLM, start the countdown and set the redirect URL
+			setIsAnimationChatDoneAnimating(true);
+			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 5
+			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(llmQuery)}&hints=search`;
+			setRedirectUrl(redirect);
 		}
-		setIsAnimationChatDoneAnimating(true);
-	}, [llmQuery, queryLlm]);
+	}, [llmQuery]);
 
 	const handleSendMessage = useCallback(
 		(message) => {
@@ -122,10 +140,11 @@ const MainContent = () => {
 		searchParams.delete('query');
 		setSearchParams(searchParams);
 		setIsAnimationChatDoneAnimating(false);
-		setIsCreatorChatSubmitted(false); // Reset the flag
+		setIsCreatorChatSubmitted(false);
 		setClearInputTrigger((prev) => !prev);
-		setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT); // Reset the short URL
-		setCountdown(null); // Reset the countdown
+		setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
+		setCountdown(null);
+		setRedirectUrl(null);
 	}, [searchParams, setSearchParams]);
 
 	const onOpenGptClicked = useCallback(() => {
@@ -137,7 +156,7 @@ const MainContent = () => {
 	let contentComponent;
 
 	if (queryFromUrl.trim()) {
-		// Flow: AnimationChat -> ResponseChat with real response
+		// Flow: AnimationChat -> ResponseChat with static RECEIVER response
 		contentComponent = !isAnimationChatDoneAnimating ? (
 			<AnimationChat
 				initialQuery={llmQuery}
@@ -158,13 +177,10 @@ const MainContent = () => {
 		if (!isCreatorChatSubmitted) {
 			// Show CreatorChat
 			contentComponent = (
-				<CreatorChat
-					onSubmit={onCreatorChatSubmit}
-					clearInputTrigger={clearInputTrigger}
-				/>
+				<CreatorChat onSubmit={onCreatorChatSubmit} clearInputTrigger={clearInputTrigger} />
 			);
 		} else {
-			// Flow: CreatorChat -> ResponseChat with static response
+			// Flow: CreatorChat -> ResponseChat with static CREATOR response
 			contentComponent = (
 				<ResponseChat
 					query={llmQuery}
