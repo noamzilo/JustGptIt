@@ -18,7 +18,8 @@ const MainContent = () => {
 	const [clearInputTrigger, setClearInputTrigger] = useState(false);
 	const [shortUrl, setShortUrl] = useState(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
 	const [countdown, setCountdown] = useState(null);
-	const [redirectUrl, setRedirectUrl] = useState(null); // New state variable
+	const [redirectUrl, setRedirectUrl] = useState(null);
+	const [responseTemplate, setResponseTemplate] = useState(null); // New state variable
 
 	// Hooks and variables
 	const queryLlm = useLlmQuery(setLlmResponse);
@@ -70,26 +71,19 @@ const MainContent = () => {
 				setCountdown(countdown - 1);
 			}, 1000);
 			return () => clearTimeout(timer);
+		} else if (countdown === 0 && redirectUrl) {
+			// Open the URL in a new tab instead of redirecting
+			window.open(redirectUrl, '_blank');
 		}
-	}, [countdown]);
+	}, [countdown, redirectUrl]);
 
 	// Update llmResponse when countdown changes
 	useEffect(() => {
-		if (countdown !== null) {
-			const responseTemplate = redirectUrl
-				? GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE
-				: GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE;
+		if (countdown !== null && responseTemplate) {
 			const newResponse = responseTemplate.replace('<>', countdown);
 			setLlmResponse(newResponse);
 		}
-	}, [countdown, redirectUrl]);
-
-	// Redirect effect
-	useEffect(() => {
-		if (countdown === 0 && redirectUrl) {
-			window.location.href = redirectUrl;
-		}
-	}, [countdown, redirectUrl]);
+	}, [countdown, responseTemplate]);
 
 	// Function for CreatorChat submission
 	const onCreatorChatSubmit = useCallback(
@@ -99,7 +93,10 @@ const MainContent = () => {
 			setLlmQuery(query);
 			setIsCreatorChatSubmitted(true);
 			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 5
-			setRedirectUrl(null); // No redirection for creator flow
+			setResponseTemplate(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE); // Use the correct template
+			// Set the redirect URL to open ChatGPT
+			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(query)}&hints=search`;
+			setRedirectUrl(redirect);
 			// Do not update the URL's query parameter
 		},
 		[generateShortUrl]
@@ -114,9 +111,10 @@ const MainContent = () => {
 	const handleTypingAnimationDone = useCallback(() => {
 		console.log('MainContent: Typing animation done');
 		if (llmQuery.trim()) {
-			// Instead of querying LLM, start the countdown and set the redirect URL
+			// Start the countdown and set the redirect URL
 			setIsAnimationChatDoneAnimating(true);
 			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 5
+			setResponseTemplate(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE); // Use the correct template
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(llmQuery)}&hints=search`;
 			setRedirectUrl(redirect);
 		}
@@ -145,6 +143,7 @@ const MainContent = () => {
 		setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
 		setCountdown(null);
 		setRedirectUrl(null);
+		setResponseTemplate(null); // Reset the template
 	}, [searchParams, setSearchParams]);
 
 	const onOpenGptClicked = useCallback(() => {
@@ -156,7 +155,7 @@ const MainContent = () => {
 	let contentComponent;
 
 	if (queryFromUrl.trim()) {
-		// Flow: AnimationChat -> ResponseChat with static RECEIVER response
+		// Flow: AnimationChat -> ResponseChat with static response
 		contentComponent = !isAnimationChatDoneAnimating ? (
 			<AnimationChat
 				initialQuery={llmQuery}
@@ -180,7 +179,7 @@ const MainContent = () => {
 				<CreatorChat onSubmit={onCreatorChatSubmit} clearInputTrigger={clearInputTrigger} />
 			);
 		} else {
-			// Flow: CreatorChat -> ResponseChat with static CREATOR response
+			// Flow: CreatorChat -> ResponseChat with static response
 			contentComponent = (
 				<ResponseChat
 					query={llmQuery}
