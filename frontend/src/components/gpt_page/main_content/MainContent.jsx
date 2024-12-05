@@ -5,7 +5,7 @@ import AnimationChat from './chat/AnimationChat';
 import { GPT_PAGE_CONSTANTS } from '../constants';
 import ResponseChat from './chat/ResponseChat';
 // Removed import of useLlmQuery
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import ShareButtons from '../../share_tile/ShareTile';
 import UrlShorteningService from '../../../services/UrlShorteningService';
 
@@ -24,8 +24,6 @@ const MainContent = () => {
 	const [isCountdownComplete, setIsCountdownComplete] = useState(false); // For tracking countdown completion
 
 	// Hooks and variables
-	// Removed useLlmQuery and queryLlm
-	const location = useLocation();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryFromUrl = searchParams.get('query') || '';
 
