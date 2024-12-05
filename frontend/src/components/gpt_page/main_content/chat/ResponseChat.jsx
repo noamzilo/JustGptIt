@@ -29,10 +29,10 @@ function ResponseChat({
 				<ChatMessage message={response} isUser={false} />
 				{/* Conditionally render the button when popup is blocked */}
 				{isCountdownComplete && popupBlocked && (
-					<div className={styles.popupBlockedMessage}>
-						<p>If you were not redirected automatically, please click the button below:</p>
-						<button className={styles.proceedButton} onClick={onProceedClick}>
-							Proceed to ChatGPT
+					<div className={styles.popupBlockedContainer}>
+						<p>{GPT_PAGE_CONSTANTS.POPUP_BLOCKED_MESSAGE}</p>
+						<button className={styles.popupBlockedButton} onClick={onProceedClick}>
+							{GPT_PAGE_CONSTANTS.POPUP_BLOCKED_BUTTON_TEXT}
 						</button>
 					</div>
 				)}

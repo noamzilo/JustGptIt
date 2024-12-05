@@ -27,5 +27,8 @@ export const GPT_PAGE_CONSTANTS = {
 
 	SHORT_URL_DEFAULT: "",
 
+	POPUP_BLOCKED_MESSAGE: "",
+	POPUP_BLOCKED_BUTTON_TEXT: "Click here if you are not redirected automatically",
+	
 	GOOGLE_ANALYTICS_MEASURMENT_ID: "G-2H5M5DPLEE",
 };
