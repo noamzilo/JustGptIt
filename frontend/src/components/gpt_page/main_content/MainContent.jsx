@@ -53,9 +53,10 @@ const MainContent = () => {
 	// Effect to copy short URL to clipboard when it changes
 	useEffect(() => {
 		if (shortUrl && shortUrl !== GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT) {
-			navigator.clipboard.writeText(shortUrl).then(() => {
-				alert("Link copied to clipboard!");
-			});
+			navigator.clipboard.writeText(shortUrl)
+			// .then(() => {
+			// 	alert("Link copied to clipboard!");
+			// });
 		}
 	}, [shortUrl]);
 
