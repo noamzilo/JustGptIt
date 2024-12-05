@@ -15,7 +15,8 @@
 }
 
 .popupBlockedContainer,
-.stayButtonContainer {
+.stayButtonContainer,
+.redirectButtonContainer {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -23,7 +24,8 @@
 }
 
 .popupBlockedButton,
-.stayButton {
+.stayButton,
+.redirectButton {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;

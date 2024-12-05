@@ -18,10 +18,10 @@ const MainContent = () => {
 	const [shortUrl, setShortUrl] = useState(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
 	const [countdown, setCountdown] = useState(null);
 	const [redirectUrl, setRedirectUrl] = useState(null);
-	const [responseTemplate, setResponseTemplate] = useState(null); // New state variable
-	const [popupBlocked, setPopupBlocked] = useState(false); // For detecting blocked popups
-	const [isCountdownComplete, setIsCountdownComplete] = useState(false); // For tracking countdown completion
-	const [stayOnJustGptIt, setStayOnJustGptIt] = useState(false); // New state variable to handle staying
+	const [responseTemplate, setResponseTemplate] = useState(null);
+	const [popupBlocked, setPopupBlocked] = useState(false);
+	const [isCountdownComplete, setIsCountdownComplete] = useState(false);
+	const [stayOnJustGptIt, setStayOnJustGptIt] = useState(false);
 
 	// Hooks and variables
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -42,7 +42,7 @@ const MainContent = () => {
 			try {
 				const shortenedUrl = await Promise.race([
 					UrlShorteningService.shorten_url(url),
-					new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
+					new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000)),
 				]);
 				setShortUrl(shortenedUrl);
 			} catch (error) {
@@ -107,8 +107,8 @@ const MainContent = () => {
 			generateShortUrl(fullUrl); // Call without awaiting
 			setLlmQuery(query);
 			setIsCreatorChatSubmitted(true);
-			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 5
-			setResponseTemplate(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE); // Use the correct template
+			// Do not start countdown; set static response
+			setLlmResponse(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE_NO_COUNTDOWN);
 			// Set the redirect URL to open ChatGPT
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(query)}&hints=search`;
 			setRedirectUrl(redirect);
@@ -128,7 +128,7 @@ const MainContent = () => {
 			setLlmResponse('');
 			setIsAnimationChatDoneAnimating(true);
 			setIsCreatorChatSubmitted(true);
-			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 5
+			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 7
 			setResponseTemplate(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE); // Use the correct template
 			// Set the redirect URL to open ChatGPT
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(message)}&hints=search`;
@@ -149,7 +149,7 @@ const MainContent = () => {
 		if (llmQuery.trim()) {
 			// Start the countdown and set the redirect URL
 			setIsAnimationChatDoneAnimating(true);
-			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 5
+			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 7
 			setResponseTemplate(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE); // Use the correct template
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(llmQuery)}&hints=search`;
 			setRedirectUrl(redirect);
@@ -159,7 +159,7 @@ const MainContent = () => {
 	}, [llmQuery]);
 
 	const onNewQuestionClicked = useCallback(() => {
-		console.log(`MainContent: User clicked ${GPT_PAGE_CONSTANTS.NEW_QUESTION_BUTTON_TEXT}`);
+		console.log(`MainContent: User clicked ${GPT_PAGE_CONSTANTS.BACK_BUTTON_TEXT}`);
 		setLlmQuery('');
 		setLlmResponse('');
 		searchParams.delete('query');
@@ -223,6 +223,8 @@ const MainContent = () => {
 				onProceedClick={handleProceedClick}
 				onStayClicked={handleStayOnJustGptIt} // Pass the handler
 				countdown={countdown} // Pass countdown to control button visibility
+				isCreatorChatFlow={false}
+				redirectUrl={redirectUrl}
 			/>
 		);
 	} else {
@@ -245,6 +247,8 @@ const MainContent = () => {
 					onProceedClick={handleProceedClick}
 					onStayClicked={handleStayOnJustGptIt} // Pass the handler
 					countdown={countdown} // Pass countdown to control button visibility
+					isCreatorChatFlow={true}
+					redirectUrl={redirectUrl}
 				/>
 			);
 		}
