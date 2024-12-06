@@ -1,3 +1,4 @@
+// AnimationChat.jsx
 import React, { useEffect, useMemo, useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import styles from './AnimationChat.module.css';
@@ -124,7 +125,7 @@ function AnimationChat({ initialQuery, onTypingAnimationDone, onQueryChange, cle
 				animatingTextValue={animatingTextValue}
 				onAnimationComplete={handleTypingAnimationDone}
 				placeholder={GPT_PAGE_CONSTANTS.QUERY_PLACEHOLDER}
-				clearInputTrigger={clearInputTrigger} // Included as per your original code
+				clearInputTrigger={clearInputTrigger}
 				onTextareaRef={setTextareaElement}
 			/>
 		</div>

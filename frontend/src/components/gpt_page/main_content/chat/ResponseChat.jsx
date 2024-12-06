@@ -1,3 +1,4 @@
+// ResponseChat.jsx
 import React, { useCallback } from 'react';
 import styles from './ResponseChat.module.css';
 import ChatMessage from './ChatMessage';

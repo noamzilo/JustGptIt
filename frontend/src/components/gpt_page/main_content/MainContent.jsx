@@ -1,3 +1,4 @@
+// MainContent.jsx
 import React, { useCallback, useState, useEffect } from 'react';
 import styles from './MainContent.module.css';
 import CreatorChat from './chat/CreatorChat';
@@ -7,6 +8,7 @@ import ResponseChat from './chat/ResponseChat';
 import { useSearchParams } from 'react-router-dom';
 import ShareButtons from '../../share_tile/ShareTile';
 import UrlShorteningService from '../../../services/UrlShorteningService';
+import LlmQueryService from '../../../services/LlmQueryService';
 
 const MainContent = () => {
 	const [isAnimationChatDoneAnimating, setIsAnimationChatDoneAnimating] = useState(false);
@@ -79,10 +81,16 @@ const MainContent = () => {
 		setLlmQuery(query);
 	}, []);
 
-	const handleTypingAnimationDone = useCallback(() => {
+	const handleTypingAnimationDone = useCallback(async () => {
 		if (llmQuery.trim()) {
 			setIsAnimationChatDoneAnimating(true);
-			setLlmResponse(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN);
+			try {
+				const response = await LlmQueryService.queryLLMService(llmQuery);
+				setLlmResponse(response);
+			} catch (error) {
+				console.error(error);
+				setLlmResponse(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN);
+			}
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(llmQuery)}&hints=search`;
 			setRedirectUrl(redirect);
 		}
