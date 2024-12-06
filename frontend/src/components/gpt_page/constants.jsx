@@ -21,7 +21,7 @@ export const GPT_PAGE_CONSTANTS = {
 	STATIC_RESPONSE_COUNTDOWN_START: 10,
 
 	QUERY_PLACEHOLDER: "Show them how to ask, then share the link",
-	QUERY_PLACEHOLDER_CHAT: "Try one yourself!",
+	QUERY_PLACEHOLDER_CHAT: "That wasn't so hard was it? Try one yourself and show your friends!",
 	// QUERY_PLACEHOLDER: "Show them how to use the internet to ask questions",
 
 	// The text to display on the back button
