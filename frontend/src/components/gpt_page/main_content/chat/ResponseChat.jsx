@@ -14,9 +14,9 @@ function ResponseChat({
 	popupBlocked,
 	onProceedClick,
 	onStayClicked,
-	countdown, // Receive countdown to control button visibility
-	isCreatorChatFlow, // New prop to identify the CreatorChat flow
-	redirectUrl, // New prop for the redirect URL
+	countdown,
+	isCreatorChatFlow,
+	redirectUrl,
 }) {
 	const handleSend = useCallback(
 		(inputValue) => {
@@ -31,28 +31,6 @@ function ResponseChat({
 			<div className={styles.messagesContainer}>
 				<ChatMessage message={query} isUser={true} />
 				<ChatMessage message={response} isUser={false} />
-
-				{/*
-				// Commenting out countdown and popup related code
-				// {!isCreatorChatFlow && countdown > 0 && (
-				// 	<div className={styles.stayButtonContainer}>
-				// 		<button className={styles.stayButton} onClick={onStayClicked}>
-				// 			{GPT_PAGE_CONSTANTS.STOP_REDIRECTION_BUTTON_TEXT}
-				// 		</button>
-				// 	</div>
-				// )}
-
-				// {!isCreatorChatFlow && isCountdownComplete && popupBlocked && (
-				// 	<div className={styles.popupBlockedContainer}>
-				// 		<p>{GPT_PAGE_CONSTANTS.POPUP_BLOCKED_MESSAGE}</p>
-				// 		<button className={styles.popupBlockedButton} onClick={onProceedClick}>
-				// 			{GPT_PAGE_CONSTANTS.POPUP_BLOCKED_BUTTON_TEXT}
-				// 		</button>
-				// 	</div>
-				// )}
-				*/}
-
-				{/* Always show "Open In ChatGPT" button (remove condition) */}
 				<div className={styles.redirectButtonContainer}>
 					<button
 						className={styles.redirectButton}

@@ -16,7 +16,7 @@ export const GPT_PAGE_CONSTANTS = {
 	CREATOR_STATIC_RESPONSE: "The share-link was copied to your clipboard! Redirecting to ChatGPT in <> ...",
 	CREATOR_STATIC_RESPONSE_NO_COUNTDOWN: "The share-link was copied to your clipboard!",
 	RECEIVER_STATIC_RESPONSE: "That wasn't so hard, was it?\r\nRedirecting to ChatGPT in <> ...",
-	RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN: "That wasn't so hard, was it?",
+	RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN: "That wasn't so hard, was it? Next time, you can do it yourself!",
 
 	STATIC_RESPONSE_COUNTDOWN_START: 10,
 
