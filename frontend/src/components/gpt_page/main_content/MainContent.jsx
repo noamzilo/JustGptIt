@@ -110,13 +110,6 @@ const MainContent = () => {
 		window.open(redirect, '_blank');
 	}, [llmQuery]);
 
-	const handleProceedClick = useCallback(() => {
-		window.open(redirectUrl, '_blank');
-	}, [redirectUrl]);
-
-	const handleStayOnJustGptIt = useCallback(() => {
-	}, []);
-
 	let contentComponent;
 
 	if (queryFromUrl.trim()) {
