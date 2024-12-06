@@ -8,6 +8,7 @@ import { GPT_PAGE_CONSTANTS } from '../../constants';
 function ResponseChat({
 	query,
 	response,
+	extraMessage,
 	setResponse,
 	onSendMessage,
 	onBackClicked,
@@ -31,7 +32,8 @@ function ResponseChat({
 		<div className={styles.chatContainer}>
 			<div className={styles.messagesContainer}>
 				<ChatMessage message={query} isUser={true} />
-				<ChatMessage message={response} isUser={false} />
+				{response && <ChatMessage message={response} isUser={false} />}
+				{extraMessage && <ChatMessage message={extraMessage} isUser={false} />}
 				<div className={styles.redirectButtonContainer}>
 					<button
 						className={styles.redirectButton}

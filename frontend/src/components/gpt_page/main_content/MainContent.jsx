@@ -15,6 +15,7 @@ const MainContent = () => {
 	const [isCreatorChatSubmitted, setIsCreatorChatSubmitted] = useState(false);
 	const [llmQuery, setLlmQuery] = useState('');
 	const [llmResponse, setLlmResponse] = useState('');
+	const [boilerplateMessage, setBoilerplateMessage] = useState('');
 	const [clearInputTrigger, setClearInputTrigger] = useState(false);
 	const [shortUrl, setShortUrl] = useState(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
 	const [redirectUrl, setRedirectUrl] = useState(null);
@@ -56,7 +57,16 @@ const MainContent = () => {
 			await generateShortUrl(fullUrl);
 			setLlmQuery(query);
 			setIsCreatorChatSubmitted(true);
-			setLlmResponse(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE_NO_COUNTDOWN);
+			try {
+				const response = await LlmQueryService.queryLLMService(query);
+				setLlmResponse(response);
+			} catch (error) {
+				console.error(error);
+				setLlmResponse(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN);
+			}
+			// After fetching LLM response, add the boilerplate as an extra message
+			setBoilerplateMessage(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE_NO_COUNTDOWN);
+
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(query)}&hints=search`;
 			setRedirectUrl(redirect);
 		},
@@ -68,7 +78,15 @@ const MainContent = () => {
 			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(message)}`;
 			await generateShortUrl(fullUrl);
 			setLlmQuery(message);
-			setLlmResponse(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE_NO_COUNTDOWN);
+			// For messages after creator chat submission or in animation flow, we also fetch LLM response
+			try {
+				const response = await LlmQueryService.queryLLMService(message);
+				setLlmResponse(response);
+			} catch (error) {
+				console.error(error);
+				setLlmResponse(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN);
+			}
+			// In this scenario (send message), no boilerplate is mentioned, but if needed, we could add it similarly.
 			setIsAnimationChatDoneAnimating(true);
 			setIsCreatorChatSubmitted(true);
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(message)}&hints=search`;
@@ -99,6 +117,7 @@ const MainContent = () => {
 	const onNewQuestionClicked = useCallback(() => {
 		setLlmQuery('');
 		setLlmResponse('');
+		setBoilerplateMessage('');
 		searchParams.delete('query');
 		setSearchParams(searchParams);
 		setIsAnimationChatDoneAnimating(false);
@@ -132,6 +151,7 @@ const MainContent = () => {
 			<ResponseChat
 				query={llmQuery}
 				response={llmResponse}
+				extraMessage={boilerplateMessage}
 				setResponse={setLlmResponse}
 				onSendMessage={handleSendMessage}
 				onBackClicked={onNewQuestionClicked}
@@ -149,6 +169,7 @@ const MainContent = () => {
 				<ResponseChat
 					query={llmQuery}
 					response={llmResponse}
+					extraMessage={boilerplateMessage}
 					setResponse={setLlmResponse}
 					onSendMessage={handleSendMessage}
 					onBackClicked={onNewQuestionClicked}
