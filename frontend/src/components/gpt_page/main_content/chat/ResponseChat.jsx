@@ -32,36 +32,35 @@ function ResponseChat({
 				<ChatMessage message={query} isUser={true} />
 				<ChatMessage message={response} isUser={false} />
 
-				{/* Conditionally render the "Stay on justGptIt" button during countdown */}
-				{!isCreatorChatFlow && countdown > 0 && (
-					<div className={styles.stayButtonContainer}>
-						<button className={styles.stayButton} onClick={onStayClicked}>
-							{GPT_PAGE_CONSTANTS.STOP_REDIRECTION_BUTTON_TEXT}
-						</button>
-					</div>
-				)}
+				{/*
+				// Commenting out countdown and popup related code
+				// {!isCreatorChatFlow && countdown > 0 && (
+				// 	<div className={styles.stayButtonContainer}>
+				// 		<button className={styles.stayButton} onClick={onStayClicked}>
+				// 			{GPT_PAGE_CONSTANTS.STOP_REDIRECTION_BUTTON_TEXT}
+				// 		</button>
+				// 	</div>
+				// )}
 
-				{/* Conditionally render the button when popup is blocked */}
-				{!isCreatorChatFlow && isCountdownComplete && popupBlocked && (
-					<div className={styles.popupBlockedContainer}>
-						<p>{GPT_PAGE_CONSTANTS.POPUP_BLOCKED_MESSAGE}</p>
-						<button className={styles.popupBlockedButton} onClick={onProceedClick}>
-							{GPT_PAGE_CONSTANTS.POPUP_BLOCKED_BUTTON_TEXT}
-						</button>
-					</div>
-				)}
+				// {!isCreatorChatFlow && isCountdownComplete && popupBlocked && (
+				// 	<div className={styles.popupBlockedContainer}>
+				// 		<p>{GPT_PAGE_CONSTANTS.POPUP_BLOCKED_MESSAGE}</p>
+				// 		<button className={styles.popupBlockedButton} onClick={onProceedClick}>
+				// 			{GPT_PAGE_CONSTANTS.POPUP_BLOCKED_BUTTON_TEXT}
+				// 		</button>
+				// 	</div>
+				// )}
+				*/}
 
-				{/* Render "Open In ChatGPT" button for CreatorChat flow */}
-				{isCreatorChatFlow && (
-					<div className={styles.redirectButtonContainer}>
-						<button
-							className={styles.redirectButton}
-							onClick={() => window.open(redirectUrl, '_blank')}
-						>
-							{GPT_PAGE_CONSTANTS.GO_TO_GPT_REDIRECTION_BUTTON_TEXT}
-						</button>
-					</div>
-				)}
+				{/* Always show "Open In ChatGPT" button (remove condition) */}
+				<div className={styles.redirectButtonContainer}>
+					<button
+						className={styles.redirectButton}
+						onClick={() => window.open(redirectUrl, '_blank')}
+					>
+						{GPT_PAGE_CONSTANTS.GO_TO_GPT_REDIRECTION_BUTTON_TEXT}
+					</button>
+				</div>
 			</div>
 			<ChatInputPane
 				onSubmit={handleSend}

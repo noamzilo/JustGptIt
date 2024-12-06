@@ -16,12 +16,12 @@ const MainContent = () => {
 	const [llmResponse, setLlmResponse] = useState('');
 	const [clearInputTrigger, setClearInputTrigger] = useState(false);
 	const [shortUrl, setShortUrl] = useState(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
-	const [countdown, setCountdown] = useState(null);
+	// const [countdown, setCountdown] = useState(null);
 	const [redirectUrl, setRedirectUrl] = useState(null);
-	const [responseTemplate, setResponseTemplate] = useState(null);
-	const [popupBlocked, setPopupBlocked] = useState(false);
-	const [isCountdownComplete, setIsCountdownComplete] = useState(false);
-	const [stayOnJustGptIt, setStayOnJustGptIt] = useState(false);
+	// const [responseTemplate, setResponseTemplate] = useState(null);
+	// const [popupBlocked, setPopupBlocked] = useState(false);
+	// const [isCountdownComplete, setIsCountdownComplete] = useState(false);
+	// const [stayOnJustGptIt, setStayOnJustGptIt] = useState(false);
 
 	// Hooks and variables
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -62,9 +62,9 @@ const MainContent = () => {
 	}, [shortUrl]);
 
 	// Countdown effect with popup handling
+	/*
 	useEffect(() => {
 		if (stayOnJustGptIt) {
-			// User chose to stay; stop countdown and redirection
 			setCountdown(null);
 			return;
 		}
@@ -75,30 +75,29 @@ const MainContent = () => {
 			}, 1000);
 			return () => clearTimeout(timer);
 		} else if (countdown === 0 && redirectUrl) {
-			setIsCountdownComplete(true); // Indicate that countdown is complete
-			// Attempt to open the URL in a new window
+			setIsCountdownComplete(true);
 			let newWindow = window.open(redirectUrl, '_blank');
 			if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-				// Popup was blocked, try opening in the same window
 				window.location.href = redirectUrl;
-				// Optionally, check if the redirect was successful
 				setTimeout(() => {
 					if (window.location.href !== redirectUrl && !document.hidden) {
-						// Redirect failed, show manual button
 						setPopupBlocked(true);
 					}
 				}, 1000);
 			}
 		}
 	}, [countdown, redirectUrl, stayOnJustGptIt]);
+	*/
 
 	// Update llmResponse when countdown changes
+	/*
 	useEffect(() => {
 		if (countdown !== null && responseTemplate) {
 			const newResponse = responseTemplate.replace('<>', countdown);
 			setLlmResponse(newResponse);
 		}
 	}, [countdown, responseTemplate]);
+	*/
 
 	// Function for CreatorChat submission
 	const onCreatorChatSubmit = useCallback(
@@ -107,13 +106,10 @@ const MainContent = () => {
 			await generateShortUrl(fullUrl); 
 			setLlmQuery(query);
 			setIsCreatorChatSubmitted(true);
-			// Do not start countdown; set static response
 			setLlmResponse(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE_NO_COUNTDOWN);
-			// Set the redirect URL to open ChatGPT
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(query)}&hints=search`;
 			setRedirectUrl(redirect);
-			// Reset stayOnJustGptIt in case it was previously set
-			setStayOnJustGptIt(false);
+			// setStayOnJustGptIt(false);
 		},
 		[generateShortUrl]
 	);
@@ -128,13 +124,12 @@ const MainContent = () => {
 			setLlmResponse('');
 			setIsAnimationChatDoneAnimating(true);
 			setIsCreatorChatSubmitted(true);
-			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 7
-			setResponseTemplate(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE); // Use the correct template
-			// Set the redirect URL to open ChatGPT
+			// setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START);
+			// setResponseTemplate(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE);
+			setLlmResponse(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE_NO_COUNTDOWN);
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(message)}&hints=search`;
 			setRedirectUrl(redirect);
-			// Reset stayOnJustGptIt in case it was previously set
-			setStayOnJustGptIt(false);
+			// setStayOnJustGptIt(false);
 		},
 		[generateShortUrl]
 	);
@@ -147,14 +142,13 @@ const MainContent = () => {
 	const handleTypingAnimationDone = useCallback(() => {
 		console.log('MainContent: Typing animation done');
 		if (llmQuery.trim()) {
-			// Start the countdown and set the redirect URL
 			setIsAnimationChatDoneAnimating(true);
-			setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START); // e.g., 7
-			setResponseTemplate(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE); // Use the correct template
+			// setCountdown(GPT_PAGE_CONSTANTS.STATIC_RESPONSE_COUNTDOWN_START);
+			// setResponseTemplate(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE);
+			setLlmResponse("XXXXXXXXXXXXXXXXXXXXXXXXXXxx");
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(llmQuery)}&hints=search`;
 			setRedirectUrl(redirect);
-			// Reset stayOnJustGptIt in case it was previously set
-			setStayOnJustGptIt(false);
+			// setStayOnJustGptIt(false);
 		}
 	}, [llmQuery]);
 
@@ -168,15 +162,14 @@ const MainContent = () => {
 		setIsCreatorChatSubmitted(false);
 		setClearInputTrigger((prev) => !prev);
 		setShortUrl(GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT);
-		setCountdown(null);
+		// setCountdown(null);
 		setRedirectUrl(null);
-		setResponseTemplate(null); // Reset the template
-		setPopupBlocked(false); // Reset popupBlocked state
-		setIsCountdownComplete(false); // Reset countdownComplete state
-		setStayOnJustGptIt(false); // Reset stayOnJustGptIt state
+		// setResponseTemplate(null);
+		// setPopupBlocked(false);
+		// setIsCountdownComplete(false);
+		// setStayOnJustGptIt(false);
 	}, [searchParams, setSearchParams]);
 
-	// Updated onOpenGptClicked function
 	const onOpenGptClicked = useCallback(() => {
 		console.log(`MainContent: User clicked ${GPT_PAGE_CONSTANTS.OPEN_GPT_BUTTON_TEXT}`);
 		let redirect;
@@ -188,22 +181,18 @@ const MainContent = () => {
 		window.open(redirect, '_blank');
 	}, [llmQuery]);
 
-	// Handler for user-initiated click when popup is blocked
 	const handleProceedClick = useCallback(() => {
 		window.open(redirectUrl, '_blank');
 	}, [redirectUrl]);
 
-	// Handler for "Stay on justGptIt" button click
 	const handleStayOnJustGptIt = useCallback(() => {
-		setStayOnJustGptIt(true);
-		setCountdown(null); // Stop the countdown
+		// setStayOnJustGptIt(true);
+		// setCountdown(null);
 	}, []);
 
-	// Decide which component to render based on the current state
 	let contentComponent;
 
 	if (queryFromUrl.trim()) {
-		// Flow: AnimationChat -> ResponseChat with static response
 		contentComponent = !isAnimationChatDoneAnimating ? (
 			<AnimationChat
 				initialQuery={llmQuery}
@@ -218,23 +207,21 @@ const MainContent = () => {
 				setResponse={setLlmResponse}
 				onSendMessage={handleSendMessage}
 				onBackClicked={onNewQuestionClicked}
-				isCountdownComplete={isCountdownComplete}
-				popupBlocked={popupBlocked}
-				onProceedClick={handleProceedClick}
-				onStayClicked={handleStayOnJustGptIt} // Pass the handler
-				countdown={countdown} // Pass countdown to control button visibility
+				// isCountdownComplete={isCountdownComplete}
+				// popupBlocked={popupBlocked}
+				// onProceedClick={handleProceedClick}
+				// onStayClicked={handleStayOnJustGptIt}
+				// countdown={countdown}
 				isCreatorChatFlow={false}
 				redirectUrl={redirectUrl}
 			/>
 		);
 	} else {
 		if (!isCreatorChatSubmitted) {
-			// Show CreatorChat
 			contentComponent = (
 				<CreatorChat onSubmit={onCreatorChatSubmit} clearInputTrigger={clearInputTrigger} />
 			);
 		} else {
-			// Flow: CreatorChat -> ResponseChat with static response
 			contentComponent = (
 				<ResponseChat
 					query={llmQuery}
@@ -242,11 +229,11 @@ const MainContent = () => {
 					setResponse={setLlmResponse}
 					onSendMessage={handleSendMessage}
 					onBackClicked={onNewQuestionClicked}
-					isCountdownComplete={isCountdownComplete}
-					popupBlocked={popupBlocked}
-					onProceedClick={handleProceedClick}
-					onStayClicked={handleStayOnJustGptIt} // Pass the handler
-					countdown={countdown} // Pass countdown to control button visibility
+					// isCountdownComplete={isCountdownComplete}
+					// popupBlocked={popupBlocked}
+					// onProceedClick={handleProceedClick}
+					// onStayClicked={handleStayOnJustGptIt}
+					// countdown={countdown}
 					isCreatorChatFlow={true}
 					redirectUrl={redirectUrl}
 				/>
