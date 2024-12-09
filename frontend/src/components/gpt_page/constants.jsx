@@ -14,7 +14,7 @@ export const GPT_PAGE_CONSTANTS = {
 	USER_ICON_TEXT: "N",
 
 	CREATOR_STATIC_RESPONSE: "The share-link was copied to your clipboard! Redirecting to ChatGPT in <> ...",
-	CREATOR_STATIC_RESPONSE_NO_COUNTDOWN: "The share-link was copied to your clipboard!",
+	CREATOR_STATIC_RESPONSE_NO_COUNTDOWN: "A share-link was copied to your clipboard!",
 	RECEIVER_STATIC_RESPONSE: "That wasn't so hard, was it?\r\nRedirecting to ChatGPT in <> ...",
 	RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN: "This is how you use the internet to ask questions! Click the button below to go to ChatGPT and continue your chat there. Don't forget to show all of your friends that they too can justGptIt!",
 
@@ -35,6 +35,7 @@ export const GPT_PAGE_CONSTANTS = {
 	POPUP_BLOCKED_BUTTON_TEXT: "Click here if you are not redirected automatically",
 
 	GO_TO_GPT_REDIRECTION_BUTTON_TEXT: "Open In ChatGPT",
+	SHOW_ANIMATION_BUTTON_TEXT: "Show Animation",
 
 	GOOGLE_ANALYTICS_MEASURMENT_ID: "G-2H5M5DPLEE",
 };

@@ -41,6 +41,15 @@ function ResponseChat({
 					>
 						{GPT_PAGE_CONSTANTS.GO_TO_GPT_REDIRECTION_BUTTON_TEXT}
 					</button>
+					<button
+						className={styles.showAnimationButton}
+						onClick={() => {
+							const newUrl = `${window.location.pathname}?query=${encodeURIComponent(query)}`;
+							window.location.href = newUrl;
+						}}
+					>
+						{GPT_PAGE_CONSTANTS.SHOW_ANIMATION_BUTTON_TEXT}
+					</button>
 				</div>
 			</div>
 			<ChatInputPane

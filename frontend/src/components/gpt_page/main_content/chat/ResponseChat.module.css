@@ -25,7 +25,8 @@
 
 .popupBlockedButton,
 .stayButton,
-.redirectButton {
+.redirectButton,
+.showAnimationButton {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
