@@ -43,7 +43,6 @@ function ResponseChat({
 			<div className={styles.messagesContainer}>
 				<ChatMessage message={query} isUser={true} />
 				{response && <ChatMessage message={response} isUser={false} />}
-				{extraMessage && <ChatMessage message={extraMessage} isUser={false} />}
 				<div className={styles.redirectButtonContainer}>
 					<button
 						className={styles.redirectButton}
