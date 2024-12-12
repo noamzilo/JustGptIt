@@ -23,12 +23,6 @@ const MainContent = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryFromUrl = searchParams.get('query') || '';
 
-	useEffect(() => {
-		if (queryFromUrl.trim()) {
-			setLlmQuery(queryFromUrl);
-		}
-	}, [queryFromUrl]);
-
 	const generateShortUrl = useCallback(async (url) => {
 		const query = new URL(url).searchParams.get('query');
 		if (query) {
@@ -52,46 +46,52 @@ const MainContent = () => {
 		}
 	}, [shortUrl]);
 
-	const onCreatorChatSubmit = useCallback(
-		async (query) => {
-			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
-			await generateShortUrl(fullUrl);
-			setLlmQuery(query);
-			setIsCreatorChatSubmitted(true);
-		},
-		[generateShortUrl]
-	);
+	const fetchLlmResponse = useCallback(async (query) => {
+		if (!query.trim()) return;
+		try {
+			const response = await LlmQueryService.queryLLMService(query);
+			setLlmResponse(response);
+		} catch (error) {
+			setLlmResponse(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN);
+		}
+		setBoilerplateMessage(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE_NO_COUNTDOWN);
+		const redirect = `https://chatgpt.com/?q=${encodeURIComponent(query)}&hints=search`;
+		setRedirectUrl(redirect);
+	}, []);
 
-	const handleSendMessage = useCallback(
-		async (message) => {
-			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(message)}`;
-			await generateShortUrl(fullUrl);
-			setLlmQuery(message);
-			// Do not fetch LLM response here, wait for typing animation done
-			// Do not set isAnimationChatDoneAnimating here
-		},
-		[generateShortUrl]
-	);
+	useEffect(() => {
+		if (queryFromUrl.trim()) {
+			setLlmQuery(queryFromUrl);
+			(async () => {
+				let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(queryFromUrl)}`;
+				await generateShortUrl(fullUrl);
+				fetchLlmResponse(queryFromUrl);
+			})();
+		}
+	}, [queryFromUrl, generateShortUrl, fetchLlmResponse]);
+
+	const onCreatorChatSubmit = useCallback(async (query) => {
+		let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(query)}`;
+		await generateShortUrl(fullUrl);
+		setLlmQuery(query);
+		setIsCreatorChatSubmitted(true);
+		fetchLlmResponse(query);
+	}, [generateShortUrl, fetchLlmResponse]);
+
+	const handleSendMessage = useCallback(async (message) => {
+		let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(message)}`;
+		await generateShortUrl(fullUrl);
+		setLlmQuery(message);
+		fetchLlmResponse(message);
+	}, [generateShortUrl, fetchLlmResponse]);
 
 	const onQueryChange = useCallback((query) => {
 		setLlmQuery(query);
 	}, []);
 
-	const handleTypingAnimationDone = useCallback(async () => {
-		if (llmQuery.trim()) {
-			try {
-				const response = await LlmQueryService.queryLLMService(llmQuery);
-				setLlmResponse(response);
-			} catch (error) {
-				setLlmResponse(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN);
-			}
-			// After fetching response, add boilerplate message and redirect
-			setBoilerplateMessage(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE_NO_COUNTDOWN);
-			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(llmQuery)}&hints=search`;
-			setRedirectUrl(redirect);
-			setIsAnimationChatDoneAnimating(true);
-		}
-	}, [llmQuery]);
+	const handleTypingAnimationDone = useCallback(() => {
+		setIsAnimationChatDoneAnimating(true);
+	}, []);
 
 	const onNewQuestionClicked = useCallback(() => {
 		setLlmQuery('');
@@ -118,7 +118,6 @@ const MainContent = () => {
 
 	let contentComponent;
 	if (queryFromUrl.trim()) {
-		// If query in URL: AnimationChat first, then ResponseChat
 		contentComponent = !isAnimationChatDoneAnimating ? (
 			<AnimationChat
 				initialQuery={llmQuery}
@@ -139,7 +138,6 @@ const MainContent = () => {
 			/>
 		);
 	} else {
-		// No query from URL: CreatorChat first, after submit show AnimationChat, then ResponseChat
 		if (!isCreatorChatSubmitted) {
 			contentComponent = (
 				<CreatorChat onSubmit={onCreatorChatSubmit} clearInputTrigger={clearInputTrigger} />
