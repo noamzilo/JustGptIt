@@ -11,6 +11,7 @@ import UrlShorteningService from '../../../services/UrlShorteningService';
 import LlmQueryService from '../../../services/LlmQueryService';
 
 const MainContent = () => {
+	// State variables
 	const [isAnimationChatDoneAnimating, setIsAnimationChatDoneAnimating] = useState(false);
 	const [isCreatorChatSubmitted, setIsCreatorChatSubmitted] = useState(false);
 	const [llmQuery, setLlmQuery] = useState('');
@@ -57,18 +58,6 @@ const MainContent = () => {
 			await generateShortUrl(fullUrl);
 			setLlmQuery(query);
 			setIsCreatorChatSubmitted(true);
-			try {
-				const response = await LlmQueryService.queryLLMService(query);
-				setLlmResponse(response);
-			} catch (error) {
-				console.error(error);
-				setLlmResponse(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN);
-			}
-			// After fetching LLM response, add the boilerplate as an extra message
-			setBoilerplateMessage(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE_NO_COUNTDOWN);
-
-			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(query)}&hints=search`;
-			setRedirectUrl(redirect);
 		},
 		[generateShortUrl]
 	);
@@ -78,19 +67,8 @@ const MainContent = () => {
 			let fullUrl = `${window.location.origin}${window.location.pathname}?query=${encodeURIComponent(message)}`;
 			await generateShortUrl(fullUrl);
 			setLlmQuery(message);
-			// For messages after creator chat submission or in animation flow, we also fetch LLM response
-			try {
-				const response = await LlmQueryService.queryLLMService(message);
-				setLlmResponse(response);
-			} catch (error) {
-				console.error(error);
-				setLlmResponse(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN);
-			}
-			// In this scenario (send message), no boilerplate is mentioned, but if needed, we could add it similarly.
-			setIsAnimationChatDoneAnimating(true);
-			setIsCreatorChatSubmitted(true);
-			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(message)}&hints=search`;
-			setRedirectUrl(redirect);
+			// Do not fetch LLM response here, wait for typing animation done
+			// Do not set isAnimationChatDoneAnimating here
 		},
 		[generateShortUrl]
 	);
@@ -101,16 +79,17 @@ const MainContent = () => {
 
 	const handleTypingAnimationDone = useCallback(async () => {
 		if (llmQuery.trim()) {
-			setIsAnimationChatDoneAnimating(true);
 			try {
 				const response = await LlmQueryService.queryLLMService(llmQuery);
 				setLlmResponse(response);
 			} catch (error) {
-				console.error(error);
 				setLlmResponse(GPT_PAGE_CONSTANTS.RECEIVER_STATIC_RESPONSE_NO_COUNTDOWN);
 			}
+			// After fetching response, add boilerplate message and redirect
+			setBoilerplateMessage(GPT_PAGE_CONSTANTS.CREATOR_STATIC_RESPONSE_NO_COUNTDOWN);
 			const redirect = `https://chatgpt.com/?q=${encodeURIComponent(llmQuery)}&hints=search`;
 			setRedirectUrl(redirect);
+			setIsAnimationChatDoneAnimating(true);
 		}
 	}, [llmQuery]);
 
@@ -138,8 +117,8 @@ const MainContent = () => {
 	}, [llmQuery]);
 
 	let contentComponent;
-
 	if (queryFromUrl.trim()) {
+		// If query in URL: AnimationChat first, then ResponseChat
 		contentComponent = !isAnimationChatDoneAnimating ? (
 			<AnimationChat
 				initialQuery={llmQuery}
@@ -160,12 +139,20 @@ const MainContent = () => {
 			/>
 		);
 	} else {
+		// No query from URL: CreatorChat first, after submit show AnimationChat, then ResponseChat
 		if (!isCreatorChatSubmitted) {
 			contentComponent = (
 				<CreatorChat onSubmit={onCreatorChatSubmit} clearInputTrigger={clearInputTrigger} />
 			);
 		} else {
-			contentComponent = (
+			contentComponent = !isAnimationChatDoneAnimating ? (
+				<AnimationChat
+					initialQuery={llmQuery}
+					onTypingAnimationDone={handleTypingAnimationDone}
+					onQueryChange={onQueryChange}
+					clearInputTrigger={clearInputTrigger}
+				/>
+			) : (
 				<ResponseChat
 					query={llmQuery}
 					response={llmResponse}
