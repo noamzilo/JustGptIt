@@ -40,12 +40,6 @@ const MainContent = () => {
 		}
 	}, []);
 
-	useEffect(() => {
-		if (shortUrl && shortUrl !== GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT) {
-			navigator.clipboard.writeText(shortUrl);
-		}
-	}, [shortUrl]);
-
 	const fetchLlmResponse = useCallback(async (query) => {
 		if (!query.trim()) return;
 		try {
@@ -135,6 +129,7 @@ const MainContent = () => {
 				onBackClicked={onNewQuestionClicked}
 				isCreatorChatFlow={false}
 				redirectUrl={redirectUrl}
+				shortUrl={shortUrl}
 			/>
 		);
 	} else {
@@ -160,6 +155,7 @@ const MainContent = () => {
 					onBackClicked={onNewQuestionClicked}
 					isCreatorChatFlow={true}
 					redirectUrl={redirectUrl}
+					shortUrl={shortUrl}
 				/>
 			);
 		}

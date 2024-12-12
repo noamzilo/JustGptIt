@@ -19,6 +19,7 @@ function ResponseChat({
 	countdown,
 	isCreatorChatFlow,
 	redirectUrl,
+	shortUrl
 }) {
 	const handleSend = useCallback(
 		(inputValue) => {
@@ -49,6 +50,16 @@ function ResponseChat({
 						}}
 					>
 						{GPT_PAGE_CONSTANTS.SHOW_ANIMATION_BUTTON_TEXT}
+					</button>
+					<button
+						className={styles.copyLinkButton}
+						onClick={() => {
+							if (shortUrl && shortUrl !== GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT) {
+								navigator.clipboard.writeText(shortUrl);
+							}
+						}}
+					>
+						{GPT_PAGE_CONSTANTS.COPY_SHARE_LINK_BUTTON_TEXT}
 					</button>
 				</div>
 			</div>
