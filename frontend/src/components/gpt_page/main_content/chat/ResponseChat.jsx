@@ -1,5 +1,5 @@
 // ResponseChat.jsx
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import styles from './ResponseChat.module.css';
 import ChatMessage from './ChatMessage';
 import ChatInputPane from './ChatInputPane';
@@ -21,6 +21,8 @@ function ResponseChat({
 	redirectUrl,
 	shortUrl
 }) {
+	const [isCopyClicked, setIsCopyClicked] = useState(false);
+
 	const handleSend = useCallback(
 		(inputValue) => {
 			onSendMessage(inputValue);
@@ -28,6 +30,13 @@ function ResponseChat({
 		},
 		[onSendMessage, setResponse]
 	);
+
+	const handleCopyClick = useCallback(() => {
+		if (shortUrl && shortUrl !== GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT) {
+			navigator.clipboard.writeText(shortUrl);
+			setIsCopyClicked(true);
+		}
+	}, [shortUrl]);
 
 	return (
 		<div className={styles.chatContainer}>
@@ -53,13 +62,11 @@ function ResponseChat({
 					</button>
 					<button
 						className={styles.copyLinkButton}
-						onClick={() => {
-							if (shortUrl && shortUrl !== GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT) {
-								navigator.clipboard.writeText(shortUrl);
-							}
-						}}
+						onClick={handleCopyClick}
 					>
-						{GPT_PAGE_CONSTANTS.COPY_SHARE_LINK_BUTTON_TEXT}
+						{isCopyClicked
+							? GPT_PAGE_CONSTANTS.COPIED_SHARE_LINK_BUTTON_TEXT
+							: GPT_PAGE_CONSTANTS.COPY_SHARE_LINK_BUTTON_TEXT}
 					</button>
 				</div>
 			</div>

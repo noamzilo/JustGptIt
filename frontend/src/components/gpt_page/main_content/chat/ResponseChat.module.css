@@ -40,3 +40,13 @@
 	border-radius: 10px;
 	border: 0px;
 }
+
+.popupBlockedButtonActive,
+.stayButtonActive,
+.redirectButtonActive,
+.showAnimationButtonActive,
+.copyLinkButtonActive,
+.copyLinkButtonActive {
+	background: #A1A1A1;
+	/* Slightly darker background when clicked */
+}
