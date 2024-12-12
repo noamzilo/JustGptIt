@@ -43,7 +43,10 @@ function ResponseChat({
 			<div className={styles.messagesContainer}>
 				<ChatMessage message={query} isUser={true} />
 				{response && <ChatMessage message={response} isUser={false} />}
-				<div className={styles.redirectButtonContainer}>
+				
+			</div>
+
+			<div className={styles.redirectButtonContainer}>
 					<button
 						className={styles.redirectButton}
 						onClick={() => window.open(redirectUrl, '_blank')}
@@ -68,7 +71,6 @@ function ResponseChat({
 							: GPT_PAGE_CONSTANTS.COPY_SHARE_LINK_BUTTON_TEXT}
 					</button>
 				</div>
-			</div>
 			<ChatInputPane
 				onSubmit={handleSend}
 				isAnimating={false}
