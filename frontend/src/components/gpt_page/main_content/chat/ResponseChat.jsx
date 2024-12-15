@@ -21,17 +21,22 @@ function ResponseChat({
 	redirectUrl,
 	shortUrl
 }) {
-	useEffect(() => {
-		// Tabs and not spaces
-	}, []);
-	
+	// Use tabs, not spaces.
 	const [isCopyClicked, setIsCopyClicked] = useState(false);
 	const [shouldBlink, setShouldBlink] = useState(false);
 
+	// Blink on mount
 	useEffect(() => {
-		// Trigger blink on mount and whenever response changes (e.g., after "send")
 		setShouldBlink(true);
-	}, [response]);
+	}, []);
+
+	// Blink after each new query sent
+	useEffect(() => {
+		if (query && query.trim() !== '') {
+			setShouldBlink(false); // Reset first to retrigger animation
+			requestAnimationFrame(() => setShouldBlink(true));
+		}
+	}, [query]);
 
 	const handleSend = useCallback(
 		(inputValue) => {
