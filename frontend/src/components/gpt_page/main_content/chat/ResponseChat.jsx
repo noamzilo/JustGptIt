@@ -1,5 +1,5 @@
 // ResponseChat.jsx
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import styles from './ResponseChat.module.css';
 import ChatMessage from './ChatMessage';
 import ChatInputPane from './ChatInputPane';
@@ -21,7 +21,22 @@ function ResponseChat({
 	redirectUrl,
 	shortUrl
 }) {
+	// Use tabs, not spaces.
 	const [isCopyClicked, setIsCopyClicked] = useState(false);
+	const [shouldBlink, setShouldBlink] = useState(false);
+
+	// Blink on mount
+	useEffect(() => {
+		setShouldBlink(true);
+	}, []);
+
+	// Blink after each new query sent
+	useEffect(() => {
+		if (query && query.trim() !== '') {
+			setShouldBlink(false); // Reset first to retrigger animation
+			requestAnimationFrame(() => setShouldBlink(true));
+		}
+	}, [query]);
 
 	const handleSend = useCallback(
 		(inputValue) => {
@@ -43,34 +58,33 @@ function ResponseChat({
 			<div className={styles.messagesContainer}>
 				<ChatMessage message={query} isUser={true} />
 				{response && <ChatMessage message={response} isUser={false} />}
-				
 			</div>
 
 			<div className={styles.redirectButtonContainer}>
-					<button
-						className={styles.redirectButton}
-						onClick={() => window.open(redirectUrl, '_blank')}
-					>
-						{GPT_PAGE_CONSTANTS.GO_TO_GPT_REDIRECTION_BUTTON_TEXT}
-					</button>
-					<button
-						className={styles.showAnimationButton}
-						onClick={() => {
-							const newUrl = `${window.location.pathname}?query=${encodeURIComponent(query)}`;
-							window.location.href = newUrl;
-						}}
-					>
-						{GPT_PAGE_CONSTANTS.SHOW_ANIMATION_BUTTON_TEXT}
-					</button>
-					<button
-						className={styles.copyLinkButton}
-						onClick={handleCopyClick}
-					>
-						{isCopyClicked
-							? GPT_PAGE_CONSTANTS.COPIED_SHARE_LINK_BUTTON_TEXT
-							: GPT_PAGE_CONSTANTS.COPY_SHARE_LINK_BUTTON_TEXT}
-					</button>
-				</div>
+				<button
+					className={styles.redirectButton}
+					onClick={() => window.open(redirectUrl, '_blank')}
+				>
+					{GPT_PAGE_CONSTANTS.GO_TO_GPT_REDIRECTION_BUTTON_TEXT}
+				</button>
+				<button
+					className={styles.showAnimationButton}
+					onClick={() => {
+						const newUrl = `${window.location.pathname}?query=${encodeURIComponent(query)}`;
+						window.location.href = newUrl;
+					}}
+				>
+					{GPT_PAGE_CONSTANTS.SHOW_ANIMATION_BUTTON_TEXT}
+				</button>
+				<button
+					className={`${styles.copyLinkButton} ${shouldBlink ? styles.blink : ''}`}
+					onClick={handleCopyClick}
+				>
+					{isCopyClicked
+						? GPT_PAGE_CONSTANTS.COPIED_SHARE_LINK_BUTTON_TEXT
+						: GPT_PAGE_CONSTANTS.COPY_SHARE_LINK_BUTTON_TEXT}
+				</button>
+			</div>
 			<ChatInputPane
 				onSubmit={handleSend}
 				isAnimating={false}
