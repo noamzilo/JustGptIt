@@ -1,5 +1,5 @@
 // ResponseChat.jsx
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import styles from './ResponseChat.module.css';
 import ChatMessage from './ChatMessage';
 import ChatInputPane from './ChatInputPane';
@@ -21,27 +21,22 @@ function ResponseChat({
 	redirectUrl,
 	shortUrl
 }) {
-	// Use tabs, not spaces.
+	// Use tabs instead of spaces
 	const [isCopyClicked, setIsCopyClicked] = useState(false);
-	const [shouldBlink, setShouldBlink] = useState(false);
+	const [shouldBlink, setShouldBlink] = useState(isCreatorChatFlow);
+	const hasMounted = useRef(false);
 
-	// Blink on mount
 	useEffect(() => {
-		setShouldBlink(true);
+		hasMounted.current = true;
 	}, []);
-
-	// Blink after each new query sent
-	useEffect(() => {
-		if (query && query.trim() !== '') {
-			setShouldBlink(false); // Reset first to retrigger animation
-			requestAnimationFrame(() => setShouldBlink(true));
-		}
-	}, [query]);
 
 	const handleSend = useCallback(
 		(inputValue) => {
 			onSendMessage(inputValue);
 			setResponse('');
+			// Trigger blink only after user sends a message
+			setShouldBlink(false);
+			requestAnimationFrame(() => setShouldBlink(true));
 		},
 		[onSendMessage, setResponse]
 	);
