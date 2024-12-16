@@ -32,14 +32,15 @@ function ResponseChat({
 
 	const handleSend = useCallback(
 		(inputValue) => {
-			onSendMessage(inputValue);
-			setResponse('');
-			// Trigger blink only after user sends a message
-			setShouldBlink(false);
-			requestAnimationFrame(() => setShouldBlink(true));
+		  onSendMessage(inputValue);
+		  setResponse('');
+		  setIsCopyClicked(false); // Reset the copy link status
+		  // Trigger blink only after user sends a message
+		  setShouldBlink(false);
+		  requestAnimationFrame(() => setShouldBlink(true));
 		},
 		[onSendMessage, setResponse]
-	);
+	  );
 
 	const handleCopyClick = useCallback(() => {
 		if (shortUrl && shortUrl !== GPT_PAGE_CONSTANTS.SHORT_URL_DEFAULT) {
