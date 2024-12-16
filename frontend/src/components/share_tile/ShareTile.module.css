@@ -1,33 +1,29 @@
-.share-buttons {
+/* ShareTile.module.css */
+
+.shareButtons {
 	display: flex;
 	gap: 10px;
 }
 
-.share-buttons {
-	display: flex;
-	gap: 10px;
-}
-
-.share-button {
-	/* Updated class name */
+.shareButton {
 	display: flex;
 	align-items: center;
-	gap: 5px;
-	padding: 10px;
+	justify-content: center;
+	padding: 0;
 	border: none;
-	background-color: #f0f0f0;
+	background: none;
+	/* Remove any background */
 	cursor: pointer;
-	border-radius: 5px;
-	font-size: 16px;
-	margin: 20px;
-	/* margin here for individual buttons */
 }
 
-.share-buttons button:hover {
-	background-color: #e0e0e0;
+.shareButton svg {
+	color: #b5b5b5;
+	/* Control the icon foreground color */
+	transition: color 0.3s ease;
+	/* Optional hover effect */
 }
 
-
-.share-buttons button:hover {
-	background-color: #e0e0e0;
+.shareButton:hover svg {
+	color: #707070;
+	/* Hover color change */
 }
