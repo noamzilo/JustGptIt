@@ -1,7 +1,7 @@
 import os
 import sys
 
-backend_version_name = "0.1.0"
+backend_version_name = "1.1.1"
 
 # Paths to secret and env files
 SECRET_FILE_PATH = os.path.expanduser("~/src/personal_website/backend/.secrets_backend")
@@ -65,6 +65,7 @@ DJANGO_SECRET_KEY = read_env_variable('DJANGO_SECRET_KEY', 'DJANGO_SECRET_KEY_NO
 DEBUG = read_env_variable('DEBUG', 'False') == 'True'
 LOG_LEVEL = 'DEBUG' if DEBUG else 'INFO'
 USE_GCS = read_env_variable('USE_GCS', 'True') == 'True'
+OPENAI_API_KEY = read_env_variable('OPENAI_API_KEY', 'OPENAI_API_KEY_COULD_NOT_BE_READ_PROPERLY')
 
 # CORS_ALLOWED_ORIGINS processing
 CORS_ALLOWED_ORIGINS_ORIG = read_env_variable('CORS_ALLOWED_ORIGINS', None)

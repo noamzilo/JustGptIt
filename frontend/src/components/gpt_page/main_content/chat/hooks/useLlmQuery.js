@@ -9,9 +9,6 @@ function useLlmQuery(onLlmResponse) {
 			try {
 				console.log(`LlmQueryService asked ${decodedQuery} and awaiting response`);
 				const response = await LlmQueryService.queryLLMService(decodedQuery);
-				if (!response) {
-					throw new Error(`Llm Query with query ${decodedQuery} got empty response`);
-				}
 				await new Promise((resolve) => setTimeout(resolve, 500));
 				console.log('Response from LLM:', response);
 				onLlmResponse(response);

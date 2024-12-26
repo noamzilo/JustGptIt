@@ -1,54 +1,39 @@
 import React from 'react';
-import { HashRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import Header from './components/Header';
-import About from './components/About';
-import ProjectList from './components/ProjectList';
-import Contact from './components/Contact';
-import BackendHealthIndicator from './components/BackendHealthIndicator';
-import BackendStatus from './components/BackendStatus';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import GPTInterface from './components/gpt_page/GPTInterface';
 import debugEnvironment from './utils/envDebug';
-import VersionData from './components/VersionData';
+import { initializeAnalytics } from "./Analytics";
+import { useLocation } from 'react-router-dom';
+import ReactGA from 'react-ga4';
+import { useEffect } from 'react';
 
 // Run environment debug on app start
 const envVars = debugEnvironment();
-console.debug(`envVars: ${envVars}`)
+console.debug(`envVars: ${envVars}`);
 
-const AppContent = () => {
-  const location = useLocation();
-  const isGPTRoute = location.pathname === '/gpt';
+const TrackPageView = () => {
+	const location = useLocation();
 
-  // Only show the main app content if we're not on the GPT route
-  if (isGPTRoute) {
-    return <GPTInterface />;
-  }
+	useEffect(() => {
+		ReactGA.send({ hitType: "pageview", page: location.pathname });
+	}, [location]);
 
-  return (
-    <div className="App">
-      <h1>Welcome to My Personal Website</h1>
-      <Header />
-      <BackendHealthIndicator />
-      <BackendStatus />
-      <Routes>
-        <Route path="/" element={<About />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/projects" element={<ProjectList />} />
-        <Route path="/contact" element={<Contact />} />
-      </Routes>
-      <VersionData />
-    </div>
-  );
+	return null;
 };
 
 function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/gpt" element={<GPTInterface />} />
-        <Route path="/*" element={<AppContent />} />
-      </Routes>
-    </Router>
-  );
+	useEffect(() => {
+		initializeAnalytics();
+	}, []);
+
+	return (
+		<Router >
+			<TrackPageView />
+			<Routes>
+				<Route path="/*" element={<GPTInterface />} />
+			</Routes>
+		</Router>
+	);
 }
 
 export default App;
