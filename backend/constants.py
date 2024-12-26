@@ -65,6 +65,7 @@ DJANGO_SECRET_KEY = read_env_variable('DJANGO_SECRET_KEY', 'DJANGO_SECRET_KEY_NO
 DEBUG = read_env_variable('DEBUG', 'False') == 'True'
 LOG_LEVEL = 'DEBUG' if DEBUG else 'INFO'
 USE_GCS = read_env_variable('USE_GCS', 'True') == 'True'
+OPENAI_API_KEY = read_env_variable('OPENAI_API_KEY', 'OPENAI_API_KEY_COULD_NOT_BE_READ_PROPERLY')
 
 # CORS_ALLOWED_ORIGINS processing
 CORS_ALLOWED_ORIGINS_ORIG = read_env_variable('CORS_ALLOWED_ORIGINS', None)
@@ -91,7 +92,7 @@ try:
 except FileNotFoundError:
     BUILD_TIME = 'Build time not available'
 
-# Not supporte yet
+# Not supported yet
 GS_BUCKET_NAME = read_env_variable('GS_BUCKET_NAME', 'GS_BUCKET_NAME NOT READ PROPERLY')
 URLDAY_API_KEY = read_env_variable('URLDAY_API_KEY', 'URLDAY_API_KEY NOT READ PROPERLY')
 
