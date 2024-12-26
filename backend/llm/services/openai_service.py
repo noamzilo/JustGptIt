@@ -1,9 +1,9 @@
 import os
-from openai import OpenAI
+import openai
 from constants import OPENAI_API_KEY
 
-def fetch_openai_response(query):
-    client = OpenAI(api_key=OPENAI_API_KEY)
+def fetch_openai_response(query, api_key=OPENAI_API_KEY):
+    client = openai.OpenAI(api_key=api_key)
     
     try:
         response = client.chat.completions.create(
