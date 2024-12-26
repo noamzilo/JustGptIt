@@ -55,7 +55,7 @@ def test_cached_openai_query(mock_openai_response):
 		mock_client.chat.completions.create.return_value = mock_openai_response
 		mock_openai.return_value = mock_client
 
-		query = "What is artificial intelligence?"
+		query = "What is artificial intelligence? __not__cached__158"
 		
 		# Assert that the query is not cached
 		with pytest.raises(Queries.DoesNotExist):
