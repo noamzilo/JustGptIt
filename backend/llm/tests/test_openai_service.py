@@ -34,15 +34,15 @@ def test_fetch_openai_response_success(mock_openai_response):
 		)
 
 def test_fetch_openai_response_error():
-    with patch('openai.ChatCompletion.create') as mock_create:
-        # Configure the mock to raise an exception
-        mock_create.side_effect = Exception("API Error")
+	with patch('openai.ChatCompletion.create') as mock_create:
+		# Configure the mock to raise an exception
+		mock_create.side_effect = Exception("API Error")
 
-        # Test the function
-        response = fetch_openai_response("Test query")
-        
-        # Assertions
-        assert response.startswith("Error: "), f"Unexpected response: {response}"
+		# Test the function
+		response = fetch_openai_response("Test query")
+		
+		# Assertions
+		assert response.startswith("Error: "), f"Unexpected response: {response}"
 
 
 @pytest.mark.django_db
@@ -81,27 +81,27 @@ def test_cached_openai_query(mock_openai_response):
 @pytest.mark.integration
 @pytest.mark.skipif(not os.getenv('RUN_INTEGRATION_TESTS'), reason="Integration tests are not enabled")
 def test_fetch_openai_response_integration():
-    """
-    Integration test that actually calls OpenAI API.
-    To run this test, set RUN_INTEGRATION_TESTS=1 in your environment.
-    """
-    # Simple query that should always work
-    query = "say only hi"
-    
-    response = fetch_openai_response(query)
-    
-    # Check that we got a response and not an error
-    assert not response.startswith("Error: "), f"Got error response: {response}"
-    
-    # Check that we got some actual content
-    assert len(response) > 0, "Response was empty"
-    
-    # Basic validation that response looks reasonable
-    assert isinstance(response, str), f"Response should be string, got {type(response)}"
-    assert len(response) < 1000, f"Response suspiciously long: {len(response)} chars"
+	"""
+	Integration test that actually calls OpenAI API.
+	To run this test, set RUN_INTEGRATION_TESTS=1 in your environment.
+	"""
+	# Simple query that should always work
+	query = "say only hi"
+	
+	response = fetch_openai_response(query)
+	
+	# Check that we got a response and not an error
+	assert not response.startswith("Error: "), f"Got error response: {response}"
+	
+	# Check that we got some actual content
+	assert len(response) > 0, "Response was empty"
+	
+	# Basic validation that response looks reasonable
+	assert isinstance(response, str), f"Response should be string, got {type(response)}"
+	assert len(response) < 1000, f"Response suspiciously long: {len(response)} chars"
 
 def test_fetch_openai_response_invalid_key():
-    """Test behavior with invalid API key"""
-    response = fetch_openai_response("test query", api_key="invalid_key_123")
-    assert response.startswith("Error: "), "Should have received an error with invalid key"
-    assert "api key" in response.lower(), f"Unexpected error message: {response}"
+	"""Test behavior with invalid API key"""
+	response = fetch_openai_response("test query", api_key="invalid_key_123")
+	assert response.startswith("Error: "), "Should have received an error with invalid key"
+	assert "api key" in response.lower(), f"Unexpected error message: {response}"
