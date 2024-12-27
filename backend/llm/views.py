@@ -1,6 +1,6 @@
 from django.http import JsonResponse, HttpResponseRedirect
 from rest_framework.decorators import api_view
-from llm.services.let_me_gpt import fetch_text_from_url
+from llm.services.openai_service import fetch_openai_response
 from llm.services.LlmQueryCache import LlmQueryCache
 from llm.services.UrlShortener import UrlShortener
 
@@ -12,7 +12,7 @@ def query(request):
 
 	llm_response = LlmQueryCache.llm_response(
 		query=query,
-		query_llm_callback=fetch_text_from_url,
+		query_llm_callback=fetch_openai_response,
 	)
 	response = {'message': f'Received query: {query}', 'llm_response': llm_response}
 	return JsonResponse(response)
