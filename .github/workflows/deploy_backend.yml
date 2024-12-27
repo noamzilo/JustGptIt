@@ -14,6 +14,7 @@ env:
     DEBUG: ${{ vars.DEBUG }}
     CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
     SUPABASE_POSTGRESQL_CONNECTION_STRING: ${{ secrets.SUPABASE_POSTGRESQL_CONNECTION_STRING }}
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
 jobs:
     deploy:
@@ -35,6 +36,7 @@ jobs:
                   echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" > env_debug.yaml
                   echo "DEBUG: \"${DEBUG}\"" >> env_debug.yaml
                   echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: \"${SUPABASE_POSTGRESQL_CONNECTION_STRING}\"" >> env_debug.yaml
+                  echo "OPENAI_API_KEY: \"${OPENAI_API_KEY}\"" >> env_debug.yaml
                   echo "DEPLOY_TIME: \"${DEPLOY_TIME}\"" >> env_debug.yaml
 
                   EXTRA_VARS="--env-vars-file env_debug.yaml"
@@ -208,6 +210,7 @@ jobs:
                   echo "CORS_ALLOWED_ORIGINS: '${CORS_ALLOWED_ORIGINS}'" > env_temp.yaml
                   echo "DEBUG: '${DEBUG}'" >> env_temp.yaml
                   echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: '${SUPABASE_POSTGRESQL_CONNECTION_STRING}'" >> env_temp.yaml
+                  echo "OPENAI_API_KEY: '${OPENAI_API_KEY}'" >> env_temp.yaml
                   echo "DEPLOY_TIME: '${DEPLOY_TIME}'" >> env_temp.yaml
 
                   EXTRA_VARS="--env-vars-file env_temp.yaml"
