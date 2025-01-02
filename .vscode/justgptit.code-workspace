@@ -25,10 +25,10 @@
 		"python.testing.unittestEnabled": false,
 		"python.testing.nosetestsEnabled": false,
 		"python.testing.pytestArgs": [],
-		"python.defaultInterpreterPath": "/home/noams/src/personal_website/venv/bin/python",
-		"python.testing.cwd": "/home/noams/src/personal_website/backend",
+		"python.defaultInterpreterPath": "/home/noams/src/justgptit/venv/bin/python",
+		"python.testing.cwd": "/home/noams/src/justgptit/backend",
 		"python.analysis.extraPaths": [
-			"/home/noams/src/personal_website/backend"
+			"/home/noams/src/justgptit/backend"
 		],
 		// Enforce tabs and configure formatting for Python
 		"[python]": {

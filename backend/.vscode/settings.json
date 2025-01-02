@@ -1,17 +1,17 @@
 {
-    "python.testing.pytestEnabled": true,
-    "python.testing.unittestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
-    "python.testing.pytestArgs": [
-        ".",
-        "-s",
-        "--ignore=node_modules"
-    ],
-    "python.defaultInterpreterPath": "/home/noams/src/personal_website/venv/bin/python",
-    "python.testing.cwd": "/home/noams/src/personal_website/backend",
-    "python.analysis.extraPaths": [
-        "/home/noams/src/personal_website/backend"
-    ],
-    // The next line can be omitted, unless you've modified the global default
-    "python.envFile": "/home/noams/src/personal_website/backend/.env",
+	"python.testing.pytestEnabled": true,
+	"python.testing.unittestEnabled": false,
+	"python.testing.nosetestsEnabled": false,
+	"python.testing.pytestArgs": [
+		".",
+		"-s",
+		"--ignore=node_modules"
+	],
+	"python.defaultInterpreterPath": "/home/noams/src/justgptit/venv/bin/python",
+	"python.testing.cwd": "/home/noams/src/justgptit/backend",
+	"python.analysis.extraPaths": [
+		"/home/noams/src/justgptit/backend"
+	],
+	// The next line can be omitted, unless you've modified the global default
+	"python.envFile": "/home/noams/src/justgptit/backend/.env",
 }

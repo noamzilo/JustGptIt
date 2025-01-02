@@ -78,3 +78,4 @@ backend/creds/
 /backend/certificates/
 /backend/llm/tests/playground.py
 /.wrangler
+/.coverage

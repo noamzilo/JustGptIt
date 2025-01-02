@@ -7,9 +7,9 @@
 			"request": "launch",
 			"program": "${file}",
 			"console": "integratedTerminal",
-			"cwd": "/home/noams/src/personal_website/backend",
+			"cwd": "/home/noams/src/justgptit/backend",
 			"env": {
-				"PYTHONPATH": "/home/noams/src/personal_website/backend"
+				"PYTHONPATH": "/home/noams/src/justgptit/backend"
 			},
 			"variablePresentation": {
 				// https://stackoverflow.com/questions/62346091/how-can-i-disable-hide-the-grouping-of-variables-in-vscode-python

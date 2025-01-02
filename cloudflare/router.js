@@ -52,7 +52,7 @@ async function handleRequest(request) {
 
 	// Handle static file requests
 	if (path.startsWith('/static/') || path.startsWith('/assets/')) {
-		const staticUrl = `https://noamzilo.github.io/personal_website${path}`;
+		const staticUrl = `https://noamzilo.github.io/justgptit${path}`;
 		try {
 			const staticResponse = await fetch(staticUrl, {
 				method: 'GET',
@@ -75,7 +75,7 @@ async function handleRequest(request) {
 	}
 
 	// Default behavior: Proxy other requests to GitHub Pages
-	const githubUrl = `https://noamzilo.github.io/personal_website${path}`;
+	const githubUrl = `https://noamzilo.github.io/justgptit${path}`;
 	try {
 		let response = await fetch(githubUrl, {
 			method: request.method,
@@ -86,7 +86,7 @@ async function handleRequest(request) {
 
 		if (response.status === 404) {
 			// Serve index.html for client-side routing
-			const indexUrl = `https://noamzilo.github.io/personal_website/index.html`;
+			const indexUrl = `https://noamzilo.github.io/justgptit/index.html`;
 			response = await fetch(indexUrl, {
 				method: 'GET',
 				redirect: 'follow',

@@ -5,20 +5,20 @@ from llm.models import ShortUrls, Queries
 def test_shorturls_crud_operations():
     # CREATE
     short_url = ShortUrls.objects.create(
-        llm_query="Sample Query",
-        short_url="https://short.url/abc123"
+        long_url="www.example.com/?query=abcd1234",
+        url_hash="abcd1234"
     )
     assert short_url.id is not None  # Ensure that the entry was created
 
     # READ
     fetched_url = ShortUrls.objects.get(id=short_url.id)
-    assert fetched_url.llm_query == "Sample Query"
+    assert fetched_url.long_url == "www.example.com/?query=abcd1234"
 
     # UPDATE
-    fetched_url.llm_query = "Updated Query"
+    fetched_url.long_url = "www.example.com/?query=updated"
     fetched_url.save()
     updated_url = ShortUrls.objects.get(id=short_url.id)
-    assert updated_url.llm_query == "Updated Query"
+    assert updated_url.long_url == "www.example.com/?query=updated"
 
     # DELETE
     fetched_url.delete()

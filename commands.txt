@@ -1,6 +1,6 @@
 frontend
 Run as deploy:
-cd ~/src/personal_website/frontend
+cd ~/src/justgptit/frontend
 npm run build
 npx serve -s build
 
@@ -9,18 +9,18 @@ npm run start:local
 npm run start:local-staging
 npm run start:local-production
 
-cd ~/src/personal_website/
+cd ~/src/justgptit/
 act -j build-and-deploy \
  -W .github/workflows/deploy_frontend.yml \
- --secret-file /home/noams/src/personal_website/frontend/.secrets_frontend
+ --secret-file /home/noams/src/justgptit/frontend/.secrets_frontend
 
 
 backend
-cd ~/src/personal_website
+cd ~/src/justgptit
 act \
-	--secret-file /home/noams/src/personal_website/backend/.secrets_backend \
+	--secret-file /home/noams/src/justgptit/backend/.secrets_backend \
 	--job deploy \
-	-W ~/src/personal_website/.github\/workflows/deploy_backend.yml \
+	-W ~/src/justgptit/.github\/workflows/deploy_backend.yml \
 	--bind /var/run/docker.sock
 
 
@@ -31,8 +31,8 @@ docker run -it \
 	--network=host \
     -p 8080:8080 \
     -e GCP_PROJECT_ID=academic-veld-436919-g0 \
-    --env-file /home/noams/src/personal_website/backend/.secrets_backend \
-    --env-file /home/noams/src/personal_website/backend/.env \
+    --env-file /home/noams/src/justgptit/backend/.secrets_backend \
+    --env-file /home/noams/src/justgptit/backend/.env \
     personal-website-backend \
     /bin/bash
 
@@ -44,12 +44,12 @@ docker run -it \
     -p 5678:5678 \
     --volume $(pwd):/app \
     -e GCP_PROJECT_ID=academic-veld-436919-g0 \
-    --env-file /home/noams/src/personal_website/backend/.secrets_backend \
-    --env-file /home/noams/src/personal_website/backend/.env \
+    --env-file /home/noams/src/justgptit/backend/.secrets_backend \
+    --env-file /home/noams/src/justgptit/backend/.env \
     personal-website-backend_dev \
     /bin/bash
 
-'/home/runner/work/personal_website/personal_website/./backend' <working-directory: ./backend>
+'/home/runner/work/justgptit/justgptit/./backend' <working-directory: ./backend>
   
 Debug:
 ctrl+shift+p
@@ -81,7 +81,7 @@ SELECT current_database(); (show database name to see if local or remote)
 
 
 reverse proxy (CloudFlare):
-wrangler dev /home/noams/src/personal_website/cloudflare/router.js
+wrangler dev /home/noams/src/justgptit/cloudflare/router.js
 
 http://localhost:8787/r/VDG7D39B
 http://personal-website-backend-839353010571.us-central1.run.app/llm/redirect/VDG7D39B
