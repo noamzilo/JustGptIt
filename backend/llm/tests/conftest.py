@@ -1,7 +1,8 @@
 import os
 import sys
+import pytest
 import django
-from django.conf import settings
+from django.db import connections
 
 # Add the project root directory to Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__))))
@@ -10,4 +11,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
-# Remove the django_db_setup fixture - we'll let pytest-django handle the database setup
+@pytest.fixture(autouse=True)
+def close_db_connections():
+    try:
+        yield  # Run the test
+    finally:
+        for conn in connections.all():
+            conn.close()
