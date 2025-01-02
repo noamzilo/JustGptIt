@@ -1,8 +1,8 @@
 {
-    "editor.insertSpaces": false,
-    "editor.tabSize": 4,
-    "terminal.integrated.env.linux": {
-        "PYTHONPATH": "/home/noams/src/personal_website/backend"
-    },
-    "python.envFile": "${workspaceFolder}/.env"
+	"editor.insertSpaces": false,
+	"editor.tabSize": 4,
+	"terminal.integrated.env.linux": {
+		"PYTHONPATH": "/home/noams/src/justgptit/backend"
+	},
+	"python.envFile": "${workspaceFolder}/.env"
 }

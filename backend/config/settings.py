@@ -1,4 +1,4 @@
-# Full path: ~/src/personal_website/backend/personal_website/settings.py
+# Full path: ~/src/justgptit/backend/justgptit/settings.py
 
 import os
 from pathlib import Path
@@ -28,7 +28,7 @@ ALLOWED_HOSTS = [
     'personal-website-backend-839353010571.us-central1.run.app', 
     'personal-website-backend-bbwuvruncq-uc.a.run.app', 
     'localhost',
-    'noamzilo.github.io/personal_website'
+    'noamzilo.github.io/justgptit'
     ]
 
 # CORS settings

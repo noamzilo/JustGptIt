@@ -1,9 +1,9 @@
 # GitHub Repository Summary
 
 ## Repository Information
-- Name: personal_website
+- Name: justgptit
 - Username: noamzilo
-- URL: https://github.com/noamzilo/personal_website
+- URL: https://github.com/noamzilo/justgptit
 
 ## Branch Structure
 - main: Latest stable deployed versions for both backend and frontend
@@ -22,7 +22,7 @@
 
 ## Frontend Deployment
 - Deployed to: GitHub Pages
-- Live URL: https://noamzilo.github.io/personal_website/
+- Live URL: https://noamzilo.github.io/justgptit/
 - Deploys from: main branch, root directory
 - Process: Automated via deploy_frontend.yml workflow
 
