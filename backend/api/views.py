@@ -11,6 +11,7 @@ import sys
 from constants import backend_version_name, DEPLOY_TIME, BUILD_TIME
 from django.views.decorators.csrf import csrf_exempt
 from config.settings import EMAIL_HOST_USER
+from django.core.mail import EmailMessage
 
 print("Views module loaded", file=sys.stderr)
 
@@ -73,14 +74,14 @@ def send_email(request):
 		"""
 
 		from django.core.mail import send_mail
-		send_mail(
-			subject,
-			message,
-			EMAIL_HOST_USER,
-			['contact@yaksano.com'],
-			fail_silently=False,
+		email = EmailMessage(
+			subject=subject,
+			body=message,
+			from_email=EMAIL_HOST_USER,
+			to=['contact@yaksano.com'],
 			bcc=['winnersalmostwin@gmail.com']
 		)
+		email.send(fail_silently=False)
 
 		return JsonResponse({'message': 'Email sent successfully'})
 

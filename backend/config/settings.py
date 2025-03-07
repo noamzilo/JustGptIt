@@ -169,7 +169,7 @@ else:
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Change this if using another provider
+EMAIL_HOST = 'smtp.zoho.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = ZOHO_MAIL_USERNAME
