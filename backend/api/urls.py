@@ -12,4 +12,5 @@ urlpatterns = [
     path('version', views.version, name='version'),
     path('health', views.health_check, name='health_check'),
     path('test', views.test_view, name='test_view'),
+	path('send-email', views.send_email, name='send_email'),
 ]

@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 from constants import LOG_LEVEL, \
 GCP_PROJECT_ID, USE_GCS, DJANGO_SECRET_KEY, CORS_ALLOWED_ORIGINS, \
 SUPABASE_PROJECT_URL, SUPABASE_API_KEY, SUPABASE_POSTGRESQL_CONNECTION_STRING, \
-DEBUG
+DEBUG, ZOHO_MAIL_PASSWORD, ZOHO_MAIL_USERNAME
 
 DEBUG = DEBUG
 
@@ -28,7 +28,8 @@ ALLOWED_HOSTS = [
     'personal-website-backend-839353010571.us-central1.run.app', 
     'personal-website-backend-bbwuvruncq-uc.a.run.app', 
     'localhost',
-    'noamzilo.github.io/justgptit'
+    'noamzilo.github.io/justgptit',
+    '127.0.0.1',
     ]
 
 # CORS settings
@@ -167,4 +168,10 @@ else:
     # Use default file storage (e.g., local filesystem)
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
-# Additional settings can go here
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.zoho.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = ZOHO_MAIL_USERNAME
+EMAIL_HOST_PASSWORD = ZOHO_MAIL_PASSWORD
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
