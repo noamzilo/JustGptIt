@@ -29,6 +29,9 @@ ALLOWED_HOSTS = [
     'personal-website-backend-bbwuvruncq-uc.a.run.app', 
     'localhost',
     'noamzilo.github.io/justgptit',
+    'noamzilo.github.io/yaksano_templated',
+    'noamzilo.github.io/personal-website',
+    'noamzilo.github.io/seo_static_pages',
     '127.0.0.1',
     ]
 
