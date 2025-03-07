@@ -89,3 +89,23 @@ def send_email(request):
 		return JsonResponse({'error': 'Invalid JSON'}, status=400)
 	except Exception as e:
 		return JsonResponse({'error': str(e)}, status=500)
+
+"""
+ curl -X POST http://127.0.0.1:8000/api/send-email      -H "Content-Type: application/json"      -d '{
+           "name": "John Doe",
+           "company": "Acme Corp",
+           "email": "johndoe@example.com",
+           "phone": "123456789",
+           "content": "Looking for a web-based solution."
+         }'
+
+ curl -X POST \
+	https://personal-website-backend-839353010571.us-central1.run.app/api/send-email      -H "Content-Type: application/json"      -d '{
+           "name": "John Doe",
+           "company": "Acme Corp",
+           "email": "johndoe@example.com",
+           "phone": "123456789",
+           "content": "Looking for a web-based solution."
+         }'
+
+"""
