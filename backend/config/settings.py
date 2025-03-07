@@ -32,6 +32,10 @@ ALLOWED_HOSTS = [
     'noamzilo.github.io/yaksano_templated',
     'noamzilo.github.io/personal-website',
     'noamzilo.github.io/seo_static_pages',
+    'yaksano.com',
+    'www.yaksano.com',
+    'justgptit.com',
+    'www.justgptit.com',
     '127.0.0.1',
     ]
 
