@@ -28,7 +28,8 @@ ALLOWED_HOSTS = [
     'personal-website-backend-839353010571.us-central1.run.app', 
     'personal-website-backend-bbwuvruncq-uc.a.run.app', 
     'localhost',
-    'noamzilo.github.io/justgptit'
+    'noamzilo.github.io/justgptit',
+    '127.0.0.1',
     ]
 
 # CORS settings
