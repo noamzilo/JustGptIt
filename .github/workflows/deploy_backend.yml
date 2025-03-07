@@ -15,6 +15,8 @@ env:
     CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
     SUPABASE_POSTGRESQL_CONNECTION_STRING: ${{ secrets.SUPABASE_POSTGRESQL_CONNECTION_STRING }}
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    ZOHO_MAIL_PASSWORD: ${{ secrets.ZOHO_MAIL_PASSWORD }}
+    ZOHO_MAIL_USERNAME: ${{ secrets.ZOHO_MAIL_USERNAME }}
 
 jobs:
     deploy:
@@ -211,6 +213,8 @@ jobs:
                   echo "DEBUG: '${DEBUG}'" >> env_temp.yaml
                   echo "SUPABASE_POSTGRESQL_CONNECTION_STRING: '${SUPABASE_POSTGRESQL_CONNECTION_STRING}'" >> env_temp.yaml
                   echo "OPENAI_API_KEY: '${OPENAI_API_KEY}'" >> env_temp.yaml
+                  echo "ZOHO_MAIL_PASSWORD: '${ZOHO_MAIL_PASSWORD}'" >> env_temp.yaml
+                  echo "ZOHO_MAIL_USERNAME: '${ZOHO_MAIL_USERNAME}'" >> env_temp.yaml
                   echo "DEPLOY_TIME: '${DEPLOY_TIME}'" >> env_temp.yaml
 
                   EXTRA_VARS="--env-vars-file env_temp.yaml"
