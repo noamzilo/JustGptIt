@@ -5,7 +5,7 @@ from llm.version import version as llm_version
 backend_version_name = llm_version
 
 # Paths to secret and env files
-SECRET_FILE_PATH = os.path.expanduser("~/src/justgptit/backend/.secrets_backend")
+SECRET_FILE_PATH = os.path.expanduser("~/src/justgptit/backend/.secrets_backend") 
 ENV_FILE_PATH = os.path.expanduser("~/src/justgptit/backend/.env")
 
 def parse_env_file(file_path):
